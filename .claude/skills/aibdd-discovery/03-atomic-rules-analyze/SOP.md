@@ -10,6 +10,17 @@
 
 # SOP
 
+0. **RESOLVE arguments**——將本 SOP 引用的 `${VAR}` 透過 sibling resolver 綁定，並把 resolver stdout（每行一筆 `KEY=value`）原樣 EMIT 給用戶。Resolver 非 0 退出時，停止本 SOP 並把 stderr 透傳給用戶。`${CWD}` 為 shell working directory，不入 manifest。
+
+   ```bash
+   python3 .claude/skills/aibdd-core/scripts/python/resolve_args.py <<'EOF'
+   CURRENT_PLAN_PACKAGE=${CURRENT_PLAN_PACKAGE}
+   FEATURE_SPECS_DIR=${FEATURE_SPECS_DIR}
+   PLAN_REPORTS_DIR=${PLAN_REPORTS_DIR}
+   PLAN_SPEC=${PLAN_SPEC}
+   EOF
+   ```
+
 1. [LOOP] FOR EACH 上一 Phase 產出的 Feature File - 列舉其中的所有 atomic rules (每一個 Feature File 開設一個 TODO TASK，每個 TASK 進行底下兩步驟）：
    1.1 **FAITHFUL REASONING：FOR EACH 上一 Phase 產出的 Feature File，列舉其中的所有 atomic rules**：
       - **READ** `rules/atomic-rule-granularity.md`，atomic rule 的顆粒度、命名句型、4 種類型前綴、原子化判定、禁止自生**全部**以此檔為準。

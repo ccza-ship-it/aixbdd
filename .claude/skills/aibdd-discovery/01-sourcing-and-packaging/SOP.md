@@ -1,8 +1,26 @@
 # SOP
 
-0. READ [`rules/specs-root-layout.md`](rules/specs-root-layout.md) 作為本 sub-SOP 內所有 `${PLAN_PACKAGES_DIR}` / `${TRUTH_BOUNDARY_ROOT}` / `${TRUTH_BOUNDARY_PACKAGES_DIR}` / `${CONTRACTS_DIR}` / `${DATA_DIR}` 路徑解析與 `Impact matrix` 第一欄路徑的 SSOT。
+0. **RESOLVE arguments**——將本 SOP 引用的 `${VAR}` 透過 sibling resolver 綁定，並把 resolver stdout（每行一筆 `KEY=value`）原樣 EMIT 給用戶。Resolver 非 0 退出時，停止本 SOP 並把 stderr 透傳給用戶。
 
-0.1 DERIVE `$package_naming_language`：從 ${DSL_KEY_LOCALE} 直接決定使用目錄名稱之語系。若無慣例則依需求原文主體用字決定。後續 slug 須與該語系一致，禁止無理由中英檔名混拼。若無法判斷則 /clarify-loop 詢問用戶。
+   ```bash
+   python3 .claude/skills/aibdd-core/scripts/python/resolve_args.py <<'EOF'
+   CONTRACTS_DIR=${CONTRACTS_DIR}
+   CURRENT_PLAN_PACKAGE=${CURRENT_PLAN_PACKAGE}
+   DATA_DIR=${DATA_DIR}
+   FEATURE_SPECS_DIR=${FEATURE_SPECS_DIR}
+   PLAN_PACKAGES_DIR=${PLAN_PACKAGES_DIR}
+   PLAN_REPORTS_DIR=${PLAN_REPORTS_DIR}
+   PLAN_SPEC=${PLAN_SPEC}
+   PROJECT_SPEC_LANGUAGE=${PROJECT_SPEC_LANGUAGE}
+   TRUTH_BOUNDARY_PACKAGES_DIR=${TRUTH_BOUNDARY_PACKAGES_DIR}
+   TRUTH_BOUNDARY_ROOT=${TRUTH_BOUNDARY_ROOT}
+   TRUTH_FUNCTION_PACKAGE=${TRUTH_FUNCTION_PACKAGE}
+   EOF
+   ```
+
+0.5 READ [`rules/specs-root-layout.md`](rules/specs-root-layout.md) 作為本 sub-SOP 內所有 `${PLAN_PACKAGES_DIR}` / `${TRUTH_BOUNDARY_ROOT}` / `${TRUTH_BOUNDARY_PACKAGES_DIR}` / `${CONTRACTS_DIR}` / `${DATA_DIR}` 路徑解析與 `Impact matrix` 第一欄路徑的 SSOT。
+
+0.6 DERIVE `$package_naming_language`：從 ${PROJECT_SPEC_LANGUAGE} 直接決定使用目錄名稱之語系。若無慣例則依需求原文主體用字決定。後續 slug 須與該語系一致，禁止無理由中英檔名混拼。若無法判斷則 /clarify-loop 詢問用戶。
 
 1. ANCHOR + SEARCH（本步僅 READ／SEARCH／WRITE `${PLAN_SPEC}`；`${TRUTH_BOUNDARY_ROOT}` 下 truth 不寫入；`arguments.yml` 不寫入）
    - 1.1 若當前 plan slug 尚未由 caller-context 提供：DERIVE `$plan_package_slug`（`NNN-<slug>`）→ CREATE `${PLAN_PACKAGES_DIR}/$plan_package_slug/` 於 filesystem → 將 `$plan_package_slug` 作為 return value 回傳上層 orchestrator，後續解析 `${CURRENT_PLAN_PACKAGE}` 借位時以此 slug override → 回到 1.2。`arguments.yml` 中 `CURRENT_PLAN_PACKAGE` 永遠保持 `<<NNN-plan-slug>>` 借位形態，本步**不**改寫 yaml。
