@@ -8,10 +8,10 @@
 | Family | Path pattern | Owner | Purpose |
 |---|---|---|---|
 | Project config | `.aibdd/arguments.yml`, `specs/architecture/boundary.yml` | `/aibdd-kickoff` | boundary-aware path and topology seed |
-| Discovery truth | `specs/<boundary>/packages/NN-*/activities/`, `features/`, `reports/discovery-sourcing.md`, `spec.md` summary | `/aibdd-discovery` plus form skills | accepted external behavior and atomic rules |
-| Boundary technical truth | `specs/<boundary>/boundary-map.yml`, `contracts/`, `data/`, `test-strategy.yml` | `/aibdd-plan` + boundary state specifier skill | owner-scoped implementation truth |
-| DSL truth | `specs/<boundary>/packages/NN-*/dsl.yml`, `specs/<boundary>/shared/dsl.yml` | `/aibdd-plan` | L1-L4 red-usable mapping truth |
-| Plan package work records | `plan.md`, `research.md`, `implementation/sequences/*.sequence.mmd`, `implementation/internal-structure.class.mmd` | `/aibdd-plan` | session-specific reasoning and implementation plan |
+| Discovery truth | `specs/packages/NN-*/activities/`, `features/`, `specs/plans/NNN-*/reports/discovery-sourcing.md`, `specs/plans/NNN-*/spec.md` summary | `/aibdd-discovery` plus form skills | accepted external behavior and atomic rules |
+| Boundary technical truth | `specs/boundary-map.yml`, `specs/contracts/`, `specs/data/`, `specs/test-strategy.yml` | `/aibdd-plan` + boundary state specifier skill | owner-scoped implementation truth |
+| DSL truth | `specs/packages/NN-*/dsl.yml`, `specs/shared/dsl.yml` | `/aibdd-plan` | L1-L4 red-usable mapping truth |
+| Plan package work records | `specs/plans/NNN-*/plan.md`, `research.md`, `implementation/sequences/*.sequence.mmd`, `implementation/internal-structure.class.mmd` | `/aibdd-plan` | session-specific reasoning and implementation plan |
 
 ## Ownership Rules
 

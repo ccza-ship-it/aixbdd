@@ -79,10 +79,9 @@ def load_boundary_id(args_path: Path, args: dict[str, str]) -> str | None:
     if not p.is_file():
         return None
     raw = yaml.safe_load(p.read_text(encoding="utf-8")) or {}
-    boundaries = raw.get("boundaries") if isinstance(raw, dict) else None
-    if not boundaries:
+    if not isinstance(raw, dict):
         return None
-    return str(boundaries[0].get("id") or "").strip() or None
+    return str(raw.get("id") or "").strip() or None
 
 
 def apply_boundary(value: str, boundary_id: str | None) -> str:

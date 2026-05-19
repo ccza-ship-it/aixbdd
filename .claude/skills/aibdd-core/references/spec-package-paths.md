@@ -1,6 +1,6 @@
 # Spec Package Paths
 
-AIBDD skills 的 **spec 檔案路徑慣例 SSOT**。路徑模型以 **`/aibdd-kickoff` 產物** 為準（見 `aibdd-kickoff/references/convention-mapping.md`）。
+AIBDD skills 的 **spec 檔案路徑慣例 SSOT**。路徑模型以 **`/aibdd-kickoff` 產物** 為準（見 `aibdd-kickoff/assets/templates/arguments.template.yml`、`.java-e2e.yml`、`.nextjs-playwright.yml` 三檔；變數預設值與占位符語意逐字寫在 template 註解中）。
 
 One specs root = one boundary。`${SPECS_ROOT_DIR}` 就是該 boundary 的 truth root。`${BOUNDARY_YML}` 內的 `id` 為語意 tag，不對應 filesystem 子目錄。
 
@@ -73,5 +73,5 @@ Accepted behavior truth（Activity / Discovery rule-only feature）落於 caller
 
 - Mermaid diagram 檔名副檔名（`*.class.mmd` / `*.sequence.mmd`）：[`diagram-file-naming.md`](diagram-file-naming.md)
 - Boundary profile（`operation_contract_specifier`／`state_specifier`）與同目錄 `handler-routing.yml`：見 `aibdd-core` SKILL.md §2 ASSETS（`assets/boundaries/<type>/`）
-- 欄位預設值與占位符語意：`aibdd-kickoff::references/convention-mapping.md`
+- 欄位預設值與占位符語意：`aibdd-kickoff::assets/templates/arguments.template.yml`（python_e2e）、`.java-e2e.yml`、`.nextjs-playwright.yml`；每個 key 旁邊的 `#` 註解即為 SSOT 說明。
 - Feature 檔名軸（§5.1）與 bdd-stack 憲法樹：`${BDD_CONSTITUTION_PATH}`（專案內預設 `.aibdd/bdd-stack/project-bdd-axes.md`）；runner／step／fixture 細節見 `.aibdd/bdd-stack/*.md`

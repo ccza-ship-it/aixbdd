@@ -1,6 +1,0 @@
-version: 2
-id: "{{TLB_ID}}"
-level: 1
-role: backend
-type: web-service
-description: "{{TLB_ID}} Python FastAPI backend service"

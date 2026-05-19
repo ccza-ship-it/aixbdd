@@ -6,7 +6,7 @@
 > 3. 若某列不適用，刪除整列，不要留空白占位。
 >
 > 用語（寫進 discovery report 時請遵守）：
-> - **`function package`**：boundary 底下 `packages/NN-<slug>/` 這一層模組單位（內含 `features/`、`activities/`、`dsl.yml` 等）。
+> - **`function package`**：boundary 底下 `packages/NN-<slug>/` 這一層模組單位（內含 `features/`、`dsl.yml` 等）。
 
 ## Impact scope
 
@@ -16,7 +16,7 @@
 
 ## Impact matrix
 
-> **唯一**承載處：這輪 specified raw idea 對 boundary 內既有規格檔（含 function package 下 `.feature`、`.activity`、`dsl.yml`，以及 `data/`、`contracts/` 等）造成什麼 **impact**。
+> **唯一**承載處：這輪 specified raw idea 對 boundary 內既有規格檔（含 function package 下 `.feature`、`dsl.yml`，以及 `data/`、`contracts/` 等）造成什麼 **impact**。
 > **每個檔案至多一列**：`變更類型` 寫本輪對該檔的最終狀態；`impact 描述` 用一句話寫滿「對齊依據；本輪對規格內容的影響」，必要時用分號串接，**禁止**再開第二張表重述同一批檔案。
 > **逐檔列舉（尤其 `.feature`）**：第一欄須為**單一規格檔**之相對路徑（見表內列名），**禁止**以單列 `packages/.../features/*.feature` 之 **glob** 代替多個實際檔案列，以免下游（例如 plan phase 之 DSL synthesis）無法機械建立「每檔一迭代」之 workset。若專案刻意約定「僅用目錄 glob 閉包、不展開逐檔」，**必須**在下方 `Notes` **明文化**該約定與風險，不得依預設留白。
 > **`變更類型` 即語意標籤**：`新增`／`更新`／`條件式更新`／`讀取對照` 已涵蓋「本輪新產出規格檔」vs「在既有檔上變更」之區分；**不要**重複另加第三欄或其它平行欄承載同一語意。
@@ -25,7 +25,6 @@
 | 既有規格檔（相對 `${TRUTH_BOUNDARY_ROOT}`） | 變更類型 | impact 描述 |
 |---|---|---|
 | `<packages/<function-package-slug>/features/<feature>.feature>` | `讀取對照`／`更新`／`新增`／`條件式更新` | <先用既有規格界定邊界；再寫本輪要加／要改的規格句子> |
-| `<packages/<function-package-slug>/activities/<activity>.activity>` | `讀取對照`／`更新`／`新增`／`條件式更新` | <同上> |
 | `<packages/<function-package-slug>/dsl.yml>` | `讀取對照`／`更新`／`新增` | <同上> |
 | `<data/<file>.dbml>` | `讀取對照`／`更新`／`新增` | <同上> |
 | `<contracts/<file>.yml>` | `讀取對照`／`更新`／`新增`／`條件式更新` | <同上> |

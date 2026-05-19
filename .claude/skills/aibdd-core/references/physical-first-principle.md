@@ -6,13 +6,13 @@
 
 Business DSL must be backed by a physical testing surface before it is used by RED phase.
 
-The source of truth is no longer `testability-plan.md`. In the new packing model, physical testability lives in boundary truth:
+Physical testability lives in boundary truth under `specs/`:
 
-- provider operation contracts: `specs/<boundary>/contracts/`
-- data/state/verifier truth: `specs/<boundary>/data/`
-- dependency-edge test strategy: `specs/<boundary>/test-strategy.yml`
-- local DSL mapping: `specs/<boundary>/packages/NN-*/dsl.yml`
-- shared boundary DSL mapping: `specs/<boundary>/shared/dsl.yml`
+- provider operation contracts: `specs/contracts/`
+- data/state/verifier truth: `specs/data/`
+- dependency-edge test strategy: `specs/test-strategy.yml`
+- local DSL mapping: `specs/packages/NN-*/dsl.yml`
+- shared boundary DSL mapping: `specs/shared/dsl.yml`
 
 ## Layer Order
 

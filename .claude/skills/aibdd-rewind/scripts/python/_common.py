@@ -59,10 +59,9 @@ def boundary_id_from_args(args_path: Path, args: dict[str, str]) -> str | None:
     if not p.is_file():
         return None
     raw = _load_yaml(p) or {}
-    boundaries = raw.get("boundaries") if isinstance(raw, dict) else None
-    if not boundaries:
+    if not isinstance(raw, dict):
         return None
-    bid = str(boundaries[0].get("id") or "").strip()
+    bid = str(raw.get("id") or "").strip()
     return bid or None
 
 

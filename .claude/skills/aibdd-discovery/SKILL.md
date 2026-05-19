@@ -15,7 +15,7 @@
 ## PRINCIPLE: 澄清只委派 clarify-loop
 
 - 凡須向使用者做**結構化澄清**，Phase **02／03** 僅用 **一行 `DELEGATE /clarify-loop`**，並帶 **`delegated_intake`**（形狀與展開規則見 sibling [`clarify-loop/references/intake-expanders/aibdd-discovery.md`](../clarify-loop/references/intake-expanders/aibdd-discovery.md)）。**禁止**在子 SOP 內重複敘述 payload 組裝或 **unsupported** 落盤步驟；**禁止**以聊天逐題代替。
-- 若 `/clarify-loop` 回傳 **`completed`**：執行者依回傳合流 **`${PLAN_SPEC}`**／相關 **`${ACTIVITIES_DIR}`**／**`${FEATURE_SPECS_DIR}`**／**`${PLAN_REPORTS_DIR}/discovery-sourcing.md`**（一句話義務即可，細節看回傳）。
+- 若 `/clarify-loop` 回傳 **`completed`**：執行者依回傳合流 **`${PLAN_SPEC}`**／**`${FEATURE_SPECS_DIR}`**／**`${PLAN_REPORTS_DIR}/discovery-sourcing.md`**（一句話義務即可，細節看回傳）。
 
 ## PRINCIPLE: STRICT SOP
 

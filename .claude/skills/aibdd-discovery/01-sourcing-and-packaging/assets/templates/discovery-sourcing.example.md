@@ -7,7 +7,7 @@
 ## Impact scope
 
 - 本輪問題一句：既有會員登入功能已完成，這一輪要補上「每次登入成功都要記錄登入時間」。
-- 納入範圍：登入成功後的時間戳記、必要資料欄位、既有登入規則與活動流程的更新。
+- 納入範圍：登入成功後的時間戳記、必要資料欄位、既有登入規則與 feature 規格的更新。
 - 明確排除：會員註冊、忘記密碼、角色權限、第三方 OAuth 登入、登入通知推播。
 
 ## Impact matrix
@@ -15,7 +15,6 @@
 | 既有規格檔（相對 `${TRUTH_BOUNDARY_ROOT}`） | 變更類型 | impact 描述 |
 |---|---|---|
 | `packages/member-login/features/member_login.feature` | 更新 | 先用既有 scenario 界定「登入成功」邊界；本輪補上登入成功後必須記錄 `last_login_at` 規則 |
-| `packages/member-login/activities/member_login.activity` | 更新 | 先用既有活動流程定位插入點；本輪在登入成功路徑顯式寫入時間戳記記錄動作 |
 | `packages/member-login/dsl.yml` | 更新 | 沿用既有登入語彙；本輪延伸到「最後登入時間」相關語彙或狀態描述 |
 | `data/member.dbml` | 更新 | 先確認既有欄位是否足夠；本輪新增或調整 `last_login_at` 以承載登入時間 state truth |
 | `contracts/member-api.yml` | 條件式更新 | 先對照現行契約與回傳模型；本輪若需求外顯到 API 才改動 |
@@ -45,28 +44,29 @@
 
 ## Spec structure（示意樹）
 
-> 與 `01-sourcing-and-packaging.md` 步驟 6 對齊用：展示 **boundary truth 樹** 與 **新開 plan package** 的相對位置；目錄名請替換成實案。
+> 與 `01-sourcing-and-packaging/SOP.md` 步驟 6 對齊用：boundary truth 與 function package 同在 `specs/` 根下，plan package 落在 `specs/plans/NNN-<slug>/`；邏輯 boundary 見 `architecture/boundary.yml`。
 
 ```text
 specs/
   architecture/
     boundary.yml
-  web-backend/
-    contracts/
-      member-api.yml
-    data/
-      member.dbml
-    packages/
-      member-login/
-        dsl.yml
-        features/
-          member_login.feature
-        activities/
-          member_login.activity
-  002-member-login-last-login-at/
-    spec.md
-    reports/
-      discovery-sourcing.md
+  boundary-map.yml
+  contracts/
+    member-api.yml
+  data/
+    member.dbml
+  shared/
+    dsl.yml
+  packages/
+    member-login/
+      dsl.yml
+      features/
+        member_login.feature
+  plans/
+    001-member-login-last-login-at/
+      spec.md
+      reports/
+        discovery-sourcing.md
 ```
 
 ## `spec.md` 摘要片段（同一故事線）
@@ -74,8 +74,8 @@ specs/
 ```markdown
 ## Discovery sourcing summary
 - 本輪問題一句：每次登入成功都要記錄 `last_login_at`。
-- 已掃過並收斂 impact 的 boundary 規格檔：`web-backend` 下 contracts／data／packages（見 `reports/discovery-sourcing.md` 內 **`Impact matrix`**）。
-- 本輪 function package：`packages/member-login`（職責邊界見 `Function package charters`；拍板見 `Resolved sourcing decisions`）。
+- 已掃過並收斂 impact 的 boundary 規格檔：`specs` 根下 contracts／data／packages（見 `reports/discovery-sourcing.md` 內 Impact matrix）。
+- 本輪 function package：`packages/member-login`。
 
 Pointer：`reports/discovery-sourcing.md`
 ```
