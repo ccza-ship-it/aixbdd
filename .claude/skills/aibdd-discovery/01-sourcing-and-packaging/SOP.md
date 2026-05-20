@@ -18,7 +18,7 @@
    EOF
    ```
 
-0.5 READ [`rules/specs-root-layout.md`](rules/specs-root-layout.md) 作為本 sub-SOP 內所有 `${PLAN_PACKAGES_DIR}` / `${TRUTH_BOUNDARY_ROOT}` / `${TRUTH_BOUNDARY_PACKAGES_DIR}` / `${CONTRACTS_DIR}` / `${DATA_DIR}` 路徑解析與 `Impact matrix` 第一欄路徑的 SSOT。
+0.5 READ [`rules/specs-root-layout.md`](rules/specs-root-layout.md) 作為本 sub-SOP 內所有 `${PLAN_PACKAGES_DIR}` / `${TRUTH_BOUNDARY_ROOT}` / `${TRUTH_BOUNDARY_PACKAGES_DIR}` / `${CONTRACTS_DIR}` / `${DATA_DIR}` 目錄結構路徑的 SSOT。
 
 0.6 DERIVE `$package_naming_language`：從 ${PROJECT_SPEC_LANGUAGE} 直接決定使用目錄名稱之語系。若無慣例則依需求原文主體用字決定。後續 slug 須與該語系一致，禁止無理由中英檔名混拼。若無法判斷則 /clarify-loop 詢問用戶。
 
