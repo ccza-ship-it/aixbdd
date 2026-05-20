@@ -4,7 +4,7 @@ Canonical boundary-wise preset assets for the **frontend Web UI E2E surface** li
 
 This directory is the SSOT for `L4.preset.name: web-frontend`. It defines handler routing, handler narrative docs, shared DSL template entries, and stack-specific variant rendering contracts (e.g., `nextjs-playwright`). It is framework-shipped preset source under `aibdd-core`; it is **not** generated boundary truth under `${TRUTH_BOUNDARY_ROOT}`.
 
-Machine checks should validate `aibdd-core/assets/boundaries/web-frontend/handler-routing.yml`.
+Machine checks should validate `aibdd-core/assets/boundaries/web-frontend/step-classification.yml`.
 
 ## Ownership
 
@@ -15,8 +15,9 @@ Machine checks should validate `aibdd-core/assets/boundaries/web-frontend/handle
 
 | Path | Role |
 |------|------|
-| `handler-routing.yml` | SSOT: `routes` (`part` + `keyword` + `handler`) and `handlers` (`required_source_kinds`, `optional_source_kinds`, `l4_requirements`). Top-of-file comment block declares 4 boundary-level invariants (I1–I4). |
-| `handlers/*.md` | Handler narrative and rendering guidance; does not override `handler-routing.yml` *(future expansion — not in v1)* |
+| `step-classification.yml` | SSOT: `routes` (`part` + `keyword` + `handler`). |
+| `plugin-contract.md` | SSOT: per-handler `required_source_kinds` / `optional_source_kinds` / plan-time 履約規則 + 4 條 boundary-level invariants (I1–I4). |
+| `handlers/*.md` | Handler narrative and rendering guidance; does not override `step-classification.yml` *(future expansion — not in v1)* |
 | `variants/*.md` | Stack-specific rendering contracts such as `nextjs-playwright` *(future expansion — not in v1)* |
 | `shared-dsl-template.yml` | Boundary-wide canonical shared DSL entries |
 | `test-strategy-schema.md` | Schema for project-owned `${TEST_STRATEGY_FILE}` (`tier2_handlers`, `viewport_profiles`, `coverage_gates`, `policies`); consumed by `prehandling-before-red-phase.md` §3.6 / §3.7 and `check_frontend_preset_refs.py` |
@@ -76,7 +77,7 @@ Split into **Tier-1** (always required) and **Tier-2** (opt-in per package). Tie
 
 > `route-given` exists because frontend behavior is route-conditional. Backend has no equivalent because each `operation-invoke` is self-locating via path.
 
-## Boundary-Level Invariants (mirrored from handler-routing.yml top comment)
+## Boundary-Level Invariants (mirrored from plugin-contract.md)
 
 | ID | Invariant |
 |----|-----------|

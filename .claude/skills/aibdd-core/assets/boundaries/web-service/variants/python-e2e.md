@@ -36,7 +36,7 @@ context.external_stubs = ExternalStubRegistry()
 
 ## Step File Layout
 
-Directories under `steps/<function-package-or-domain>/` map one-to-one to handlers in [`handler-routing.yml`](../handler-routing.yml) (hyphen in handler name -> snake_case folder).
+Directories under `steps/<function-package-or-domain>/` map one-to-one to handlers in [`step-classification.yml`](../step-classification.yml) (hyphen in handler name -> snake_case folder).
 
 ```text
 ${PY_TEST_FEATURES_DIR}/

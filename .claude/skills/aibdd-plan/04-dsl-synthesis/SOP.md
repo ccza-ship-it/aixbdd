@@ -16,7 +16,7 @@
 
 1. DERIVE `${DSL_KEY_LOCALE}` — 依 `steps/dsl-key-locale.md` 執行。
 
-2. READ boundary preset name — 依 `steps/boundary-preset-and-handler-routing.md` 取出 `<boundary>`（即 `${BOUNDARY_YML}` 內活動 boundary 之 `type`）。
+2. READ boundary preset name — 依 `steps/boundary-preset.md` 取出 `<boundary>`（即 `${BOUNDARY_YML}` 內活動 boundary 之 `type`）。
 
 3. **(HARNESS) RUN** `dsl_cli generate-dsl-instructions`：
 

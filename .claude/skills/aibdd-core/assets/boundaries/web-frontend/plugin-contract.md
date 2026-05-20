@@ -2,7 +2,7 @@
 
 本檔以 human-readable 方式記載 web-frontend preset 之 plan-time 履約規則。
 
-> 狀態：web-frontend preset 尚未實作 part_to_dsl plugin（`scripts/part_to_dsl.py` 不存在）。本檔內容承自 handler-routing.yml 之 `handlers:` 區塊與檔頭 boundary invariants，作為 future plugin 作者之 SSOT。
+> 狀態：web-frontend preset 尚未實作 part_to_dsl plugin（`scripts/part_to_dsl.py` 不存在）。本檔承載 boundary invariants 與 per-handler plan-time 履約，作為 future plugin 作者之 SSOT。
 >
 > 對應的 runtime / red-execute handler doc（`handlers/*.md`）目前亦尚未建立，留作 follow-up。
 

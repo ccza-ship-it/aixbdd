@@ -48,7 +48,7 @@ public class ScenarioContext {
 
 ## Step File Layout
 
-Directories under `steps/<function-package-slug>/` map to handlers in [`handler-routing.yml`](../handler-routing.yml) (hyphen in handler name → snake_case folder):
+Directories under `steps/<function-package-slug>/` map to handlers in [`step-classification.yml`](../step-classification.yml) (hyphen in handler name → snake_case folder):
 
 ```text
 src/test/java/${BASE_PACKAGE}/

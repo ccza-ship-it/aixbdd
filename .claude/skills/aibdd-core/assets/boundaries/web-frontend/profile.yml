@@ -40,7 +40,7 @@ component_contract_specifier:
 persistence_handler:
   handler_id: mock-state-given
   state_ref_pattern: "src/lib/schemas/<schema>.ts#<SchemaName>"
-  routing_yml: aibdd-core/assets/boundaries/web-frontend/handler-routing.yml
+  step_classification_yml: aibdd-core/assets/boundaries/web-frontend/step-classification.yml
   coverage_gate: deferred-v1
 
 # Allowed L4 binding target prefixes for this preset.

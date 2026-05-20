@@ -7,9 +7,11 @@ This directory is the AIBDD core SSOT for reusable boundary preset assets.
 ```text
 assets/boundaries/
   web-backend/
-    handler-routing.yml
+    step-classification.yml
+    plugin-contract.md
     shared-dsl-template.yml
     handlers/
     variants/
+    scripts/part_to_dsl.py
   schemas/
 ```

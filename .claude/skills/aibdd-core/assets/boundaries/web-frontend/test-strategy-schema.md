@@ -42,7 +42,7 @@ policies: {}                         # map<PolicyId, PolicyEntry> — owned by S
 
 ## §2 `tier2_handlers`
 
-Tier-2 handler 來源：`handler-routing.yml` 的 4 個 opt-in handler。
+Tier-2 handler 來源：`step-classification.yml` 的 4 個 opt-in handler。
 
 | Key | 允許值 | 預設 | 何時 enable |
 |---|---|---|---|
