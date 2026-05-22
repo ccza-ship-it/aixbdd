@@ -67,11 +67,11 @@ Feature: apply handler candidates to # @dsl blocks
                 Example: 庫存不足時加入購物車失敗
                   # @dsl
                   # handler-candidate-kinds: state-builder | operation-invoke | time-control | external-stub
-                  # rule: rules/precondition_building.md
+                  # rule: rules/precondition-state.md
                   Given <dsl>
                   # @dsl
                   # handler-candidate-kinds: operation-invoke
-                  # rule: rules/operation_invocation.md
+                  # rule: rules/precondition-state.md
                   When <dsl>
                   Then 操作失敗，錯誤為 "庫存不足"
         """
@@ -85,7 +85,7 @@ Feature: apply handler candidates to # @dsl blocks
                 Example: 庫存不足時加入購物車失敗
                   # @dsl
                   # handler-candidate-kinds: state-builder | operation-invoke | time-control | external-stub
-                  # rule: rules/precondition_building.md
+                  # rule: rules/precondition-state.md
                   # candidates:
                   #   - product.state-builder
                   #   - addToCart.operation-invoke
@@ -96,7 +96,7 @@ Feature: apply handler candidates to # @dsl blocks
                   Given <dsl>
                   # @dsl
                   # handler-candidate-kinds: operation-invoke
-                  # rule: rules/operation_invocation.md
+                  # rule: rules/precondition-state.md
                   # candidates:
                   #   - addToCart.operation-invoke
                   #   - createProduct.operation-invoke
@@ -116,7 +116,7 @@ Feature: apply handler candidates to # @dsl blocks
                 Example: y
                   # @dsl
                   # handler-candidate-kinds: operation-invoke
-                  # rule: rules/operation_invocation.md
+                  # rule: rules/precondition-state.md
                   # candidates:
                   #   - stale.operation-invoke
                   When <dsl>
@@ -131,7 +131,7 @@ Feature: apply handler candidates to # @dsl blocks
                 Example: y
                   # @dsl
                   # handler-candidate-kinds: operation-invoke
-                  # rule: rules/operation_invocation.md
+                  # rule: rules/precondition-state.md
                   # candidates:
                   #   - addToCart.operation-invoke
                   #   - createProduct.operation-invoke
@@ -160,7 +160,7 @@ Feature: apply handler candidates to # @dsl blocks
                 Example: y
                   # @dsl
                   # handler-candidate-kinds: time-control
-                  # rule: rules/precondition_building.md
+                  # rule: rules/precondition-state.md
                   When <dsl>
         """
       When handler-candidate apply is run on the last feature file
@@ -173,7 +173,7 @@ Feature: apply handler candidates to # @dsl blocks
                 Example: y
                   # @dsl
                   # handler-candidate-kinds: time-control
-                  # rule: rules/precondition_building.md
+                  # rule: rules/precondition-state.md
                   # candidates:
                   #   - clock.time-control
                   When <dsl>
@@ -189,7 +189,7 @@ Feature: apply handler candidates to # @dsl blocks
 
                 Example: y
                   # @dsl
-                  # rule: rules/precondition_building.md
+                  # rule: rules/precondition-state.md
                   When <dsl>
         """
       When handler-candidate apply is run on the last feature file
@@ -207,7 +207,7 @@ Feature: apply handler candidates to # @dsl blocks
 
                 Example: y
                   # @dsl
-                  # rule: rules/precondition_building.md
+                  # rule: rules/precondition-state.md
                   When <dsl>
         """
 
@@ -222,7 +222,7 @@ Feature: apply handler candidates to # @dsl blocks
                 Example: y
                   # @dsl
                   # handler-candidate-kinds: unknown-kind
-                  # rule: rules/precondition_building.md
+                  # rule: rules/precondition-state.md
                   When <dsl>
         """
       When handler-candidate apply is run on the last feature file
@@ -241,7 +241,7 @@ Feature: apply handler candidates to # @dsl blocks
                 Example: y
                   # @dsl
                   # handler-candidate-kinds: unknown-kind
-                  # rule: rules/precondition_building.md
+                  # rule: rules/precondition-state.md
                   # candidates:
                   When <dsl>
         """
@@ -257,7 +257,7 @@ Feature: apply handler candidates to # @dsl blocks
                 Example: y
                   # @dsl
                   # handler-candidate-kinds: operation-invoke
-                  # rule: rules/operation_invocation.md
+                  # rule: rules/precondition-state.md
                   When <dsl>
         """
       And handler-candidate apply is run on the last feature file
@@ -271,7 +271,7 @@ Feature: apply handler candidates to # @dsl blocks
                 Example: y
                   # @dsl
                   # handler-candidate-kinds: operation-invoke
-                  # rule: rules/operation_invocation.md
+                  # rule: rules/precondition-state.md
                   # candidates:
                   #   - addToCart.operation-invoke
                   #   - createProduct.operation-invoke
@@ -290,7 +290,7 @@ Feature: apply handler candidates to # @dsl blocks
                 Example: y
                   # @dsl
                   # handler-candidate-kinds: state-verifier
-                  # rule: rules/state_verification_unchanged.md
+                  # rule: rules/precondition-state.md
                   When <dsl>
         """
       When apply_handler_candidates CLI is run on the last feature file

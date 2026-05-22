@@ -3,14 +3,11 @@ Rule: 後置（狀態：<子類>） - <狀態主詞> 應 <狀態變更>
   Example: <操作> 後 <狀態主詞> 變為 <新狀態>
     # @dsl
     # handler-candidate-kinds: state-builder | operation-invoke | time-control | external-stub
-    # rule: ${SKILL_HOME}/aibdd-core/assets/boundaries/web-service/rules/precondition_building.md
+    # rule: ${SKILL_HOME}/aibdd-core/assets/boundaries/web-service/rules/postcondition-state.md
     Given <dsl>
-    # @dsl
-    # handler-candidate-kinds: operation-invoke
-    # rule: ${SKILL_HOME}/aibdd-core/assets/boundaries/web-service/rules/operation_invocation.md
     When <dsl>
     Then 操作成功
     # @dsl
     # handler-candidate-kinds: state-verifier
-    # rule: ${SKILL_HOME}/aibdd-core/assets/boundaries/web-service/rules/state_verification_changed.md
+    # rule: ${SKILL_HOME}/aibdd-core/assets/boundaries/web-service/rules/postcondition-state.md
     And <dsl>

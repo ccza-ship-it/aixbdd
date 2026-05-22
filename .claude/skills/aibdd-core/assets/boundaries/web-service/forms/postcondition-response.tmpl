@@ -3,14 +3,11 @@ Rule: 後置（回應） - <回應主詞> 應為 <期望值>
   Example: <操作> 後 <回應主詞> 為 <期望值>
     # @dsl
     # handler-candidate-kinds: state-builder | operation-invoke | time-control | external-stub
-    # rule: ${SKILL_HOME}/aibdd-core/assets/boundaries/web-service/rules/precondition_building.md
+    # rule: ${SKILL_HOME}/aibdd-core/assets/boundaries/web-service/rules/postcondition-response.md
     Given <dsl>
-    # @dsl
-    # handler-candidate-kinds: operation-invoke
-    # rule: ${SKILL_HOME}/aibdd-core/assets/boundaries/web-service/rules/operation_invocation.md
     When <dsl>
     Then 操作成功
     # @dsl
     # handler-candidate-kinds: response-verifier
-    # rule: ${SKILL_HOME}/aibdd-core/assets/boundaries/web-service/rules/response_verification.md
+    # rule: ${SKILL_HOME}/aibdd-core/assets/boundaries/web-service/rules/postcondition-response.md
     And <dsl>

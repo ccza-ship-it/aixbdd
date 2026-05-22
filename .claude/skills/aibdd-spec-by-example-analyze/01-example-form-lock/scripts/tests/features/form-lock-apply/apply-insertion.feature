@@ -37,16 +37,13 @@ Feature: apply form-lock Example skeleton insertion
                 Example: <主詞> 不滿足 <條件> 時 <操作> 失敗
                   # @dsl
                   # handler-candidate-kinds: state-builder | operation-invoke | time-control | external-stub
-                  # rule: ${SKILL_HOME}/aibdd-core/assets/boundaries/web-service/rules/precondition_building.md
+                  # rule: ${SKILL_HOME}/aibdd-core/assets/boundaries/web-service/rules/precondition-state.md
                   Given <dsl>
-                  # @dsl
-                  # handler-candidate-kinds: operation-invoke
-                  # rule: ${SKILL_HOME}/aibdd-core/assets/boundaries/web-service/rules/operation_invocation.md
                   When <dsl>
                   Then 操作失敗，錯誤為 "<具體錯誤訊息>"
                   # @dsl
                   # handler-candidate-kinds: state-verifier
-                  # rule: ${SKILL_HOME}/aibdd-core/assets/boundaries/web-service/rules/state_verification_unchanged.md
+                  # rule: ${SKILL_HOME}/aibdd-core/assets/boundaries/web-service/rules/precondition-state.md
                   And <dsl>
         """
 
@@ -72,16 +69,13 @@ Feature: apply form-lock Example skeleton insertion
                 Example: <操作> 後 <狀態主詞> 變為 <新狀態>
                   # @dsl
                   # handler-candidate-kinds: state-builder | operation-invoke | time-control | external-stub
-                  # rule: ${SKILL_HOME}/aibdd-core/assets/boundaries/web-service/rules/precondition_building.md
+                  # rule: ${SKILL_HOME}/aibdd-core/assets/boundaries/web-service/rules/postcondition-state.md
                   Given <dsl>
-                  # @dsl
-                  # handler-candidate-kinds: operation-invoke
-                  # rule: ${SKILL_HOME}/aibdd-core/assets/boundaries/web-service/rules/operation_invocation.md
                   When <dsl>
                   Then 操作成功
                   # @dsl
                   # handler-candidate-kinds: state-verifier
-                  # rule: ${SKILL_HOME}/aibdd-core/assets/boundaries/web-service/rules/state_verification_changed.md
+                  # rule: ${SKILL_HOME}/aibdd-core/assets/boundaries/web-service/rules/postcondition-state.md
                   And <dsl>
         """
 
@@ -103,16 +97,13 @@ Feature: apply form-lock Example skeleton insertion
                 Example: <主詞> 不滿足 <條件> 時 <操作> 失敗
                   # @dsl
                   # handler-candidate-kinds: state-builder | operation-invoke | time-control | external-stub
-                  # rule: ${SKILL_HOME}/aibdd-core/assets/boundaries/web-service/rules/precondition_building.md
+                  # rule: ${SKILL_HOME}/aibdd-core/assets/boundaries/web-service/rules/precondition-state.md
                   Given <dsl>
-                  # @dsl
-                  # handler-candidate-kinds: operation-invoke
-                  # rule: ${SKILL_HOME}/aibdd-core/assets/boundaries/web-service/rules/operation_invocation.md
                   When <dsl>
                   Then 操作失敗，錯誤為 "<具體錯誤訊息>"
                   # @dsl
                   # handler-candidate-kinds: state-verifier
-                  # rule: ${SKILL_HOME}/aibdd-core/assets/boundaries/web-service/rules/state_verification_unchanged.md
+                  # rule: ${SKILL_HOME}/aibdd-core/assets/boundaries/web-service/rules/precondition-state.md
                   And <dsl>
         """
 
@@ -133,16 +124,13 @@ Feature: apply form-lock Example skeleton insertion
                 Example: <操作> 後 <回應主詞> 為 <期望值>
                   # @dsl
                   # handler-candidate-kinds: state-builder | operation-invoke | time-control | external-stub
-                  # rule: ${SKILL_HOME}/aibdd-core/assets/boundaries/web-service/rules/precondition_building.md
+                  # rule: ${SKILL_HOME}/aibdd-core/assets/boundaries/web-service/rules/postcondition-response.md
                   Given <dsl>
-                  # @dsl
-                  # handler-candidate-kinds: operation-invoke
-                  # rule: ${SKILL_HOME}/aibdd-core/assets/boundaries/web-service/rules/operation_invocation.md
                   When <dsl>
                   Then 操作成功
                   # @dsl
                   # handler-candidate-kinds: response-verifier
-                  # rule: ${SKILL_HOME}/aibdd-core/assets/boundaries/web-service/rules/response_verification.md
+                  # rule: ${SKILL_HOME}/aibdd-core/assets/boundaries/web-service/rules/postcondition-response.md
                   And <dsl>
         """
 
@@ -167,16 +155,13 @@ Feature: apply form-lock Example skeleton insertion
                 Example: <主詞> 不滿足 <條件> 時 <操作> 失敗
                   # @dsl
                   # handler-candidate-kinds: state-builder | operation-invoke | time-control | external-stub
-                  # rule: ${SKILL_HOME}/aibdd-core/assets/boundaries/web-service/rules/precondition_building.md
+                  # rule: ${SKILL_HOME}/aibdd-core/assets/boundaries/web-service/rules/precondition-state.md
                   Given <dsl>
-                  # @dsl
-                  # handler-candidate-kinds: operation-invoke
-                  # rule: ${SKILL_HOME}/aibdd-core/assets/boundaries/web-service/rules/operation_invocation.md
                   When <dsl>
                   Then 操作失敗，錯誤為 "<具體錯誤訊息>"
                   # @dsl
                   # handler-candidate-kinds: state-verifier
-                  # rule: ${SKILL_HOME}/aibdd-core/assets/boundaries/web-service/rules/state_verification_unchanged.md
+                  # rule: ${SKILL_HOME}/aibdd-core/assets/boundaries/web-service/rules/precondition-state.md
                   And <dsl>
         """
 
@@ -190,16 +175,13 @@ Feature: apply form-lock Example skeleton insertion
                 Example: <主詞> 不滿足 <條件> 時 <操作> 失敗
                   # @dsl
                   # handler-candidate-kinds: state-builder | operation-invoke | time-control | external-stub
-                  # rule: ${SKILL_HOME}/aibdd-core/assets/boundaries/web-service/rules/precondition_building.md
+                  # rule: ${SKILL_HOME}/aibdd-core/assets/boundaries/web-service/rules/precondition-state.md
                   Given <dsl>
-                  # @dsl
-                  # handler-candidate-kinds: operation-invoke
-                  # rule: ${SKILL_HOME}/aibdd-core/assets/boundaries/web-service/rules/operation_invocation.md
                   When <dsl>
                   Then 操作失敗，錯誤為 "<具體錯誤訊息>"
                   # @dsl
                   # handler-candidate-kinds: state-verifier
-                  # rule: ${SKILL_HOME}/aibdd-core/assets/boundaries/web-service/rules/state_verification_unchanged.md
+                  # rule: ${SKILL_HOME}/aibdd-core/assets/boundaries/web-service/rules/precondition-state.md
                   And <dsl>
         """
       When form-lock apply is run on the last feature file
@@ -212,16 +194,13 @@ Feature: apply form-lock Example skeleton insertion
                 Example: <主詞> 不滿足 <條件> 時 <操作> 失敗
                   # @dsl
                   # handler-candidate-kinds: state-builder | operation-invoke | time-control | external-stub
-                  # rule: ${SKILL_HOME}/aibdd-core/assets/boundaries/web-service/rules/precondition_building.md
+                  # rule: ${SKILL_HOME}/aibdd-core/assets/boundaries/web-service/rules/precondition-state.md
                   Given <dsl>
-                  # @dsl
-                  # handler-candidate-kinds: operation-invoke
-                  # rule: ${SKILL_HOME}/aibdd-core/assets/boundaries/web-service/rules/operation_invocation.md
                   When <dsl>
                   Then 操作失敗，錯誤為 "<具體錯誤訊息>"
                   # @dsl
                   # handler-candidate-kinds: state-verifier
-                  # rule: ${SKILL_HOME}/aibdd-core/assets/boundaries/web-service/rules/state_verification_unchanged.md
+                  # rule: ${SKILL_HOME}/aibdd-core/assets/boundaries/web-service/rules/precondition-state.md
                   And <dsl>
         """
 
@@ -291,16 +270,13 @@ Feature: apply form-lock Example skeleton insertion
                 Example: <主詞> 不滿足 <條件> 時 <操作> 失敗
                   # @dsl
                   # handler-candidate-kinds: state-builder | operation-invoke | time-control | external-stub
-                  # rule: ${SKILL_HOME}/aibdd-core/assets/boundaries/web-service/rules/precondition_building.md
+                  # rule: ${SKILL_HOME}/aibdd-core/assets/boundaries/web-service/rules/precondition-state.md
                   Given <dsl>
-                  # @dsl
-                  # handler-candidate-kinds: operation-invoke
-                  # rule: ${SKILL_HOME}/aibdd-core/assets/boundaries/web-service/rules/operation_invocation.md
                   When <dsl>
                   Then 操作失敗，錯誤為 "<具體錯誤訊息>"
                   # @dsl
                   # handler-candidate-kinds: state-verifier
-                  # rule: ${SKILL_HOME}/aibdd-core/assets/boundaries/web-service/rules/state_verification_unchanged.md
+                  # rule: ${SKILL_HOME}/aibdd-core/assets/boundaries/web-service/rules/precondition-state.md
                   And <dsl>
         """
 
@@ -323,11 +299,8 @@ Feature: apply form-lock Example skeleton insertion
                 Scenario Outline: <參數名> = <無效值> 時 <操作> 失敗
                   # @dsl
                   # handler-candidate-kinds: state-builder | operation-invoke | time-control | external-stub
-                  # rule: ${SKILL_HOME}/aibdd-core/assets/boundaries/web-service/rules/precondition_building.md
+                  # rule: ${SKILL_HOME}/aibdd-core/assets/boundaries/web-service/rules/precondition-param.md
                   Given <dsl>
-                  # @dsl
-                  # handler-candidate-kinds: operation-invoke
-                  # rule: ${SKILL_HOME}/aibdd-core/assets/boundaries/web-service/rules/operation_invocation.md
                   When <dsl>
                   Then 操作失敗，錯誤為 "<具體驗證錯誤訊息>"
         """

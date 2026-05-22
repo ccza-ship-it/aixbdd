@@ -3,10 +3,7 @@ Rule: 前置（參數） - <參數名> 必須 <條件>
   Scenario Outline: <參數名> = <無效值> 時 <操作> 失敗
     # @dsl
     # handler-candidate-kinds: state-builder | operation-invoke | time-control | external-stub
-    # rule: ${SKILL_HOME}/aibdd-core/assets/boundaries/web-service/rules/precondition_building.md
+    # rule: ${SKILL_HOME}/aibdd-core/assets/boundaries/web-service/rules/precondition-param.md
     Given <dsl>
-    # @dsl
-    # handler-candidate-kinds: operation-invoke
-    # rule: ${SKILL_HOME}/aibdd-core/assets/boundaries/web-service/rules/operation_invocation.md
     When <dsl>
     Then 操作失敗，錯誤為 "<具體驗證錯誤訊息>"
