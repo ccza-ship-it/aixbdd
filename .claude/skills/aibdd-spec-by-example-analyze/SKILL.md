@@ -38,4 +38,4 @@
 
 2. EXECUTE `02-handler-retrieval/SOP.md`
 
-2. 和用戶說道（可使用不同詞彙但維持語意）：「OK /aibdd-spec-by-example-analyze 完成。本輪 atomic rules 已展成 Scenario／Scenario Outline + Examples，coverage matrix 已寫入 package；語意 verdict 已寫入 `${PLAN_REPORTS_DIR}/bdd-analyze-quality.md`（deterministic check 腳本已自本 skill 移除，不再強制執行）。{若有 CiC 便條紙：『尚有 N 張便條紙待 /speckit.clarify 釐清，路徑：${PLAN_REPORTS_DIR}/bdd-analyze-cic.md。』否則省略}如沒問題，可以執行 /aibdd-tasks，正式進入 task list 拆解。」
+2. 和用戶說道（可使用不同詞彙但維持語意）：「OK /aibdd-spec-by-example-analyze 完成。本輪 atomic rules 已展成 Scenario／Scenario Outline + Examples，coverage matrix 已寫入 package；語意 verdict 已寫入 `${PLAN_REPORTS_DIR}/bdd-analyze-quality.md`（deterministic check 腳本已自本 skill 移除，不再強制執行）。執行途中若有需要人判定之處，已在對應 phase 直接透過 `/clarify-loop` 即時釐清，不另寫 questions report。如沒問題，可以執行 /aibdd-tasks，正式進入 task list 拆解。」
