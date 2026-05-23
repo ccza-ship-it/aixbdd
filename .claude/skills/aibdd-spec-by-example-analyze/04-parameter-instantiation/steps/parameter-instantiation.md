@@ -23,14 +23,29 @@
 5. INSTANTIATE 當前 `.feature`：
    1. 將步驟 4 得到的 binding map 回寫到 title、steps、tables 與 assertion payload。
    2. 若 concrete exemplar 代表字串參數，落地時一律 resolve 成 Gherkin 內可直接閱讀的 `"..."`；若 concrete exemplar 代表整數參數，優先直接落成裸值，不必額外補引號。
-   3. 例：
+   3. 若某 step 使用 Gherkin DataTable，第一列必須是欄位名稱 header row，第二列開始才是 data row；不得把欄位名和值攤成同一列，也不得改寫成 column-oriented 的 key/value 形狀。
+   4. 例：
       1. `Given 使用者以識別碼 "{識別碼}" 查詢資源` 應落成 `Given 使用者以識別碼 "item-123" 查詢資源`。
       2. `And 系統以權杖 "{權杖}" 存取租戶 "{租戶編號}" 並限制為 {上限值} 筆` 應落成 `And 系統以權杖 "credential-abc" 存取租戶 "tenant-01" 並限制為 10 筆`。
-      3. `And 統計結果應如預期 | 類別 | "{類別}" | 項目數 | {項目數} |` 應落成 `And 統計結果應如預期 | 類別 | "standard" | 項目數 | 2 |`。
-      4. `And 統計結果應如預期 | 類別 | "{類別}" | 項目數 | "{項目數}" |` 不得落成 `And 統計結果應如預期 | 類別 | "standard" | 項目數 | "2" |`；應落成 `And 統計結果應如預期 | 類別 | "standard" | 項目數 | 2 |`。
-   4. 保留 scenario 的原本 intent、assertion shape 與 actor/resource handoff，不得因為換值而改變此 scenario 想證明的事。
-   5. 若某 `Scenario Outline` 在 instantiation 後不再需要多組 placeholders，可正規化成單一 `Example`，只保留當前這組 exemplar。
-   6. 同一個 `.feature` 內的 naming 要前後一致，避免 `房號`、`房間編號`、`權杖` 各自掉成不同世界觀。
+      3. `And 統計結果應如預期：` 加上 data table
+         ```
+         | 類別 | 項目數 |
+         | "{類別}" | {項目數} |
+         ```
+         應落成
+         ```
+         | 類別 | 項目數 |
+         | "standard" | 2 |
+         ```
+      4. 不得把上例落成
+         ```
+         | 類別 | "standard" | 項目數 | 2 |
+         ```
+         這種把欄位名和值攤在同一列的 form。
+      5. 若 header row 某欄對應整數 exemplar，不得把 data row 寫成 `"2"` 這類字串字面值；應直接落成 `2`。
+   5. 保留 scenario 的原本 intent、assertion shape 與 actor/resource handoff，不得因為換值而改變此 scenario 想證明的事。
+   6. 若某 `Scenario Outline` 在 instantiation 後不再需要多組 placeholders，可正規化成單一 `Example`，只保留當前這組 exemplar。
+   7. 同一個 `.feature` 內的 naming 要前後一致，避免 `房號`、`房間編號`、`權杖` 各自掉成不同世界觀。
 
 6. 若有任一 placeholder 在不改變 spec meaning 的前提下仍無法唯一決定：
    1. 組成 `$questions`。

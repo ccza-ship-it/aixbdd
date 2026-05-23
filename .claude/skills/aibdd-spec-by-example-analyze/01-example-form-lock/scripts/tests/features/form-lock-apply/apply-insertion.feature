@@ -303,6 +303,10 @@ Feature: apply form-lock Example skeleton insertion
                   Given <dsl>
                   When <dsl>
                   Then 操作失敗，錯誤為 "<具體驗證錯誤訊息>"
+
+                  Examples:
+                    | 參數名   | 無效值   | 操作   | 具體驗證錯誤訊息   |
+                    | <參數名> | <無效值> | <操作> | <具體驗證錯誤訊息> |
         """
 
   Rule: 後置（回應） - apply_form_lock CLI 回傳 JSON report
