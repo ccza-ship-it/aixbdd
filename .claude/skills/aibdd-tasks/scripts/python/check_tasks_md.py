@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import argparse
 import re
 import sys
 from pathlib import Path
 
-from _common import basename_no_suffix, emit, extract_impacted_feature_paths, feature_title, read_args, resolve_arg_path, violation
+from _common import add_tasks_cli_arguments, basename_no_suffix, emit, feature_title, load_tasks_context, violation
 
 
 PHASE_RE = re.compile(r"^# Phase (\d+) - (.+?)\s*$", re.MULTILINE)
@@ -28,30 +29,27 @@ def split_phase_sections(text: str) -> list[str]:
 
 
 def main() -> int:
-    if len(sys.argv) < 2 or len(sys.argv) > 3:
-        print("usage: check_tasks_md.py <arguments.yml> [tasks_md_basename]", file=sys.stderr)
-        return 2
-
-    args_path = Path(sys.argv[1]).resolve()
-    tasks_basename = Path(sys.argv[2]).name if len(sys.argv) == 3 else "tasks.md"
-    args = read_args(args_path)
+    parser = argparse.ArgumentParser(description="Check tasks.md structure")
+    add_tasks_cli_arguments(parser)
+    parser.add_argument("--tasks-md-basename", default="tasks.md")
+    args = parser.parse_args()
     violations: list[dict[str, object]] = []
-    workspace_root = args_path.parent.parent if args_path.parent.name == ".aibdd" else args_path.parent
 
-    plan_md_path = resolve_arg_path(args_path, args, "PLAN_MD")
-    feature_dir = resolve_arg_path(args_path, args, "FEATURE_SPECS_DIR")
-    if plan_md_path is None or feature_dir is None:
-        violations.append(violation("MISSING_REQUIRED_PATH", str(args_path), "PLAN_MD or FEATURE_SPECS_DIR missing"))
+    try:
+        ctx = load_tasks_context(args)
+    except SystemExit as exc:
+        violations.append(violation("TASKS_CONTEXT_INVALID", str(args.arguments_yml), str(exc)))
         return emit(False, "tasks.md structure check", violations)
 
-    tasks_md_path = plan_md_path.parent / tasks_basename
+    truth_root = Path(ctx["truth_boundary_root"])
+    expected_paths: list[str] = ctx["ordered_feature_paths"]
+    tasks_md_path = Path(ctx["tasks_md"]).parent / args.tasks_md_basename
+
     if not tasks_md_path.exists():
-        violations.append(violation("TASKS_MD_MISSING", str(tasks_md_path), f"{tasks_basename} not found"))
+        violations.append(violation("TASKS_MD_MISSING", str(tasks_md_path), f"{tasks_md_path.name} not found"))
         return emit(False, "tasks.md structure check", violations)
 
-    plan_text = plan_md_path.read_text(encoding="utf-8")
     tasks_text = tasks_md_path.read_text(encoding="utf-8")
-    impacted = extract_impacted_feature_paths(plan_text)
     headers = phase_headers(tasks_text)
     sections = split_phase_sections(tasks_text)
 
@@ -59,20 +57,24 @@ def main() -> int:
         violations.append(violation("TASKS_PHASES_MISSING", str(tasks_md_path), "no phase headings found"))
         return emit(False, "tasks.md structure check", violations)
 
-    expected_total = len(impacted) + 2
+    expected_total = len(expected_paths) + 2
     if len(headers) != expected_total:
         violations.append(
             violation(
                 "TASKS_PHASE_COUNT_MISMATCH",
                 str(tasks_md_path),
-                f"expected {expected_total} phases from impacted feature count {len(impacted)}, got {len(headers)}",
+                f"expected {expected_total} phases from impacted feature count {len(expected_paths)}, got {len(headers)}",
             )
         )
 
     for index, (num, _title) in enumerate(headers, start=1):
         if num != index:
             violations.append(
-                violation("TASKS_PHASE_NUMBERING_INVALID", str(tasks_md_path), f"phase numbering must be sequential: expected {index}, got {num}")
+                violation(
+                    "TASKS_PHASE_NUMBERING_INVALID",
+                    str(tasks_md_path),
+                    f"phase numbering must be sequential: expected {index}, got {num}",
+                )
             )
 
     if headers[0][1] != "Infra setup":
@@ -81,11 +83,11 @@ def main() -> int:
         violations.append(violation("INTEGRATION_PHASE_MISSING", str(tasks_md_path), "last phase must be `Integration`"))
 
     feature_sections = sections[1:-1]
-    for idx, rel_path in enumerate(impacted):
+    for idx, rel_path in enumerate(expected_paths):
         if idx >= len(feature_sections):
             break
         header_title = headers[idx + 1][1]
-        feature_path = (workspace_root / rel_path).resolve()
+        feature_path = (truth_root / rel_path).resolve()
         expected_labels = {basename_no_suffix(rel_path)}
         if feature_path.exists():
             title = feature_title(feature_path.read_text(encoding="utf-8"))

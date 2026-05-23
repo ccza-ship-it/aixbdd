@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import argparse
 import ast
 import json
 import sys
 from pathlib import Path
 
-from _common import read_args, resolve_arg_path
+from _common import add_tasks_cli_arguments, resolve_boundary_map, resolve_truth_boundary_root, workspace_root_from_args_path
 
 
 def parse_python_symbols(path: Path) -> dict[str, object]:
@@ -31,21 +32,21 @@ def parse_python_symbols(path: Path) -> dict[str, object]:
 
 
 def main() -> int:
-    if len(sys.argv) != 2:
-        print("usage: build_code_symbol_index.py <arguments.yml>", file=sys.stderr)
-        return 2
+    parser = argparse.ArgumentParser(description="Build code symbol index from boundary-map.yml")
+    add_tasks_cli_arguments(parser)
+    args = parser.parse_args()
 
-    args_path = Path(sys.argv[1]).resolve()
-    args = read_args(args_path)
-    boundary_map = resolve_arg_path(args_path, args, "TRUTH_BOUNDARY_ROOT")
-    if boundary_map is None:
-        print(json.dumps({"ok": False, "reason": "missing TRUTH_BOUNDARY_ROOT"}, ensure_ascii=False, indent=2))
-        return 1
-
-    boundary_map_path = boundary_map / "boundary-map.yml"
-    workspace_root = args_path.parent.parent if args_path.parent.name == ".aibdd" else args_path.parent
+    args_path = args.arguments_yml.resolve()
+    workspace_root = workspace_root_from_args_path(args_path)
+    boundary_map_path = resolve_boundary_map(args_path=args_path)
     if not boundary_map_path.exists():
-        print(json.dumps({"ok": False, "reason": f"boundary-map not found: {boundary_map_path}"}, ensure_ascii=False, indent=2))
+        print(
+            json.dumps(
+                {"ok": False, "reason": f"boundary-map not found: {boundary_map_path}"},
+                ensure_ascii=False,
+                indent=2,
+            )
+        )
         return 1
 
     try:
@@ -75,6 +76,7 @@ def main() -> int:
     payload = {
         "ok": True,
         "summary": "code symbol index",
+        "truth_boundary_root": str(resolve_truth_boundary_root(args_path=args_path)),
         "files": files,
     }
     print(json.dumps(payload, ensure_ascii=False, indent=2))

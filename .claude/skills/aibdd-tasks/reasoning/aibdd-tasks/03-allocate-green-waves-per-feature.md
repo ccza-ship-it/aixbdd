@@ -6,7 +6,7 @@ Map plan-level implementation topology into feature-specific GREEN waves.
 
 ## Inputs
 
-- ordered feature paths
+- matrix-derived ordered feature paths
 - feature texts
 - `plan.md`
 - `research.md`
@@ -14,6 +14,12 @@ Map plan-level implementation topology into feature-specific GREEN waves.
 - parser verdict
 - plan-level waves when available
 - code symbol index
+
+## Membership Rule
+
+Feature membership comes from `${IMPACT_MATRIX_YML}`.
+
+Global topo waves only slice GREEN content; they do not decide which features appear in `tasks.md`.
 
 ## Allocation Rules
 

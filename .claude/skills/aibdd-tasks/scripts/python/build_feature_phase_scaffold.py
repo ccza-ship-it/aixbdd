@@ -1,16 +1,12 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import argparse
 import json
 import sys
 from pathlib import Path
 
-from _common import extract_impacted_feature_paths, feature_title, read_args, resolve_arg_path
-
-
-def sorted_feature_paths(feature_dir: Path, workspace_root: Path) -> list[str]:
-    paths = sorted(feature_dir.glob("*.feature"))
-    return [str(path.resolve().relative_to(workspace_root)).replace("\\", "/") for path in paths]
+from _common import add_tasks_cli_arguments, feature_title, load_tasks_context
 
 
 def display_label(feature_path: Path) -> str:
@@ -20,40 +16,31 @@ def display_label(feature_path: Path) -> str:
 
 
 def main() -> int:
-    if len(sys.argv) != 2:
-        print("usage: build_feature_phase_scaffold.py <arguments.yml>", file=sys.stderr)
-        return 2
+    parser = argparse.ArgumentParser(description="Build feature phase scaffold for tasks.md")
+    add_tasks_cli_arguments(parser)
+    args = parser.parse_args()
 
-    args_path = Path(sys.argv[1]).resolve()
-    args = read_args(args_path)
-    workspace_root = args_path.parent.parent if args_path.parent.name == ".aibdd" else args_path.parent
+    try:
+        ctx = load_tasks_context(args)
+    except SystemExit as exc:
+        print(json.dumps({"ok": False, "reason": str(exc)}, ensure_ascii=False, indent=2))
+        return 1
 
-    plan_md = resolve_arg_path(args_path, args, "PLAN_MD")
-    feature_dir = resolve_arg_path(args_path, args, "FEATURE_SPECS_DIR")
-    implementation_dir = resolve_arg_path(args_path, args, "PLAN_IMPLEMENTATION_DIR")
-    current_plan_package = resolve_arg_path(args_path, args, "CURRENT_PLAN_PACKAGE")
-    tasks_md = (plan_md.parent / "tasks.md") if plan_md else None
-
-    if plan_md is None or feature_dir is None or implementation_dir is None or current_plan_package is None:
+    truth_root = Path(ctx["truth_boundary_root"])
+    ordered_paths: list[str] = ctx["ordered_feature_paths"]
+    if not ordered_paths:
         print(
             json.dumps(
-                {"ok": False, "reason": "missing PLAN_MD, FEATURE_SPECS_DIR, PLAN_IMPLEMENTATION_DIR, or CURRENT_PLAN_PACKAGE"},
+                {"ok": False, "reason": "impact matrix has no add/update .feature entries"},
                 ensure_ascii=False,
                 indent=2,
             )
         )
         return 1
 
-    plan_text = plan_md.read_text(encoding="utf-8") if plan_md.exists() else ""
-    ordered_paths = extract_impacted_feature_paths(plan_text)
-    fallback_used = False
-    if not ordered_paths:
-        ordered_paths = sorted_feature_paths(feature_dir, workspace_root)
-        fallback_used = True
-
     feature_phases = []
     for index, rel_path in enumerate(ordered_paths, start=2):
-        feature_path = (workspace_root / rel_path).resolve()
+        feature_path = (truth_root / rel_path).resolve()
         feature_phases.append(
             {
                 "phase_number": index,
@@ -69,10 +56,10 @@ def main() -> int:
     payload = {
         "ok": True,
         "summary": "feature phase scaffold",
-        "fallback_used": fallback_used,
-        "current_plan_package": str(current_plan_package),
-        "implementation_dir": str(implementation_dir),
-        "tasks_md_path": str(tasks_md) if tasks_md else "",
+        "current_plan_package": ctx["current_plan_package"],
+        "implementation_dir": ctx["plan_implementation_dir"],
+        "impact_matrix_yml": ctx["impact_matrix_yml"],
+        "tasks_md_path": ctx["tasks_md"],
         "infra_phase": {"phase_number": 1, "title": "Infra setup"},
         "feature_phases": feature_phases,
         "integration_phase": {

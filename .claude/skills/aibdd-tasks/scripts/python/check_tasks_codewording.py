@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import argparse
 import json
 import re
 import subprocess
 import sys
 from pathlib import Path
 
-from _common import emit, read_args, resolve_arg_path, violation
+from _common import add_tasks_cli_arguments, emit, load_tasks_context, violation
 
 
 CLASS_PHRASE_RE = re.compile(r"在\s+`(?P<class_name>[A-Za-z_][A-Za-z0-9_]*)`(?P<verb>補齊|實作|補上)")
@@ -16,36 +17,37 @@ METHOD_PHRASE_RE = re.compile(
 )
 
 
-def load_symbol_index(script_dir: Path, args_path: Path) -> dict[str, object]:
-    proc = subprocess.run(
-        [sys.executable, str(script_dir / "build_code_symbol_index.py"), str(args_path)],
-        capture_output=True,
-        text=True,
-        check=False,
-    )
+def load_symbol_index(script_dir: Path, args_path: Path, plan_package: str | None) -> dict[str, object]:
+    cmd = [sys.executable, str(script_dir / "build_code_symbol_index.py"), str(args_path)]
+    if plan_package:
+        cmd.extend(["--plan-package", plan_package])
+    proc = subprocess.run(cmd, capture_output=True, text=True, check=False)
     if proc.returncode != 0:
         raise SystemExit(proc.stdout or proc.stderr or "build_code_symbol_index.py failed")
     return json.loads(proc.stdout)
 
 
 def main() -> int:
-    if len(sys.argv) < 2 or len(sys.argv) > 3:
-        print("usage: check_tasks_codewording.py <arguments.yml> [tasks_md_basename]", file=sys.stderr)
-        return 2
+    parser = argparse.ArgumentParser(description="Check tasks.md code wording against symbol index")
+    add_tasks_cli_arguments(parser)
+    parser.add_argument("--tasks-md-basename", default="tasks.md")
+    args = parser.parse_args()
 
-    args_path = Path(sys.argv[1]).resolve()
-    tasks_basename = Path(sys.argv[2]).name if len(sys.argv) == 3 else "tasks.md"
-    args = read_args(args_path)
-    plan_md = resolve_arg_path(args_path, args, "PLAN_MD")
-    if plan_md is None:
-        return emit(False, "tasks code wording check", [violation("MISSING_PLAN_MD", str(args_path), "missing PLAN_MD")])
+    try:
+        ctx = load_tasks_context(args)
+    except SystemExit as exc:
+        return emit(False, "tasks code wording check", [violation("TASKS_CONTEXT_INVALID", str(args.arguments_yml), str(exc))])
 
-    tasks_md = plan_md.parent / tasks_basename
+    tasks_md = Path(ctx["tasks_md"]).parent / args.tasks_md_basename
     if not tasks_md.exists():
-        return emit(False, "tasks code wording check", [violation("TASKS_MD_MISSING", str(tasks_md), f"{tasks_basename} not found")])
+        return emit(
+            False,
+            "tasks code wording check",
+            [violation("TASKS_MD_MISSING", str(tasks_md), f"{args.tasks_md_basename} not found")],
+        )
 
     script_dir = Path(__file__).resolve().parent
-    symbol_index = load_symbol_index(script_dir, args_path)
+    symbol_index = load_symbol_index(script_dir, args.arguments_yml.resolve(), args.plan_package)
     files = symbol_index.get("files", {})
     class_methods: dict[str, set[str]] = {}
     existing_classes: set[str] = set()

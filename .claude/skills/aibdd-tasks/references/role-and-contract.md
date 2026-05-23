@@ -2,22 +2,30 @@
 
 ## Role
 
-`/aibdd-tasks` is an optional downstream planning skill that converts one completed AIBDD plan package into a structured `tasks.md`.
+`/aibdd-tasks` 是 plan 完成後的 downstream planning skill，把一個 AIBDD plan package 轉成結構化 `tasks.md`。
 
-It does not invent a new architecture. It consumes the current plan package, impacted feature scope, implementation structure, and feature package truth, then rewrites them into a task list that interleaves:
+它不重寫架構，而是消費：
+
+- 當前 plan package 的 `plan.md` / `research.md`
+- `${IMPACT_MATRIX_YML}` 匯出的 impacted feature scope
+- `implementation/internal-structure.class.mmd` 的 topology
+- boundary truth 與 impacted feature texts
+
+再編排成：
 
 - plan-level implementation topology
 - feature-driven TDD phase order
-- fixed RED / GREEN / Refactor execution template
+- 固定 RED / GREEN / Refactor execution template
 
 ## Required Inputs
 
 - `.aibdd/arguments.yml`
 - current plan package `plan.md`
 - current plan package `research.md` when present
+- current plan package `reports/impact-matrix.yml`
 - current plan package `implementation/internal-structure.class.mmd`
-- target function package `features/`
-- target boundary `boundary-map.yml`
+- impacted `.feature` files referenced by impact matrix
+- `${BOUNDARY_MAP_FILE}`
 
 ## Outputs
 
@@ -25,17 +33,17 @@ It does not invent a new architecture. It consumes the current plan package, imp
 
 ## Non-Goals
 
-- It does not replace `/aibdd-plan`.
-- It does not write contracts, DSL, DBML, or sequence diagrams.
-- It does not directly execute `/aibdd-red-execute`, `/aibdd-green-execute`, or `/aibdd-refactor-execute`.
-- It does not write product code, tests, step definitions, or runtime fixtures.
+- 不取代 `/aibdd-plan`
+- 不寫 contracts、DSL、DBML、sequence diagrams
+- 不直接執行 `/aibdd-red-execute`、`/aibdd-green-execute`、`/aibdd-refactor-execute`
+- 不寫 product code、tests、step definitions、runtime fixtures
 
 ## Completion Contract
 
-The skill is complete when `tasks.md` gives the user a stable markdown task list with:
+skill 完成時，`tasks.md` 必須提供穩定 markdown task list：
 
-- `Infra setup` at the start
-- one TDD phase per impacted feature
-- `Integration` at the end
-- `RED` / `GREEN` / `Refactor` sections for every feature phase
-- feature-specific GREEN waves rather than a copy-pasted global topology
+- 開頭有 `Infra setup`
+- 每個 impacted feature 一個 TDD phase
+- 結尾有 `Integration`
+- 每個 feature phase 都有 `RED` / `GREEN` / `Refactor`
+- GREEN waves 是 feature-specific，不是整包 topology 複製貼上

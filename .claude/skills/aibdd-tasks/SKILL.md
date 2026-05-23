@@ -77,7 +77,7 @@ Generate a structured `tasks.md` from a completed AIBDD plan package.
 |---|---|---|---|
 | R1 | `references/role-and-contract.md` | global | Define role, inputs, outputs, non-goals, and completion contract for `/aibdd-tasks`. |
 | R2 | `references/path-contract.md` | global | Define arguments.yml keys, resolved paths, and tasks artifact destination. |
-| R3 | `.claude/skills/aibdd-plan/references/impacted-feature-files-contract.md` | global | Define the upstream impacted-feature scope contract exported by `/aibdd-plan`. |
+| R3 | `references/impacted-feature-scope-contract.md` | global | Define impacted feature membership from `${IMPACT_MATRIX_YML}` and phase-order handoff. |
 | R4 | `references/tasks-md-shape-contract.md` | global | Define the required markdown phase shape, per-feature template, and no-work sentences. |
 | R5 | `references/topology-contract.md` | global | Define parser expectations, topo-wave semantics, and parser-failure fallback rules. |
 | R6 | `references/green-wave-allocation-rules.md` | global | Define how global implementation waves are sliced into feature-specific GREEN plans. |
@@ -89,7 +89,7 @@ Generate a structured `tasks.md` from a completed AIBDD plan package.
 ## §2 SOP
 
 ### Phase 1 — BIND tasks context
-> produces: `$$skill_dir`, `$$workspace_root`, `$$args_path`, `$$paths`, `$$current_plan_package`, `$$plan_md_path`, `$$research_md_path`, `$$internal_structure_path`, `$$feature_specs_dir`, `$$boundary_map_path`, `$$tasks_md_path`
+> produces: `$$skill_dir`, `$$workspace_root`, `$$args_path`, `$$paths`, `$$current_plan_package`, `$$plan_md_path`, `$$research_md_path`, `$$internal_structure_path`, `$$impact_matrix_path`, `$$plan_reports_dir`, `$$truth_boundary_packages_dir`, `$$boundary_map_path`, `$$tasks_md_path`, `$$matrix_feature_paths`
 
 1. `$$skill_dir` = COMPUTE current skill directory path
 2. `$$workspace_root` = COMPUTE current workspace directory path
@@ -99,6 +99,7 @@ Generate a structured `tasks.md` from a completed AIBDD plan package.
        4.1.1 EMIT "`.aibdd/arguments.yml` 不存在；請先完成 /aibdd-kickoff。" to user
        4.1.2 STOP
 5. `$paths_out` = TRIGGER `python3 "${$$skill_dir}/scripts/python/resolve_tasks_paths.py" "${$$args_path}"`
+   5.1 若 arguments.yml 的 `CURRENT_PLAN_PACKAGE` 仍是 slot，caller 必須在同一 TRIGGER 加上 `--plan-package <concrete plan package path>`。
 6. ASSERT `$paths_out.exit_code == 0`
    6.1 IF assertion fails:
        6.1.1 EMIT `$paths_out.stdout` to user
@@ -108,16 +109,23 @@ Generate a structured `tasks.md` from a completed AIBDD plan package.
 9. `$$plan_md_path` = PARSE `$$paths.plan_md`
 10. `$$research_md_path` = PARSE `$$paths.research_md`
 11. `$$internal_structure_path` = PARSE `$$paths.plan_internal_structure`
-12. `$$feature_specs_dir` = PARSE `$$paths.feature_specs_dir`
-13. `$$boundary_map_path` = PARSE `$$paths.boundary_map`
-14. `$$tasks_md_path` = PARSE `$$paths.tasks_md`
-15. ASSERT `$$current_plan_package` is non-empty and `$$feature_specs_dir` is non-empty
-    15.1 IF assertion fails:
-        15.1.1 EMIT "current plan package 或 feature package 未綁定；請先完成 /aibdd-plan 與 function package 綁定。" to user
-        15.1.2 STOP
+12. `$$impact_matrix_path` = PARSE `$$paths.impact_matrix_yml`
+13. `$$plan_reports_dir` = PARSE `$$paths.plan_reports_dir`
+14. `$$truth_boundary_packages_dir` = PARSE `$$paths.truth_boundary_packages_dir`
+15. `$$boundary_map_path` = PARSE `$$paths.boundary_map`
+16. `$$tasks_md_path` = PARSE `$$paths.tasks_md`
+17. `$$matrix_feature_paths` = PARSE `$$paths.matrix_feature_paths`
+18. ASSERT `$$current_plan_package` is non-empty and `$$impact_matrix_path` is non-empty
+    18.1 IF assertion fails:
+        18.1.1 EMIT "current plan package 或 impact matrix 未綁定；請先完成 /aibdd-plan 與 impact matrix 維護。" to user
+        18.1.2 STOP
+19. ASSERT `$$matrix_feature_paths` is non-empty
+    19.1 IF assertion fails:
+        19.1.1 EMIT "impact matrix 沒有可納入 tasks 的 `.feature` entries（add/update）；請先完成 discovery / plan impact scope。" to user
+        19.1.2 STOP
 
 ### Phase 2 — LOAD plan and truth inputs
-> produces: `$$plan_md`, `$$research_md`, `$$internal_structure_text`, `$$boundary_map_text`, `$$feature_bundle`, `$$impacted_section_text`, `$$code_symbol_index`
+> produces: `$$plan_md`, `$$research_md`, `$$internal_structure_text`, `$$boundary_map_text`, `$$feature_bundle`, `$$discovery_sourcing_text`, `$$code_symbol_index`
 
 1. `$$plan_md` = READ `$$plan_md_path`
 2. ASSERT `$$plan_md` is non-empty
@@ -127,13 +135,13 @@ Generate a structured `tasks.md` from a completed AIBDD plan package.
 3. `$$research_md` = READ `$$research_md_path`
 4. `$$internal_structure_text` = READ `$$internal_structure_path`
 5. `$$boundary_map_text` = READ `$$boundary_map_path`
-6. `$$feature_bundle` = READ all `*.feature` under `$$feature_specs_dir`
-7. ASSERT `$$feature_bundle` is non-empty
-   7.1 IF assertion fails:
-       7.1.1 EMIT "feature package 內沒有 `.feature` 檔案；無法產出 tasks.md。" to user
-       7.1.2 STOP
-8. `$$impacted_section_text` = PARSE `$$plan_md` for `## Impacted Feature Files` section
-9. `$symbol_out` = TRIGGER `python3 "${$$skill_dir}/scripts/python/build_code_symbol_index.py" "${$$args_path}"`
+6. `$$discovery_sourcing_text` = READ `${$$plan_reports_dir}/discovery-sourcing.md`
+7. `$$feature_bundle` = READ each path in `$$matrix_feature_paths` relative to `${$$workspace_root}/specs` or `${$$paths.truth_boundary_root}`
+8. ASSERT `$$feature_bundle` is non-empty
+   8.1 IF assertion fails:
+       8.1.1 EMIT "impact matrix 指向的 feature 檔案不存在或為空；無法產出 tasks.md。" to user
+       8.1.2 STOP
+9. `$symbol_out` = TRIGGER `python3 "${$$skill_dir}/scripts/python/build_code_symbol_index.py" "${$$args_path}" --plan-package "${$$current_plan_package}"`
 10. ASSERT `$symbol_out.exit_code == 0`
     10.1 IF assertion fails:
         10.1.1 EMIT `$symbol_out.stdout` to user
@@ -158,17 +166,22 @@ Generate a structured `tasks.md` from a completed AIBDD plan package.
 ### Phase 4 — RESOLVE feature phase order
 > produces: `$$ordered_feature_paths`, `$$feature_phase_labels`
 
-1. `$$ordered_feature_paths` = THINK per [`reasoning/aibdd-tasks/02-resolve-feature-phase-order.md`](reasoning/aibdd-tasks/02-resolve-feature-phase-order.md), input=`$$impacted_section_text`, `$$feature_bundle`, `$$plan_md`, `$$research_md`, `$$boundary_map_text`, contract=[`.claude/skills/aibdd-plan/references/impacted-feature-files-contract.md`](.claude/skills/aibdd-plan/references/impacted-feature-files-contract.md)
+1. `$$ordered_feature_paths` = THINK per [`reasoning/aibdd-tasks/02-resolve-feature-phase-order.md`](reasoning/aibdd-tasks/02-resolve-feature-phase-order.md), input=`$$matrix_feature_paths`, `$$feature_bundle`, `$$plan_md`, `$$research_md`, `$$boundary_map_text`, `$$discovery_sourcing_text`, contract=[`references/impacted-feature-scope-contract.md`](references/impacted-feature-scope-contract.md)
 2. ASSERT `$$ordered_feature_paths` is non-empty
    2.1 IF assertion fails:
-       2.1.1 EMIT "無法解析 impacted feature scope；請先修正 plan.md 的 `Impacted Feature Files` 或補足相關 planning evidence。" to user
+       2.1.1 EMIT "無法解析 impacted feature scope；請先修正 impact matrix 或補足 discovery / plan evidence。" to user
        2.1.2 STOP
+3. ASSERT set(`$$ordered_feature_paths`) equals set(`$$matrix_feature_paths`)
+   3.1 IF assertion fails:
+       3.1.1 EMIT "ordered feature paths 必須與 impact matrix membership 完全一致，不可增刪 feature。" to user
+       3.1.2 STOP
 3. `$$feature_phase_labels` = DERIVE display labels from `$$ordered_feature_paths`, `$$feature_bundle`
 
 ### Phase 5 — BUILD feature phase scaffold
 > produces: `$$feature_phase_scaffold`
 
-1. `$scaffold_out` = TRIGGER `python3 "${$$skill_dir}/scripts/python/build_feature_phase_scaffold.py" "${$$args_path}"`
+1. `$feature_paths_json` = RENDER JSON array from `$$ordered_feature_paths`
+2. `$scaffold_out` = TRIGGER `python3 "${$$skill_dir}/scripts/python/build_feature_phase_scaffold.py" "${$$args_path}" --plan-package "${$$current_plan_package}" --feature-paths '${$feature_paths_json}'`
 2. ASSERT `$scaffold_out.exit_code == 0`
    2.1 IF assertion fails:
        2.1.1 EMIT `$scaffold_out.stdout` to user
@@ -200,9 +213,9 @@ Generate a structured `tasks.md` from a completed AIBDD plan package.
 ### Phase 8 — ASSERT tasks quality
 > produces: `$$script_verdict`, `$$semantic_verdict`, `$$quality_verdict`
 
-1. `$scaffold_check_out` = TRIGGER `python3 "${$$skill_dir}/scripts/python/check_feature_phase_scaffold.py" "${$$args_path}"`
-2. `$tasks_check_out` = TRIGGER `python3 "${$$skill_dir}/scripts/python/check_tasks_md.py" "${$$args_path}"`
-3. `$wording_check_out` = TRIGGER `python3 "${$$skill_dir}/scripts/python/check_tasks_codewording.py" "${$$args_path}"`
+1. `$scaffold_check_out` = TRIGGER `python3 "${$$skill_dir}/scripts/python/check_feature_phase_scaffold.py" "${$$args_path}" --plan-package "${$$current_plan_package}" --feature-paths '${$feature_paths_json}'`
+2. `$tasks_check_out` = TRIGGER `python3 "${$$skill_dir}/scripts/python/check_tasks_md.py" "${$$args_path}" --plan-package "${$$current_plan_package}" --feature-paths '${$feature_paths_json}'`
+3. `$wording_check_out` = TRIGGER `python3 "${$$skill_dir}/scripts/python/check_tasks_codewording.py" "${$$args_path}" --plan-package "${$$current_plan_package}"`
 4. `$$script_verdict` = PARSE merged JSON of `$scaffold_check_out`, `$tasks_check_out`, `$wording_check_out`
 5. ASSERT `$$script_verdict.ok == true`
    5.1 IF assertion fails:

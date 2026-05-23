@@ -29,3 +29,9 @@ Recover a usable implementation-wave approximation when `internal-structure.clas
 
 - fallback wave hints
 - parser failure explanation to be surfaced in the final report
+
+## Scope Guard
+
+Topology fallback may approximate waves, but feature membership must stay matrix-derived.
+
+Do not expand scope by scanning an entire function package tree.

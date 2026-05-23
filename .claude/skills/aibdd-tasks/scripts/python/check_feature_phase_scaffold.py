@@ -1,36 +1,39 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import argparse
 import json
 import subprocess
 import sys
 from pathlib import Path
 
-from _common import emit, extract_impacted_feature_paths, read_args, resolve_arg_path, violation
+from _common import add_tasks_cli_arguments, emit, load_tasks_context, violation
 
 
 def main() -> int:
-    if len(sys.argv) != 2:
-        print("usage: check_feature_phase_scaffold.py <arguments.yml>", file=sys.stderr)
-        return 2
-
-    args_path = Path(sys.argv[1]).resolve()
-    args = read_args(args_path)
-    plan_md = resolve_arg_path(args_path, args, "PLAN_MD")
-    feature_dir = resolve_arg_path(args_path, args, "FEATURE_SPECS_DIR")
+    parser = argparse.ArgumentParser(description="Check feature phase scaffold shape")
+    add_tasks_cli_arguments(parser)
+    args = parser.parse_args()
     violations: list[dict[str, object]] = []
 
-    if plan_md is None or feature_dir is None:
-        violations.append(violation("MISSING_REQUIRED_PATH", str(args_path), "PLAN_MD or FEATURE_SPECS_DIR missing"))
+    try:
+        ctx = load_tasks_context(args)
+    except SystemExit as exc:
+        violations.append(violation("TASKS_CONTEXT_INVALID", str(args.arguments_yml), str(exc)))
         return emit(False, "feature phase scaffold check", violations)
 
     script_path = Path(__file__).resolve().parent / "build_feature_phase_scaffold.py"
-    proc = subprocess.run(
-        [sys.executable, str(script_path), str(args_path)],
-        capture_output=True,
-        text=True,
-        check=False,
-    )
+    cmd = [
+        sys.executable,
+        str(script_path),
+        str(args.arguments_yml.resolve()),
+    ]
+    if args.plan_package:
+        cmd.extend(["--plan-package", args.plan_package])
+    if args.feature_paths:
+        cmd.extend(["--feature-paths", args.feature_paths])
+
+    proc = subprocess.run(cmd, capture_output=True, text=True, check=False)
     if proc.returncode != 0:
         violations.append(
             violation(
@@ -46,14 +49,14 @@ def main() -> int:
         violations.append(violation("SCAFFOLD_NOT_OK", str(script_path), "scaffold payload ok=false"))
         return emit(False, "feature phase scaffold check", violations)
 
-    impacted = extract_impacted_feature_paths(plan_md.read_text(encoding="utf-8"))
+    expected_paths: list[str] = ctx["ordered_feature_paths"]
     feature_phases = payload.get("feature_phases", [])
-    if len(feature_phases) != len(impacted):
+    if len(feature_phases) != len(expected_paths):
         violations.append(
             violation(
                 "SCAFFOLD_FEATURE_COUNT_MISMATCH",
                 str(script_path),
-                f"expected {len(impacted)} scaffold feature phases, got {len(feature_phases)}",
+                f"expected {len(expected_paths)} scaffold feature phases, got {len(feature_phases)}",
             )
         )
 
@@ -93,12 +96,12 @@ def main() -> int:
                     f"feature phase `{item.get('feature_path')}` must expose RED/GREEN/Refactor slots",
                 )
             )
-        if idx - 2 < len(impacted) and item.get("feature_path") != impacted[idx - 2]:
+        if idx - 2 < len(expected_paths) and item.get("feature_path") != expected_paths[idx - 2]:
             violations.append(
                 violation(
                     "SCAFFOLD_FEATURE_ORDER_INVALID",
                     str(script_path),
-                    f"expected impacted feature `{impacted[idx - 2]}`, got `{item.get('feature_path')}`",
+                    f"expected feature `{expected_paths[idx - 2]}`, got `{item.get('feature_path')}`",
                 )
             )
 
