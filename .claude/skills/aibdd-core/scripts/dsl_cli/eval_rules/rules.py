@@ -34,6 +34,7 @@ _SCHEME_RE = re.compile(
 )
 
 _FORMAT_PLACEHOLDER_RE = re.compile(r"\{([^{}]+)\}")
+_RESIDUAL_CANDIDATE_COMMENT_RE = re.compile(r"^\s*#\s*候選參數", re.MULTILINE)
 
 
 def rule_format_params_cap(entry: DSLEntry, entry_file: Path):
@@ -171,6 +172,24 @@ def rule_name_uniqueness(
                 seen[entry.name] = (path, entry.name)
 
 
+def rule_residual_candidate_comment_block(
+    entries_by_file: dict[Path, list[DSLEntry]],
+):
+    for path in entries_by_file:
+        try:
+            text = path.read_text(encoding="utf-8")
+        except OSError:
+            continue
+        if _RESIDUAL_CANDIDATE_COMMENT_RE.search(text):
+            yield Violation(
+                rule_id="residual-candidate-comment-block",
+                entry_name="<file-scope>",
+                entry_file=path,
+                message="仍殘留候選參數註解區塊；SEMANTIC 清理未完成",
+                hint="刪除 `# 候選參數...` 與其子註解後再重跑 eval",
+            )
+
+
 # -- driver -----------------------------------------------------------------
 
 
@@ -195,6 +214,7 @@ def evaluate(
             for rule in _PER_ENTRY_RULES:
                 violations.extend(rule(entry, path))
     violations.extend(rule_name_uniqueness(entries_by_file, set(shared_names)))
+    violations.extend(rule_residual_candidate_comment_block(entries_by_file))
     return EvalReport(
         status="PASS" if not violations else "FAIL",
         total_entries=total,

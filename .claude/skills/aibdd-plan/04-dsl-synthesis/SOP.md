@@ -53,7 +53,7 @@
      --shared-dsl ${BOUNDARY_SHARED_DSL}
    ```
 
-   套用 6 條 universal rules：
+   套用 7 條 universal rules：
 
    - `format-params-cap` — format 句型內 `{key}` 數量 ≤ 3
    - `datatable-cap` — datatable_bindings 中 required:true 且無 default_value 之欄位數 ≤ 6
@@ -61,6 +61,7 @@
    - `name-uniqueness` — entry `name` 跨所有 `--dsl` 與 `--shared-dsl` 唯一
    - `format-key-binding-bijection` — format 內 `{key}` ⇔ `param_bindings` 之 key 雙向覆蓋
    - `target-uri-scheme-validity` — 每個 binding 的 `target` 須命中 5 種 scheme 之一（Spec anchor / `response:` / `literal:` / `stub_payload:` / DBML anchor）
+   - `residual-candidate-comment-block` — 不得殘留 skeleton 生成的 `# 候選參數...` 註解區塊
 
    FAIL → 列每條 violation 的 `entry_name` / `rule_id` / `message` / `hint` → 回步驟 4 修；常見修法包含補 `default_value` 把 required datatable 降為 optional 以紓壓 `datatable-cap`、或拆分 entry 以紓壓 `format-params-cap`。
 
