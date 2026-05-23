@@ -1,6 +1,7 @@
 # Deny everything by default — this repo only tracks .claude/skills.
 # Everything else in the working tree is a side-effect of running skills.
 /*
+/specs/
 
 # Re-allow the path down to .claude/skills
 !/.gitignore
