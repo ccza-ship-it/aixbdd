@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 import argparse
-import subprocess
 import sys
 from pathlib import Path
 
@@ -21,28 +20,11 @@ from lib.handler_candidates import (
 )
 
 _REPO_ROOT = repo_root_from_module()
-RESOLVE_ARGS = _REPO_ROOT / ".claude/skills/aibdd-core/scripts/python/resolve_args.py"
+_AIBDD_CORE_SCRIPTS = _REPO_ROOT / ".claude/skills/aibdd-core/scripts"
+if str(_AIBDD_CORE_SCRIPTS) not in sys.path:
+    sys.path.insert(0, str(_AIBDD_CORE_SCRIPTS))
 
-
-def resolve_arg(key: str) -> str | None:
-    if not RESOLVE_ARGS.is_file():
-        return None
-    proc = subprocess.run(
-        ["python3", str(RESOLVE_ARGS)],
-        input=f"{key}=${{{key}}}\n",
-        text=True,
-        capture_output=True,
-        cwd=_REPO_ROOT,
-    )
-    if proc.returncode != 0:
-        return None
-    line = proc.stdout.strip()
-    if "=" not in line:
-        return None
-    _, val = line.split("=", 1)
-    if "<<" in val or val.strip() == "":
-        return None
-    return val
+from aibdd_core.project_args import resolve_key  # noqa: E402
 
 
 def main() -> int:
@@ -65,19 +47,19 @@ def main() -> int:
     data_dir = args.data_dir
     shared_dsl = args.shared_dsl
     if contracts_dir is None:
-        contracts_str = resolve_arg("CONTRACTS_DIR")
+        contracts_str = resolve_key("CONTRACTS_DIR")
         contracts_dir = Path(contracts_str) if contracts_str else _REPO_ROOT / "specs/contracts"
     if data_dir is None:
-        data_str = resolve_arg("DATA_DIR")
+        data_str = resolve_key("DATA_DIR")
         data_dir = Path(data_str) if data_str else _REPO_ROOT / "specs/data"
     if shared_dsl is None:
-        shared_str = resolve_arg("BOUNDARY_SHARED_DSL")
+        shared_str = resolve_key("BOUNDARY_SHARED_DSL")
         shared_dsl = Path(shared_str) if shared_str else None
 
     if args.feature_paths:
         feature_paths = [p for p in args.feature_paths if p.suffix == ".feature"]
     else:
-        feature_dir_str = resolve_arg("FEATURE_SPECS_DIR")
+        feature_dir_str = resolve_key("FEATURE_SPECS_DIR")
         if feature_dir_str:
             candidate = Path(feature_dir_str)
             feature_paths = (

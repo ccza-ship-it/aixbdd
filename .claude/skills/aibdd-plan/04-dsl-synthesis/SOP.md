@@ -5,7 +5,7 @@
 0. **RESOLVE arguments** —— 透過 sibling resolver 綁定變數，把 stdout 之 `KEY=value` 原樣 EMIT 給用戶；resolver 非 0 退出 → 停止 SOP 並把 stderr 透傳。
 
    ```bash
-   python3 .claude/skills/aibdd-core/scripts/python/resolve_args.py <<'EOF'
+   python3 .claude/skills/aibdd-core/scripts/cli/resolve_args.py <<'EOF'
    BOUNDARY_YML=${BOUNDARY_YML}
    CONTRACTS_DIR=${CONTRACTS_DIR}
    DATA_DIR=${DATA_DIR}

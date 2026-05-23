@@ -31,7 +31,6 @@ def repo_root_from_module() -> Path:
 
 _REPO_ROOT = repo_root_from_module()
 DSL_CLI_SCRIPTS = _REPO_ROOT / ".claude/skills/aibdd-core/scripts"
-RESOLVE_ARGS = _REPO_ROOT / ".claude/skills/aibdd-core/scripts/python/resolve_args.py"
 
 
 @dataclass

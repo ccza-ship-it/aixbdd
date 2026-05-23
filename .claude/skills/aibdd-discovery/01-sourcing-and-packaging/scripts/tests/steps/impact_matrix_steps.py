@@ -170,6 +170,33 @@ def step_cli_upsert(context, entry_path: str, change_type: str, impact_summary: 
     context.last_json = json.loads(proc.stdout) if proc.stdout.strip() else None
 
 
+@given("project arguments bind IMPACT_MATRIX_YML to the default test matrix path")
+def step_bind_project_arguments(context):
+    args_dir = context.tmp_root / ".aibdd"
+    args_dir.mkdir(parents=True, exist_ok=True)
+    rel = context.matrix_path.relative_to(context.tmp_root).as_posix()
+    (args_dir / "arguments.yml").write_text(
+        f"IMPACT_MATRIX_YML: {rel}\n",
+        encoding="utf-8",
+    )
+
+
+@when('manage_impact_matrix CLI query is run with suffix "{suffix}" from project CWD without matrix flag')
+def step_cli_query_from_project_cwd(context, suffix: str):
+    proc = subprocess.run(
+        [
+            "python3",
+            str(_CLI),
+            *_build_query_args(suffix=suffix),
+        ],
+        capture_output=True,
+        text=True,
+        cwd=context.tmp_root,
+    )
+    context.last_result = proc
+    context.last_json = json.loads(proc.stdout) if proc.stdout.strip() else None
+
+
 @when(
     'manage_impact_matrix CLI query is run with suffix "{suffix}" '
     'change_types "{change_types}" path_prefix "{path_prefix}"'

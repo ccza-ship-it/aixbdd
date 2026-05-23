@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 import argparse
-import subprocess
 import sys
 from pathlib import Path
 
@@ -26,40 +25,26 @@ from lib.impact_matrix import (  # noqa: E402
 )
 
 _REPO_ROOT = repo_root_from_module()
-RESOLVE_ARGS = _REPO_ROOT / ".claude/skills/aibdd-core/scripts/python/resolve_args.py"
+_AIBDD_CORE_SCRIPTS = _REPO_ROOT / ".claude/skills/aibdd-core/scripts"
+if str(_AIBDD_CORE_SCRIPTS) not in sys.path:
+    sys.path.insert(0, str(_AIBDD_CORE_SCRIPTS))
 
-
-def resolve_arg(key: str) -> str | None:
-    if not RESOLVE_ARGS.is_file():
-        return None
-    proc = subprocess.run(
-        ["python3", str(RESOLVE_ARGS)],
-        input=f"{key}=${{{key}}}\n",
-        text=True,
-        capture_output=True,
-        cwd=_REPO_ROOT,
-    )
-    if proc.returncode != 0:
-        return None
-    line = proc.stdout.strip()
-    if "=" not in line:
-        return None
-    _, val = line.split("=", 1)
-    if "<<" in val or val.strip() == "":
-        return None
-    return val
+from aibdd_core.project_args import resolve_key  # noqa: E402
 
 
 def default_matrix_path(explicit: Path | None) -> Path:
     if explicit is not None:
         return explicit
-    matrix_yml = resolve_arg("IMPACT_MATRIX_YML")
+    matrix_yml = resolve_key("IMPACT_MATRIX_YML")
     if matrix_yml:
         return Path(matrix_yml)
-    reports_dir = resolve_arg("PLAN_REPORTS_DIR")
+    reports_dir = resolve_key("PLAN_REPORTS_DIR")
     if reports_dir:
         return Path(reports_dir) / "impact-matrix.yml"
-    return Path("reports/impact-matrix.yml")
+    raise FileNotFoundError(
+        "impact matrix path unresolved: pass --matrix ${IMPACT_MATRIX_YML} "
+        "or provide .aibdd/arguments.yml at project CWD"
+    )
 
 
 def emit_and_exit(report: dict[str, object], code: int = 0) -> int:

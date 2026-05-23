@@ -5,7 +5,7 @@
 0. **RESOLVE arguments**——將本 SOP 引用的 `${VAR}` 透過 sibling resolver 綁定，並把 resolver stdout（每行一筆 `KEY=value`）原樣 EMIT 給用戶。Resolver 非 0 退出時，停止本 SOP 並把 stderr 透傳給用戶。
 
    ```bash
-   python3 .claude/skills/aibdd-core/scripts/python/resolve_args.py <<'EOF'
+   python3 .claude/skills/aibdd-core/scripts/cli/resolve_args.py <<'EOF'
    DEV_CONSTITUTION_PATH=${DEV_CONSTITUTION_PATH}
    PLAN_IMPLEMENTATION_DIR=${PLAN_IMPLEMENTATION_DIR}
    PLAN_INTERNAL_STRUCTURE=${PLAN_INTERNAL_STRUCTURE}

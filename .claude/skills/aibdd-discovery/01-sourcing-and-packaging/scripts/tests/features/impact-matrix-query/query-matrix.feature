@@ -122,3 +122,37 @@ Feature: query discovery impact matrix entries
           "warnings": []
         }
         """
+
+  Rule: CLI resolves default matrix path from project CWD arguments
+    Example: query without matrix flag uses IMPACT_MATRIX_YML from arguments.yml
+      Given an impact matrix file at the default test path
+      And project arguments bind IMPACT_MATRIX_YML to the default test matrix path
+      And impact matrix upsert is run with path "packages/01-member-login/features/01-member-login.feature" change_type "update" impact_summary "add last_login_at rule"
+      And impact matrix upsert is run with path "packages/01-member-login/features/02-login-audit.feature" change_type "read_only_compare" impact_summary "reference existing audit rules"
+      When manage_impact_matrix CLI query is run with suffix ".feature" from project CWD without matrix flag
+      Then CLI exit code is 0
+      And CLI impact matrix JSON report should equal:
+        """
+        {
+          "entries": [
+            {
+              "change_type": "update",
+              "impact_summary": "add last_login_at rule",
+              "path": "packages/01-member-login/features/01-member-login.feature"
+            },
+            {
+              "change_type": "read_only_compare",
+              "impact_summary": "reference existing audit rules",
+              "path": "packages/01-member-login/features/02-login-audit.feature"
+            }
+          ],
+          "entries_changed": 0,
+          "ok": true,
+          "questions": [],
+          "report": {
+            "summary": "queried impact matrix entries"
+          },
+          "summary": "queried impact matrix entries",
+          "warnings": []
+        }
+        """
