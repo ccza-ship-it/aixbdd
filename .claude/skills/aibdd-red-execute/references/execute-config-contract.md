@@ -32,17 +32,44 @@ AIBDD execute skills.
 - The loader reads those paths directly.
 - The loader must not infer rules from key names, basenames, or conventions.
 
+## DSL Corpus
+
+Red execute loads DSL truth from part-derived corpus files, not from function
+package paths:
+
+- `${CONTRACTS_DIR}/*.dsl.yml`
+- `${DATA_DIR}/*.dsl.yml`
+- `${BOUNDARY_SHARED_DSL}`
+
+Merge order matches `dsl_cli/catalog.py`:
+
+1. regular files first, in stable glob order (`CONTRACTS_DIR` then `DATA_DIR`)
+2. shared file last
+3. entry `name` is globally unique; first occurrence wins
+
+Each entry uses the flat schema documented in `DSL_OUTPUT_CONTRACT_REF`:
+
+- `name` — unique entry id (handoff field `dsl_entry_id`)
+- `format` — Gherkin-facing step sentence (handoff field `matched_l1`)
+- `handler` — preset handler id
+- `target_part_path` — spec or code anchor for the instruction
+- `param_bindings` — required `{key}` placeholders in `format`
+- `datatable_bindings` — optional DataTable columns
+
+`${BOUNDARY_PACKAGE_DSL}` is deprecated and must not be treated as the sole
+DSL truth source.
+
 ## Boundary Preset Assets
 
-- `L4.preset.name` resolves directly to
-  `.claude/skills/aibdd-core/assets/boundaries/<preset-name>/`.
+- Active `${PRESET_KIND}` resolves to
+  `.claude/skills/aibdd-core/assets/boundaries/<preset-kind>/`.
+- Each entry's `handler` maps to handler docs inside that preset directory.
 - `web-backend` is not resolved through a `backend` alias.
 - `/aibdd-plan/assets/boundaries` is not a runtime source for execute skills.
 - `step-classification.yml` is the source for sentence part, Gherkin keyword,
   and handler id (the routes[] classification table).
 - `plugin-contract.md` is the source for required source kinds and per-handler
   plan-time rules.
-- For `web-backend`, `part` must equal `handler`.
 
 ## Project-Owned Runtime References
 

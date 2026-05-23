@@ -112,13 +112,17 @@ references:
 ### Phase 3 — VERIFY handoff drift
 > produces: `$$runtime_snapshot`
 
-1. `$dsl_now` = DERIVE current merged DSL index from `$$config`.
-2. `$preset_now` = DERIVE current core preset registry from `$$red_handoff.dsl_mapping`.
-3. `$visibility_now` = TRIGGER runtime visibility checks for target features and step globs.
-4. ASSERT every handoff `dsl_entry_id`, `matched_l1`, preset tuple, `step_def_path`, and `source_refs` matches current truth.
-5. ASSERT `$visibility_now` sees the same target features and step definitions as the Red snapshot.
-6. `$$runtime_snapshot` = DERIVE current runtime ref path and content fingerprints including `RED_PREHANDLING_HOOK_REF`.
-7. ASSERT `$$runtime_snapshot` does not drift from `$$red_handoff.runtime_refs_snapshot` for this target set; on failure STOP with routeable drift reason.
+1. `$contracts_dsl_glob` = COMPUTE `${CONTRACTS_DIR}/*.dsl.yml` from `$$config`.
+2. `$data_dsl_glob` = COMPUTE `${DATA_DIR}/*.dsl.yml` from `$$config`.
+3. `$regular_dsl_paths` = GLOB `$contracts_dsl_glob` then `$data_dsl_glob` in stable filename order.
+4. `$shared_dsl_path` = COMPUTE `${BOUNDARY_SHARED_DSL}` from `$$config`.
+5. `$dsl_now` = DERIVE current merged DSL index from `$regular_dsl_paths` then `$shared_dsl_path`, using the same merge order and uniqueness rules as `aibdd-red-execute` Phase 3.
+6. `$preset_now` = DERIVE current core preset registry from active `${PRESET_KIND}` in `$$config`.
+7. `$visibility_now` = TRIGGER runtime visibility checks for target features and step globs.
+8. ASSERT every handoff `dsl_entry_id`, `matched_l1`, preset tuple, `target_part_path`, `step_def_path`, and binding keys matches `$dsl_now` and `$preset_now`.
+9. ASSERT `$visibility_now` sees the same target features and step definitions as the Red snapshot.
+10. `$$runtime_snapshot` = DERIVE current runtime ref path and content fingerprints including `RED_PREHANDLING_HOOK_REF`.
+11. ASSERT `$$runtime_snapshot` does not drift from `$$red_handoff.runtime_refs_snapshot` for this target set; on failure STOP with routeable drift reason.
 
 ### Phase 4 — LOOP product code to green
 > produces: `$$loop_history`, `$$product_files_modified`, `$$final_report`

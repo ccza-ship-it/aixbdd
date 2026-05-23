@@ -20,9 +20,9 @@ These failures are not legal red:
 - step definition body containing `pass`, empty body, placeholder throw, or
   `RED-PENDING`
 - DSL entry missing, ambiguous, or invented during Red
-- datatable shape mismatch against `L4.datatable_bindings`
+- datatable shape mismatch against `datatable_bindings`
 - dynamic ID alias that cannot resolve to declared Scenario or fixture truth
-- preset tuple that cannot resolve to core boundary assets
+- preset handler that cannot resolve to core boundary assets
 - handler forbidden surface in generated step-def body
 - direct import of production internals instead of using the DSL surface
 - renderer-inferred endpoint, field, id, or default value not present in truth
@@ -31,8 +31,8 @@ These failures are not legal red:
 
 - DSL entry, datatable, Example, or dynamic ID problems route to
   `/aibdd-spec-by-example-analyze`.
-- Missing package DSL, source refs, binding coverage, or preset tuple problems
-  route to `/aibdd-plan`.
+- Missing contracts/data DSL corpus, empty corpus, binding coverage, or preset
+  handler problems route to `/aibdd-plan`.
 - Runtime archive, runner visibility, fixture extension, or glob problems route
   to project-owned BDD stack configuration.
 

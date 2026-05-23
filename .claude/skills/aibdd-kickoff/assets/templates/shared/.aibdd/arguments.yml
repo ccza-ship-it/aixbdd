@@ -89,6 +89,8 @@ TRUTH_FUNCTION_PACKAGE: ${TRUTH_BOUNDARY_PACKAGES_DIR}/<<NN-functional-module>>
 FEATURE_SPECS_DIR: ${TRUTH_FUNCTION_PACKAGE}/features
 ACTIVITIES_DIR: ${TRUTH_FUNCTION_PACKAGE}/activities
 TRUTH_TEST_PLAN_DIR: ${TRUTH_FUNCTION_PACKAGE}/test-plan
+# DEPRECATED — DSL truth now lives in ${CONTRACTS_DIR}/*.dsl.yml and ${DATA_DIR}/*.dsl.yml.
+# Execute skills must not treat this path as the sole DSL corpus.
 BOUNDARY_PACKAGE_DSL: ${TRUTH_FUNCTION_PACKAGE}/dsl.yml
 
 # -----------------------------------------------------------------------------
@@ -100,7 +102,7 @@ GHERKIN_EXECUTABLE_STEP_LANGUAGE_REF: .claude/skills/aibdd-core/references/i18n/
 FILENAME_AXES_CONVENTION_REF: .claude/skills/aibdd-core/references/filename-axes-convention/nn-prefix-then-title.md
 FILENAME_AXES_TITLE_LANGUAGE_REF: .claude/skills/aibdd-core/references/i18n/${PROJECT_SPEC_LANGUAGE}.md
 SENTENCE_PARTS_FRAMEWORK_REF: .claude/skills/aibdd-core/references/sentence-parts-framework/default.md
-DSL_OUTPUT_CONTRACT_REF: .claude/skills/aibdd-core/references/dsl-output-contract/red-usable-l1-l4.md
+DSL_OUTPUT_CONTRACT_REF: .claude/skills/aibdd-core/references/dsl-output-contract/red-usable-flat-entry.md
 
 # -----------------------------------------------------------------------------
 # 9. PROJECT_OWNED_BDD_STACK（starter 產生實體文件；本檔只宣告路徑）

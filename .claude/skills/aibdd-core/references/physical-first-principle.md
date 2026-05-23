@@ -11,7 +11,7 @@ Physical testability lives in boundary truth under `specs/`:
 - provider operation contracts: `specs/contracts/`
 - data/state/verifier truth: `specs/data/`
 - dependency-edge test strategy: `specs/test-strategy.yml`
-- local DSL mapping: `specs/packages/NN-*/dsl.yml`
+- part-derived DSL mapping: `specs/contracts/*.dsl.yml`, `specs/data/*.dsl.yml`
 - shared boundary DSL mapping: `specs/shared/dsl.yml`
 
 ## Layer Order
@@ -19,47 +19,29 @@ Physical testability lives in boundary truth under `specs/`:
 | Layer | Meaning | Owner |
 |---|---|---|
 | Technical truth | boundary map, contracts, data/state, test strategy | `/aibdd-plan` |
-| L4 physical mapping | callable surface, source refs, parameter/assertion bindings | `/aibdd-plan` DSL synthesis |
-| L3 preset handler | reusable step-def pattern such as `web-backend.command` | `/aibdd-plan` DSL synthesis |
-| L2 semantics | business context, role, scope | `/aibdd-plan` DSL synthesis |
-| L1 business sentence | exact Gherkin-facing phrase | `/aibdd-plan` DSL synthesis, enriched by downstream examples |
+| Flat DSL entry | `format`, `handler`, `target_part_path`, bindings | `/aibdd-plan` DSL synthesis |
+| Preset handler | reusable step-def pattern such as `operation-invoke` | `/aibdd-plan` DSL synthesis + active `${PRESET_KIND}` |
+| Business sentence | exact Gherkin-facing phrase in `format` | `/aibdd-plan` DSL synthesis, enriched by downstream examples |
 
-## L4 Mapping Contract
+## Flat Entry Mapping Contract
 
-Each DSL entry must include an L4 section that points to reviewable truth and is sufficient for `/aibdd-red`.
+Each DSL entry must include enough typed mapping for `/aibdd-red`.
 
 ```yaml
-- id: submit-order
-  L1:
-    when: "客服送出訂單「{order_id}」"
-    then:
-      - "訂單狀態應為「{expected_status}」"
-  L3:
-    type: direct-call
-  L4:
-    surface_id: order-submit-operation
-    surface_kind: operation
-    callable_via: api
-    preset:
-      name: web-backend
-      handler: command
-      variant: python-e2e
+dsl_steps:
+  - name: openOrJoinRoom.operation-invoke
+    format: 玩家 "{玩家Id}" 以房號 "{房號}" 開房或加入
+    handler: operation-invoke
+    target_part_path: specs/contracts/room.api.yml#/paths/~1rooms/post
     param_bindings:
-      order_id:
-        kind: contract_field
-        target: contracts/orders.yml#operations.submit.request.order_id
-    assertion_bindings:
-      expected_status:
-        kind: response_path
-        target: response:$.status
-    source_refs:
-      contract: contracts/orders.yml#operations.submit
-      data: data/orders.yml#states.order_status
-      boundary: boundary-map.yml#rule_dispatch.defaults
-      test_strategy: null
+      房號:
+        target: specs/contracts/room.api.yml#/paths/~1rooms/post/requestBody/content/application~1json/schema/properties/roomNo
+      玩家Id:
+        target: specs/contracts/room.api.yml#/paths/~1rooms/post/requestBody/content/application~1json/schema/properties/playerId
+    datatable_bindings: {}
 ```
 
-Missing L4, summary-only L4, or untyped parameter bindings are hard failures.
+Missing `target_part_path`, summary-only bindings, or untyped parameter bindings are hard failures.
 
 ## Red-Usability Rule
 
@@ -67,23 +49,29 @@ Missing L4, summary-only L4, or untyped parameter bindings are hard failures.
 
 ```text
 step prose
-  -> unique DSL entry
-  -> L3 type / preset handler
-  -> L4 callable surface
-  -> parameter bindings
-  -> assertion bindings
+  -> unique DSL entry by format
+  -> handler via active preset kind
+  -> target_part_path
+  -> param_bindings
+  -> datatable_bindings
 ```
 
 It must not parse plan prose, import production internals directly, invent mock channels, or guess fixture paths.
 
+Handoff preserves legacy field names:
+
+- `dsl_entry_id` ← `name`
+- `matched_l1` ← `format`
+
 ## Anti-Patterns
 
-- DSL entry has only L1/L2/L3 and a prose `summary`.
-- `{placeholder}` appears in L1 but not in `L4.param_bindings`.
-- Then expected value has no `L4.assertion_bindings`.
+- DSL entry has only `format` and `handler` but no typed bindings.
+- `{placeholder}` appears in `format` but not in `param_bindings`.
+- Then expected value has no binding target in `param_bindings` or `datatable_bindings`.
 - External provider behavior is mocked without a dependency edge and test strategy.
 - Same-boundary internal collaborator is modeled as an external stub.
 - File upload API lacks fixture catalog, upload invocation, response verifier, state/file-store verifier, or missing-file behavior.
+- Execute skills still require `${BOUNDARY_PACKAGE_DSL}` even when contracts/data corpus exists.
 
 ## Mock DSL Business Language Rule
 
@@ -97,7 +85,7 @@ Mock-setup Given steps must include visible `[MOCK]` after the keyword:
 
 ### MR-2 Business-Language Surface
 
-L1 phrases and example datatable headers must avoid implementation terms:
+`format` phrases and example datatable headers must avoid implementation terms:
 
 - forbidden: `mock`, `stub`, `queue`, `fixture`, `harness`, `spy`, `MSW`, `stub_payload`, raw contract type names
 - allowed: stakeholder-visible provider roles, such as `金流平台`, `檔案儲存服務`, `通知服務`
@@ -120,17 +108,22 @@ External stub DSL entries should declare one interaction pattern:
 - `observe-calls`: test verifies provider was called
 - `overridden-impl`: test swaps an adapter implementation
 
-The pattern belongs in DSL L4 or the referenced test strategy entry, and must be traceable from `test-strategy.yml`.
+The pattern belongs in the referenced test strategy entry or handler-specific binding truth, and must be traceable from `test-strategy.yml`.
 
 ## Relationship to Backend Presets
 
-Backend entries should reference `web-backend` handler names when applicable:
+Backend entries should use handler names such as:
 
 - `state-builder`
-- `command`
+- `operation-invoke`
 - `query`
 - `operation-response-success-and-failure`
 - `operation-response-success-readmodel`
 - `state-verifier`
 
-The preset reference selects reusable step-definition pattern instructions; it does not replace L4 physical mapping.
+The active `${PRESET_KIND}` selects reusable step-definition pattern instructions; it does not replace typed `target_part_path` and bindings.
+
+## Deprecated
+
+- Function-package `specs/packages/NN-*/dsl.yml` as sole DSL truth
+- Nested `L1` / `L2` / `L3` / `L4` entry blocks with `L4.source_refs` as the primary red contract

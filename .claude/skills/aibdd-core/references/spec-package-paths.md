@@ -10,7 +10,7 @@ One specs root = one boundary。`${SPECS_ROOT_DIR}` 就是該 boundary 的 truth
 
 1. **`${SPECS_ROOT_DIR}`** — 規格工作區根（例：`specs`），同時是 boundary truth root。內含 `architecture/boundary.yml`、`boundary-map.yml`、`contracts/`、`data/`、`shared/`、`packages/`、`plans/`、`test-strategy.yml`。
 2. **`${BOUNDARY_YML}`** — 單一 boundary 宣告（top-level `id` / `level` / `role` / `type` / `description`，非 array）；`id` 用作 component diagram / package metadata 的語意 tag，不用於展開檔案系統路徑。
-3. **`TRUTH_FUNCTION_PACKAGE` / `FEATURE_SPECS_DIR` / `ACTIVITIES_DIR` / `TRUTH_TEST_PLAN_DIR` / `BOUNDARY_PACKAGE_DSL`** — 借位（slot）形態；kickoff 寫入 `<<NN-functional-module>>` slot literal，runtime 同時存在多個 functional module instance，yaml 不指任一 active。各 skill 由 caller-context 取得當前 functional module slug，`/aibdd-discovery` 只在 filesystem 建 `NN-<slug>/` 目錄，不改寫 yaml。
+3. **`TRUTH_FUNCTION_PACKAGE` / `FEATURE_SPECS_DIR` / `ACTIVITIES_DIR` / `TRUTH_TEST_PLAN_DIR`** — 借位（slot）形態；kickoff 寫入 `<<NN-functional-module>>` slot literal，runtime 同時存在多個 functional module instance，yaml 不指任一 active。各 skill 由 caller-context 取得當前 functional module slug，`/aibdd-discovery` 只在 filesystem 建 `NN-<slug>/` 目錄，不改寫 yaml。
 4. **`CURRENT_PLAN_PACKAGE`** — 借位（slot）形態；kickoff 寫入 `<<NNN-plan-slug>>` slot literal，runtime 同時存在多個 plan package instance。caller 在呼叫 plan / tasks / implement 等 skill 時透過 CLI arg 或 caller payload 指定當前 plan slug，arguments.yml 不追蹤 active。
 5. **符號類型** — `${VAR}` 是 interpolation（一對一可 resolve）；`<<X>>` 是 slot literal（一對多並存，不可 resolve），須由 caller-context override 才能用。Interpolation 必須迭代展開至穩定；slot literal 不展開、由 caller 提供具體值。
 
@@ -41,6 +41,8 @@ One specs root = one boundary。`${SPECS_ROOT_DIR}` 就是該 boundary 的 truth
 | `${CONTRACTS_DIR}` | `${TRUTH_BOUNDARY_ROOT}/contracts` — boundary operation contract directory; concrete file format is chosen by the boundary type profile's operation contract specifier |
 | `${DATA_DIR}` | `${TRUTH_BOUNDARY_ROOT}/data` — boundary state truth directory; concrete file format is chosen by the boundary type profile's state specifier |
 | `${BOUNDARY_SHARED_DSL}` | `${TRUTH_BOUNDARY_SHARED_DIR}/dsl.yml` |
+| `${CONTRACTS_DIR}/*.dsl.yml` | part-derived operation-contract DSL corpus owned by `/aibdd-plan` |
+| `${DATA_DIR}/*.dsl.yml` | part-derived state-truth DSL corpus owned by `/aibdd-plan` |
 | `${TEST_STRATEGY_FILE}` | `${TRUTH_BOUNDARY_ROOT}/test-strategy.yml` |
 
 **Function package 借位（kickoff 以 slot literal 寫入；caller-context 在 invoke skill 時提供具體 slug；`/aibdd-discovery` 不改寫 yaml）**
@@ -50,10 +52,10 @@ One specs root = one boundary。`${SPECS_ROOT_DIR}` 就是該 boundary 的 truth
 | `${TRUTH_FUNCTION_PACKAGE}` | `${TRUTH_BOUNDARY_PACKAGES_DIR}/<<NN-functional-module>>` |
 | `${ACTIVITIES_DIR}` | `${TRUTH_FUNCTION_PACKAGE}/activities` |
 | `${FEATURE_SPECS_DIR}` | `${TRUTH_FUNCTION_PACKAGE}/features` |
-| `${BOUNDARY_PACKAGE_DSL}` | `${TRUTH_FUNCTION_PACKAGE}/dsl.yml` |
 | `${TRUTH_TEST_PLAN_DIR}` | `${TRUTH_FUNCTION_PACKAGE}/test-plan` |
+| `${BOUNDARY_PACKAGE_DSL}` | `${TRUTH_FUNCTION_PACKAGE}/dsl.yml` — deprecated; retained for legacy bind/load only |
 
-Accepted behavior truth（Activity / Discovery rule-only feature）落於 caller-context override 過的 **`FEATURE_SPECS_DIR`** / **`ACTIVITIES_DIR`**；boundary shared DSL 仍由 **`${TRUTH_BOUNDARY_SHARED_DIR}`** 承載。
+Accepted behavior truth（Activity / Discovery rule-only feature）落於 caller-context override 過的 **`FEATURE_SPECS_DIR`** / **`ACTIVITIES_DIR`**；boundary shared DSL 仍由 **`${TRUTH_BOUNDARY_SHARED_DSL}`** 承載；part-derived DSL corpus 由 **`${CONTRACTS_DIR}/*.dsl.yml`** 與 **`${DATA_DIR}/*.dsl.yml`** 承載。
 
 ---
 

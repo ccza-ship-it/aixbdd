@@ -116,14 +116,22 @@ references:
 ### Phase 3 — BUILD DSL and preset registry
 > produces: `$$dsl_index`, `$$preset_registry`
 
-1. `$shared_dsl` = READ shared DSL path from `$$config`; missing shared DSL becomes empty entries.
-2. `$package_dsl` = READ package DSL path from `$$config`.
-3. ASSERT `$package_dsl` exists; on failure STOP route `/aibdd-plan`.
-4. `$$dsl_index` = DERIVE merged package-over-shared index with entry-id and placeholder-aware L1 pattern indexes.
-5. ASSERT no same-tier duplicate ids and every entry has `id`, `L1`, `L4`, `L4.preset`, and `L4.source_refs`.
-6. `$$preset_registry` = DERIVE each `L4.preset.name` to `.claude/skills/aibdd-core/assets/boundaries/<preset-name>/`.
-7. ASSERT each preset has `step-classification.yml`, `plugin-contract.md`, handler doc, variant doc, and no `backend` alias resolution.
-8. ASSERT `web-backend` entries have `part == handler`.
+1. `$contracts_dsl_glob` = COMPUTE `${CONTRACTS_DIR}/*.dsl.yml` from `$$config`.
+2. `$data_dsl_glob` = COMPUTE `${DATA_DIR}/*.dsl.yml` from `$$config`.
+3. `$regular_dsl_paths` = GLOB `$contracts_dsl_glob` then `$data_dsl_glob` in stable filename order.
+4. `$shared_dsl_path` = COMPUTE `${BOUNDARY_SHARED_DSL}` from `$$config`.
+5. `$shared_dsl` = READ `$shared_dsl_path`; missing file becomes empty entries.
+6. ASSERT at least one path in `$regular_dsl_paths` exists or `$shared_dsl` is non-empty; on failure STOP route `/aibdd-plan` with `dsl_corpus_missing`.
+7. `$$dsl_index` = DERIVE merged DSL index from `$regular_dsl_paths` then `$shared_dsl_path`, matching `dsl_cli/catalog.py` merge order:
+   1. regular files first, in glob order
+   2. shared file last
+   3. `name` globally unique; first occurrence wins
+   4. placeholder-aware `format` pattern indexes for step matching
+8. ASSERT no duplicate `name` across corpus (eval-equivalent to `name-uniqueness`).
+9. ASSERT every entry has `name`, `format`, `handler`, `target_part_path`, `param_bindings`, and `datatable_bindings`.
+10. `$$preset_registry` = DERIVE `.claude/skills/aibdd-core/assets/boundaries/<preset-kind>/` from `$preset_kind` resolved in Phase 2.
+11. ASSERT preset directory has `step-classification.yml`, `plugin-contract.md`, handler doc, and variant doc; no `backend` alias resolution.
+12. ASSERT each entry `handler` resolves in preset `step-classification.yml`.
 
 ### Phase 4 — ARCHIVE runtime features
 > produces: `$$runtime_feature_files`
@@ -140,7 +148,7 @@ references:
    1.1 `$scenarios` = PARSE all Scenarios in `$feature_file`.
    1.2 LOOP per `$scenario` in `$scenarios`
        1.2.1 LOOP per `$step` in `$scenario.steps`
-             1.2.1.1 `$match` = MATCH `$step.prose` against `$$dsl_index.l1_patterns`.
+             1.2.1.1 `$match` = MATCH `$step.prose` against `$$dsl_index.format_patterns`.
              1.2.1.2 ASSERT `$match` is exact and unique; on failure STOP route `/aibdd-spec-by-example-analyze`.
              1.2.1.3 ASSERT datatable/docstring shape matches matched entry bindings.
              1.2.1.4 ASSERT dynamic IDs resolve to declared Scenario, response, repository, or fixture truth.
@@ -156,7 +164,7 @@ references:
 
 1. LOOP per `$plan` in `$$step_plans`
    1.1 `$step_def` = RENDER step definition from `$plan`, handler doc, variant doc, and runtime step-definition ref.
-   1.2 ASSERT matcher string equals matched `L1`.
+   1.2 ASSERT matcher string equals matched `format`.
    1.3 ASSERT body uses only handler/variant rendering slots.
    1.4 ASSERT body has no free-form step-def, raw locator, direct production internal import, inferred endpoint, inferred field, or inferred id.
    1.5 ASSERT body is not empty, `pass`, or `RED-PENDING`.
@@ -187,7 +195,7 @@ references:
 ### Phase 8 — EMIT handoff
 
 1. ASSERT `$$red_handoff.behavior_test_report` contains no DSL mapping fields.
-2. ASSERT `$$red_handoff.dsl_mapping` contains entry id, matched L1, preset, source refs, binding keys, and step-def path for every Scenario step.
+2. ASSERT `$$red_handoff.dsl_mapping` contains `dsl_entry_id` (from entry `name`), `matched_l1` (from entry `format`), preset tuple, `target_part_path`, binding keys, and step-def path for every Scenario step.
 3. EMIT `$$red_handoff` to caller.
 
 ## §3 CROSS-REFERENCES

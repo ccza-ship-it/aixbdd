@@ -38,9 +38,16 @@ Required fields:
 - `loop_iterations`: count of legal-red attempts
 - `stop_reason`: `none` or a routeable stop reason
 
-Each `dsl_mapping` entry records step prose, DSL entry id, matched L1, step-def
-path, preset tuple, surface kind/id, source refs, binding keys, and failure
+Each `dsl_mapping` entry records step prose, `dsl_entry_id`, `matched_l1`,
+step-def path, preset tuple, `target_part_path`, binding keys, and failure
 classification.
+
+Backward-compatible field mapping from flat DSL entries:
+
+- `dsl_entry_id` ← entry `name`
+- `matched_l1` ← entry `format`
+- `target_part_path` ← entry `target_part_path`
+- preset tuple ← active `${PRESET_KIND}` plus entry `handler`
 
 ## Green Handoff
 
