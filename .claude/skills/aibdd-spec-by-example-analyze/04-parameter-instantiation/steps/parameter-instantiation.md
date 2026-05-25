@@ -95,7 +95,7 @@
          2. `$cartId`、`$orderId`、`$paymentId` 是 runtime handle，值由前序 step 產生並在 scenario context 中流動。由於它們在這個例子裡佔的是 string slot，所以 artifact 外觀必須寫成 `"$cartId"`、`"$orderId"`、`"$paymentId"`，不得在本 phase 被改寫成 `"cart-123"`、`"order-456"`、`"payment-789"` 之類的假固定值。
 
 6. 若有任一 placeholder 在不改變 spec meaning 的前提下仍無法唯一決定：
-   1. 組成 `$questions`。
+   1. 組成 `$NEED_TO_CLARIFY`。
    2. STOP 本 worker。
    3. 交回外層 phase 走 `/clarify-loop`，不得自行發明值。
    4. 若你無法判定某欄位應該是 static known value 還是 runtime-produced value，也視為無法唯一決定；此時必須提問，不得直接把它 concretize 成看似合理的假 id。
@@ -113,7 +113,7 @@
 6. 整數 exemplar 不得包成字串；凡屬 static integer literal，落地時不得寫成 `"2"`、`"10"` 這類字串字面值。
 7. string slot 中的 `$alias` 必須加雙引號，例如 `"$orderId"`；integer slot 中的 `$alias` 必須保持裸 token，例如 `$retryCount`。
 8. 不得把 runtime-produced value 偽裝成 concrete exemplar；例如前序 step 才會得到的 id / token / timestamp，不得硬落成 `"order-id-xyz"`、`"payment-token-abc"` 之類的假固定值。
-9. 若某 placeholder 的值無法在不改變 spec meaning 的前提下唯一決定，必須 EMIT `$questions` 並提議最根本的解法；不得硬猜。
+9. 若某 placeholder 的值無法在不改變 spec meaning 的前提下唯一決定，必須 EMIT `$NEED_TO_CLARIFY` 並提議最根本的解法；不得硬猜。
 
 # Completion contract
 1. 每個 `.feature` 完成後，該檔內所有尚未落地的 placeholder 都應已被 instantiation 成最終 artifact 形態：static known value 變成 concrete exemplar，runtime-produced value 變成 `$alias`。`{...}` 與 `<...>` 不得殘留；`$alias` 合法保留。
