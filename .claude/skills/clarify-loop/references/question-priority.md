@@ -39,7 +39,7 @@ payload 提供 `dependencies: [Qid, ...]` 時：
 
 ## Sweep 後重排
 
-Consistency Sweep 若自動移除過時便條紙，clarify-loop 須：
+Consistency Sweep 若自動移除過時問題，clarify-loop 須：
 
 1. 從剩餘 payload 移除對應題目
 2. 若被移除題目是其他題的 dependency → 重新檢查依賴鏈

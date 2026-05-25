@@ -14,10 +14,8 @@ name: clarify-loop
 
 ### Phase 1 — INTAKE payload
 
-1. READ payload from caller.
-2. VALIDATE payload against [`references/payload-schema.md`](references/payload-schema.md) 的共通核心欄位。
-3. IF 缺欄，RETURN `{status: "incomplete", missing: [...]}`。
-4. ASSERT 每題 options 在 2..4 範圍內。
+1. READ `references/payload-schema.md` 的共通核心欄位。
+2. 準備好此 payload 的格式來為要問的問題提出精準的定位提問，每題 options 在 2..4 範圍內。
 
 ### Phase 2 — NORMALIZE questions
 
