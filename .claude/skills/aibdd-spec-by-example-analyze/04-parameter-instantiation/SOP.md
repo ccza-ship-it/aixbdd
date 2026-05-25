@@ -16,4 +16,4 @@
    3. worker 的唯一授權 side effect：原地改寫當前 `.feature` 內尚未落地的 placeholder；不得改寫其他 feature、不得擴張 coverage、不得偷做 enhancement。
    4. worker 完成前必須自檢：`Given` / `When` / `Then` / `And` / `But` 與其附屬 table / payload 內，不得殘留任何未落地 placeholder。
 
-3. WAIT 所有 feature workers 完成 + 若任一 worker 回傳 `$questions`：按 feature 維度 DELEGATE `/clarify-loop`；澄清完成後只重跑受影響的 feature worker。
+3. WAIT 所有 feature workers 完成 + 若任一 worker 回傳 `$NEED_TO_CLARIFY`：按 feature 維度 DELEGATE `/clarify-loop`；澄清完成後只重跑受影響的 feature worker。
