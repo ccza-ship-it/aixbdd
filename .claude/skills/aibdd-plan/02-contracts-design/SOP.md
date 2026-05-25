@@ -27,25 +27,9 @@
 
 5. DELEGATE `/${state_specifier.skill}`：請直接透過 Load SKILL 執行該 skill，DELEGATE payload 內帶入步驟 4 之 `target_path`；specifier 依其認定之 `format` 寫入 `${DATA_DIR} ⊕ target_path`。
 
-6. TRIGGER impact matrix writeback（本 phase 派生出的 contracts／data target paths）
-   1. FOR EACH 步驟 2 之 contract `slice.target_path`：TRIGGER `upsert`，`path` 為 `contracts/<target_path>`（相對 `${TRUTH_BOUNDARY_ROOT}`）；`change_type` 依下列規則選一個：
-      1. 檔已存在且 plan 確定改寫 → `update`
-      2. 新 target_path → `add`
-      3. 仍待 sourcing 決策才能落地 → `conditional_update`
-      `impact_summary` 用現在式一句話描述本 phase 對該契約檔的規格增量。
-   2. FOR EACH 步驟 4 之 state `target_path`：TRIGGER `upsert`，`path` 為 `data/<target_path>`（相對 `${TRUTH_BOUNDARY_ROOT}`）；`change_type` 規則同上。
-      ```bash
-      python3 .claude/skills/aibdd-discovery/01-sourcing-and-packaging/scripts/cli/manage_impact_matrix.py \
-        --matrix ${IMPACT_MATRIX_YML} upsert \
-        --path <path> --change-type <change_type> --impact-summary "<summary>"
-      ```
-   3. TRIGGER `validate`；`ok` 為 false 時依 `questions` 修正後重跑 `upsert`／`validate`。
-      ```bash
-      python3 .claude/skills/aibdd-discovery/01-sourcing-and-packaging/scripts/cli/manage_impact_matrix.py \
-        --matrix ${IMPACT_MATRIX_YML} validate
-      ```
+6. TRIGGER impact matrix writeback（本 phase 派生出的 contracts／data target paths）: EXECUTE `steps/impact-matrix-writeback.md`。
 
-7. `$NEED_TO_CLARIFY`, `$NEED_TO_FIX` = DO FAITHFUL REASONING 針對本 phase 已導出之 operation contracts、state schemas 與 impact writeback 整體結果，依照 `steps/derive-findings.md` 中的分析切角去進行深度分析，並找到所有需要修正、澄清的地方。
+7. （此步驟必須嚴格遵守，至少要有一條澄清項目）`$NEED_TO_CLARIFY`, `$NEED_TO_FIX` = DO FAITHFUL REASONING 針對本 phase 已導出之 operation contracts、state schemas 與 impact writeback 整體結果，依照 `steps/derive-findings.md` 中的分析切角去進行深度分析，並找到所有需要修正、澄清的地方。
 
 8. 若 `$NEED_TO_FIX` 非空：依 `$NEED_TO_FIX` 修正本 phase 之 operation contract slices、state target paths、specifier delegation input 與 impact matrix writeback，必要時重跑步驟 `2` 到 `6`。
 
