@@ -14,7 +14,6 @@ ${PROJECT_ROOT}/
 │   ├── arguments.yml                                   # kickoff project config；starter 只讀
 │   ├── dev-constitution.md                             # 產品架構 bridge（層級、依賴、持久化；對齊 DEV_CONSTITUTION_PATH）
 │   └── bdd-stack/
-│       ├── project-bdd-axes.md                         # `${BDD_CONSTITUTION_PATH}`：§5.1 檔名軸、§5.2 Red Pre-Hook 軸
 │       ├── acceptance-runner.md                        # `mvn test` + `RunCucumberTest` 入口慣例
 │       ├── step-definitions.md                         # `steps/` package layout、matcher 規範
 │       ├── fixtures.md                                 # `ScenarioContext`／`@ScenarioScope`／Testcontainers 生命週期
@@ -387,7 +386,7 @@ public class ScenarioContextHelper {
 | `{{ACTIVITIES_DIR}}` | arguments.yml（bind 後展開） | Discovery accepted `.activity` truth 根 | `specs/backend/packages/01-計費/activities` |
 | `{{DATA_DIR}}` | arguments.yml | boundary state truth directory；Java `web-service` state files 為 DBML（由 `/aibdd-form-entity-spec` 產出） | `specs/backend/data` |
 | `{{DEV_CONSTITUTION_PATH}}` | arguments.yml | 開發基礎建設 bridge guideline | `.aibdd/dev-constitution.md` |
-| `{{BDD_CONSTITUTION_PATH}}` | arguments.yml | bdd-stack 憲法樹之 §5.1 檔名軸錨點 | `.aibdd/bdd-stack/project-bdd-axes.md` |
+| `{{BDD_CONSTITUTION_PATH}}` | arguments.yml | bdd-stack 目錄錨點 | `.aibdd/bdd-stack/` |
 | （鍵）`RED_PREHANDLING_HOOK_REF` | arguments.yml §9 | Red 前 schema-analysis／flyway-migration gate；`/aibdd-red-execute` 進 Red 前必讀 | `.aibdd/bdd-stack/prehandling-before-red-phase.md` |
 
 推導規則：
@@ -446,7 +445,6 @@ template 檔名規則：`__` 表示路徑分隔符 `/`；filename 中的 `BASE_P
 | `docker-compose.yml` | `docker-compose.yml` |
 | `.gitattributes` | `.gitattributes` |
 | `.aibdd__dev-constitution.md` | `.aibdd/dev-constitution.md` |
-| `.aibdd__bdd-stack__project-bdd-axes.md` | `.aibdd/bdd-stack/project-bdd-axes.md` |
 | `.aibdd__bdd-stack__acceptance-runner.md` | `.aibdd/bdd-stack/acceptance-runner.md` |
 | `.aibdd__bdd-stack__step-definitions.md` | `.aibdd/bdd-stack/step-definitions.md` |
 | `.aibdd__bdd-stack__fixtures.md` | `.aibdd/bdd-stack/fixtures.md` |
@@ -487,7 +485,7 @@ template 檔名規則：`__` 表示路徑分隔符 `/`；filename 中的 `BASE_P
 
 完成骨架建立後，確認以下事項：
 
-1. **檔案完整性**：所有 template 對照表中的檔案都已寫入目標路徑（含 `.aibdd/dev-constitution.md`、`.aibdd/bdd-stack/project-bdd-axes.md`、`prehandling-before-red-phase.md` 與其餘 `bdd-stack/*.md`）；且 `arguments.yml` §9 含 `RED_PREHANDLING_HOOK_REF`。
+1. **檔案完整性**：所有 template 對照表中的檔案都已寫入目標路徑（含 `.aibdd/dev-constitution.md`、`prehandling-before-red-phase.md` 與其餘 `bdd-stack/*.md`）；且 `arguments.yml` §9 含 `RED_PREHANDLING_HOOK_REF`。
 2. **Placeholder 替換**：專案中不應殘留任何 `{{...}}` 或未替換的 `${PROJECT_NAME}` / `${BASE_PACKAGE}` / `${BASE_PACKAGE_PATH}` / `${ARTIFACT_ID}` 等變數。
 3. **目錄結構**：`src/main/java/${BASE_PACKAGE_PATH}/{model,repository,service}/`、`src/main/resources/{db/migration,static,templates}/` 都已建立（即使是空目錄）。
 4. **編譯測試**：`mvn clean compile` 能正常完成（首次執行會下載依賴，需網路）。
@@ -504,7 +502,7 @@ template 檔名規則：`__` 表示路徑分隔符 `/`；filename 中的 `BASE_P
 - 不建立 feature-specific 程式碼（業務 Controllers／Services／Repositories／Models／Step Definitions／`.feature`）。
 - 例外：`HealthCheck.feature` + `HealthController.java` + `HealthSteps.java` 為 **walking skeleton starter smoke**，僅驗證 `/health`，不屬於產品需求 BDD。
 - 例外：`security/JwtTokenFilter.java` + `security/CurrentUser.java` 為 **starter cross-cutting infra**（JWT bearer 解析、未受保護端點放行），非 feature-specific 業務碼；可由功能模組 `request → CurrentUser.getId(request)` 直接取 user id。
-- 例外：`.aibdd/dev-constitution.md`、`.aibdd/bdd-stack/*.md`（含 `project-bdd-axes.md`）為 **AIBDD bridge／runtime guideline**，非產品程式碼亦非業務 BDD。
+- 例外：`.aibdd/dev-constitution.md`、`.aibdd/bdd-stack/*.md` 為 **AIBDD bridge／runtime guideline**，非產品程式碼亦非業務 BDD。
 - 不執行 `mvn install`、`mvn flyway:migrate`、`docker compose up`。
 - `DatabaseCleanupHook` 中的 DELETE／RESET sequence 語句需使用者在加入 entity 後自行填入。
 

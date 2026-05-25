@@ -39,11 +39,11 @@ SPECS_ROOT_DIR: specs
 PLAN_PACKAGES_DIR: ${SPECS_ROOT_DIR}/plans
 
 # -----------------------------------------------------------------------------
-# 2. CONSTITUTIONS（相對 BOUNDARY_CODEBASE_ROOT；由 starter 產生實體文件）
+# 2. CONSTITUTIONS（相對 BOUNDARY_CODEBASE_ROOT；DEV 為單檔、BDD 為 bdd-stack 目錄錨點；runtime 文件由 starter 產生）
 # -----------------------------------------------------------------------------
 
 DEV_CONSTITUTION_PATH: ${AIBDD_CONFIG_DIR}/dev-constitution.md
-BDD_CONSTITUTION_PATH: ${AIBDD_CONFIG_DIR}/bdd-stack/project-bdd-axes.md
+BDD_CONSTITUTION_PATH: ${AIBDD_CONFIG_DIR}/bdd-stack/
 
 # -----------------------------------------------------------------------------
 # 3. CURRENT_SPEC_PACKAGE（借位 slot；caller-context 提供具體 slug）

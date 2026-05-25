@@ -19,7 +19,7 @@
 | 前端 features（UI vocab） | `${FEATURE_SPECS_DIR}/*.feature` | §3 truth：Page acceptance |
 | Component library 候選 | 經 `${PROJECT_SLUG}-sb-mcp` MCP 工具查詢 | §2 候選池（list-all-documentation → get-documentation） |
 | Dev constitution | `.aibdd__dev-constitution.md` | 分層擁有 / 依賴方向 |
-| BDD axes | `.aibdd__bdd-stack__project-bdd-axes.md` | filename / archive / pre-hook 軸 |
+| BDD runtime refs | `.aibdd/bdd-stack/*.md`（見 `arguments.yml` §9 `*_RUNTIME_REF`） | runner / step / fixture / archive / pre-hook |
 
 ---
 

@@ -12,7 +12,6 @@ ${PROJECT_ROOT}/
 │   ├── arguments.yml                       # kickoff project config；starter 只讀
 │   ├── dev-constitution.md                 # 產品架構 bridge（前端層級、依賴；對齊 DEV_CONSTITUTION_PATH）
 │   └── bdd-stack/
-│       ├── project-bdd-axes.md             # `${BDD_CONSTITUTION_PATH}`：§5.1 檔名軸、§5.2 Red Pre-Hook 軸
 │       ├── acceptance-runner.md            # playwright-bdd runner 定義
 │       ├── step-definitions.md             # step pattern preset
 │       ├── fixtures.md                     # playwright fixtures pattern
@@ -157,7 +156,7 @@ ${PROJECT_ROOT}/
 | `${SRC_DIR}` | arguments.yml | 前端原始碼根目錄 | `src` |
 | `${FRONTEND_FEATURES_DIR}` | arguments.yml | 前端 Gherkin features 目錄 | `features` |
 | `${DEV_CONSTITUTION_PATH}` | arguments.yml | 開發基礎建設 bridge guideline | `.aibdd/dev-constitution.md` |
-| `${BDD_CONSTITUTION_PATH}` | arguments.yml | bdd-stack 憲法樹之 §5.1 檔名軸錨點 | `.aibdd/bdd-stack/project-bdd-axes.md` |
+| `${BDD_CONSTITUTION_PATH}` | arguments.yml | bdd-stack 目錄錨點 | `.aibdd/bdd-stack/` |
 | `${AIBDD_ARGUMENTS_PATH}` | arguments.yml | starter 自我定位用 | `.aibdd/arguments.yml` |
 
 推導規則：
@@ -199,7 +198,7 @@ node -e "JSON.parse(require('fs').readFileSync('package.json'))" \
 - 不建立 feature-specific 程式碼（業務頁面、業務 API client、業務元件、業務 step definitions）
 - 例外：`features/home.feature` + `features/steps/home.steps.ts` 為 **walking skeleton starter smoke**，僅驗證落地頁元素，不屬於產品需求 BDD
 - `src/components/`、`src/hooks/`、`src/lib/api/`、`src/lib/schemas/`、`public/` 由 `create_empty_dirs_nextjs` 建立為空目錄（不再放 `.gitkeep`）；業務內容由下游 `/aibdd-plan` × Pre-Red gate 補入
-- 例外：`.aibdd/dev-constitution.md`、`.aibdd/bdd-stack/*.md`（含 `project-bdd-axes.md`、`pre-red-checklist.md`、`prehandling-before-red-phase.md`）為 **AIBDD bridge／runtime guideline**，非產品程式碼亦非業務 BDD
+- 例外：`.aibdd/dev-constitution.md`、`.aibdd/bdd-stack/*.md`（含 `pre-red-checklist.md`、`prehandling-before-red-phase.md`）為 **AIBDD bridge／runtime guideline**，非產品程式碼亦非業務 BDD
 - 不執行 `npm install` 或 `npx playwright install`
 
 ---
@@ -224,7 +223,6 @@ node -e "JSON.parse(require('fs').readFileSync('package.json'))" \
 | `.storybook__main.ts` | `.storybook/main.ts` | — |
 | `.storybook__preview.ts` | `.storybook/preview.ts` | — |
 | `.aibdd__dev-constitution.md` | `.aibdd/dev-constitution.md` | — |
-| `.aibdd__bdd-stack__project-bdd-axes.md` | `.aibdd/bdd-stack/project-bdd-axes.md` | — |
 | `.aibdd__bdd-stack__acceptance-runner.md` | `.aibdd/bdd-stack/acceptance-runner.md` | — |
 | `.aibdd__bdd-stack__step-definitions.md` | `.aibdd/bdd-stack/step-definitions.md` | — |
 | `.aibdd__bdd-stack__fixtures.md` | `.aibdd/bdd-stack/fixtures.md` | — |

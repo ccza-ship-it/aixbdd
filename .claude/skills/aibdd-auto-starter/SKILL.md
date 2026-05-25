@@ -206,7 +206,7 @@ Generate a walking skeleton from kickoff arguments and starter templates. The va
    - `dry_run_passed`: `$$dry_run_passed`
 2. EMIT `$report` to caller
 3. `$post_install_hint` = DERIVE post-install / next-command hint for `$$variant` from `$$variant_contract`「完成後引導」section
-4. `$summary` = DRAFT plain-language summary from `$report`，並附帶：下游 `/aibdd-discovery` 必須以 `project_dir` 為工作目錄（`cwd`），使 `AIBDD_ARGUMENTS_PATH` / `BDD_CONSTITUTION_PATH` / `DEV_CONSTITUTION_PATH` 相對路徑與 `.aibdd/arguments.yml` 同框解析；starter 不產生、不改寫 `specs/`。並附上 `$post_install_hint`（依 variant 提示對應的 dependency install / dev-server 指令）。
+4. `$summary` = DRAFT plain-language summary from `$report`，並附帶：下游 `/aibdd-discovery` 必須以 `project_dir` 為工作目錄（`cwd`），使 `AIBDD_ARGUMENTS_PATH` / `BDD_CONSTITUTION_PATH`（bdd-stack 目錄錨點）/ `DEV_CONSTITUTION_PATH` 相對路徑與 `.aibdd/arguments.yml` 同框解析；starter 不產生、不改寫 `specs/`。並附上 `$post_install_hint`（依 variant 提示對應的 dependency install / dev-server 指令）。
 5. EMIT `$summary` to user
 
 ## §3 CROSS-REFERENCES

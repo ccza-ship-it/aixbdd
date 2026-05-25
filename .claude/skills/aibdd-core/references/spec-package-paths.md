@@ -65,7 +65,7 @@ Accepted behavior truth（Activity / Discovery rule-only feature）落於 caller
 - 禁止在路徑中插入 `boundary.id` 子目錄層；`${TRUTH_BOUNDARY_ROOT}` 直接展開為 `${SPECS_ROOT_DIR}`。
 - `FEATURE_SPECS_DIR` / `ACTIVITIES_DIR` 從 caller-context 取得當前 functional module slug 後展開借位；script gate／formulation delegation 在收到 caller-context 提供的 slug 後才視為已定錨。
 - Skills 必須能讀 `${BOUNDARY_YML}`（或等價的已解析 `TRUTH_BOUNDARY_ROOT`），才能決定檔案寫入與 quality gate 掃描路徑。
-- **Acceptance / Behave** 可執行 `.feature` 路徑由 **`BDD_CONSTITUTION_PATH`** 與 `PY_TEST_FEATURES_DIR` 定義（通常 `tests/features/`），與上表 Discovery 規格路徑分離。
+- **Acceptance / Behave** 可執行 `.feature` 路徑由 stack-specific test features 目錄鍵定義（例如 `PY_TEST_FEATURES_DIR`、`FE_FEATURES_DIR`，通常 `tests/features/` 或 `features/`），與上表 Discovery 規格路徑分離。
 - Boundary operation contract truth 的**目錄**固定由 `${CONTRACTS_DIR}` 決定；operation contract 的**格式與 formulation skill** 以 `${BOUNDARY_YML}` 所宣告 `type` 對應之 `aibdd-core/assets/boundaries/<type>/profile.yml` 內 `operation_contract_specifier` 為準（例：`web-service` → OpenAPI，經 `/aibdd-form-api-spec`）。Planner 不得假設 `${CONTRACTS_DIR}` 內一定是 ad hoc `operations:` YAML。
 - Boundary state truth 的**目錄**固定由 `${DATA_DIR}` 決定；state 的**格式與 formulation skill** 以上述同檔之 `state_specifier` 為準（例：`web-service` → DBML，經 `/aibdd-form-entity-spec`）。Planner 不得假設 `${DATA_DIR}` 內一定是 YAML。
 
@@ -75,4 +75,4 @@ Accepted behavior truth（Activity / Discovery rule-only feature）落於 caller
 
 - Boundary profile（`operation_contract_specifier`／`state_specifier`）與 handler 路由／plan-time 履約：見 `assets/boundaries/<type>/`（`profile.yml`、`handlers/`、`variants/`、`scripts/part_to_dsl.py`）
 - 欄位預設值與占位符語意：`aibdd-kickoff::assets/templates/arguments.template.yml`（python_e2e）、`.java-e2e.yml`、`.nextjs-playwright.yml`；每個 key 旁邊的 `#` 註解即為 SSOT 說明。
-- Feature 檔名軸（§5.1）與 bdd-stack 憲法樹：`${BDD_CONSTITUTION_PATH}`（專案內預設 `.aibdd/bdd-stack/project-bdd-axes.md`）；runner／step／fixture 細節見 `.aibdd/bdd-stack/*.md`
+- bdd-stack runtime guideline 目錄：`${BDD_CONSTITUTION_PATH}`（專案內預設 `.aibdd/bdd-stack/`）；runner／step／fixture 細節見 `.aibdd/bdd-stack/*.md` 與 `arguments.yml` §9 `*_RUNTIME_REF`
