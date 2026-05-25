@@ -23,10 +23,15 @@ They become stale follow-up work after reconcile completes.
 - `.aibdd/arguments.yml`
 - One target `plan package` path
 - One non-empty trigger description
-- Three planner relevance documents:
-  - `.claude/skills/aibdd-discovery/references/relevance.md`
-  - `.claude/skills/aibdd-plan/references/relevance.md`
-  - `.claude/skills/aibdd-spec-by-example-analyze/references/relevance.md`
+
+The earliest planner is chosen by classifying the trigger description against the
+ownership of the three reconcilable planners. That ownership is stated inline in the
+classify phase (`02-classify-and-open-session/SOP.md`), so no external relevance
+document is required:
+
+1. `aibdd-discovery` owns which features exist, feature-file scope, and atomic-rule extraction.
+2. `aibdd-plan` owns architecture/boundary, API/entity/contract design, implementation plan, and DSL synthesis.
+3. `aibdd-spec-by-example-analyze` owns Gherkin example shape, step-handler mapping, DSL arrangement, and concrete parameter values.
 
 ## Outputs
 
