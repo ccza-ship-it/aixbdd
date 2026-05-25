@@ -4,13 +4,13 @@
 
 AIBDD is built to fix that.
 
-AIBDD turns raw product intent into boundary-aware discovery, executable acceptance criteria, path-based test plans, implementation tasks, and disciplined `RED -> GREEN -> REFACTOR` execution. Instead of asking an agent to guess from a paragraph and good intentions, it gives the agent a chain of explicit artifacts, each with one job, one owner, and one way to prove it is correct.
+AIBDD turns raw product intent into boundary-aware discovery, executable acceptance criteria, implementation tasks, and disciplined `RED -> GREEN -> REFACTOR` execution. Instead of asking an agent to guess from a paragraph and good intentions, it gives the agent a chain of explicit artifacts, each with one job, one owner, and one way to prove it is correct.
 
 This is not vibe coding with better prompts.
 
 This is acceptance-driven software delivery with specs as truth.
 
-This repository is the workflow SSOT for that system. It contains the AIBDD skill family that moves a project from kickoff to discovery, planning, test-plan synthesis, task generation, implementation, evaluation, and reconciliation.
+This repository is the workflow SSOT for that system. It contains the AIBDD skill family that moves a project from kickoff to discovery, planning, task generation, implementation, evaluation, and reconciliation.
 
 ## Why AIBDD Hits Hard
 
@@ -22,12 +22,11 @@ It gives you:
 
 - **Specs as truth**: artifacts are not passive documentation. They are versioned, executable, and downstream-visible.
 - **Specs as guard**: implementation is judged against acceptance artifacts, not against "looks done to me."
-- **Separation of concerns**: activity, feature rules, technical plan, DSL, test plan, and tasks each own a precise slice of truth.
+- **Separation of concerns**: activity, feature rules, technical plan, DSL, and tasks each own a precise slice of truth.
 - **Traceability end to end**: intent can be followed into flow, flow into acceptance, acceptance into tasks, and tasks into execution.
 - **Human control without chaos**: the workflow is human-in-the-loop, but not human-do-everything.
 - **Less guessing, more asking**: when information is missing, the system is designed to clarify instead of hallucinate.
-- **Reconcile instead of rot**: when upstream requirements change, AIBDD can cascade the correction from the earliest affected planner.
-- **Rewind instead of panic**: you can safely roll the pipeline back to a known phase boundary instead of manually undoing downstream damage.
+- **Reconcile instead of rot**: when upstream requirements change, AIBDD cascades the correction from the earliest affected planner instead of letting downstream artifacts silently rot.
 
 If ordinary AI coding feels magical right up until it becomes expensive, flaky, and hard to trust, AIBDD is the counter-move.
 
@@ -96,7 +95,7 @@ AIBDD is a process, not a bag of commands. The skills run in the order software 
 
 **Clarify -> Discover -> Plan -> Derive Acceptance -> Execute -> Evaluate -> Reconcile**
 
-Each stage feeds the next. Discovery writes the artifacts plan consumes. Plan records the feature scope that tasks consume. Activity paths become test-plan scenarios. Tasks become live execution. Execution is evaluated through red, green, and refactor gates. When something changes upstream, reconcile and rewind exist so you do not have to fake consistency by hand.
+Each stage feeds the next. Discovery writes the artifacts plan consumes. Plan records the DSL and feature scope that tasks and the red gate consume. Tasks become live execution. Execution is evaluated through red, green, and refactor gates. When something changes upstream, reconcile cascades the correction from the earliest affected planner so you do not have to fake consistency by hand.
 
 | Skill | Your specialist | What it does |
 |---|---|---|
@@ -105,8 +104,10 @@ Each stage feeds the next. Discovery writes the artifacts plan consumes. Plan re
 | `/aibdd-discovery` | **Root planner** | Turns raw ideas into boundary-aware discovery truth, sourcing reports, activity intent, and feature-rule skeletons. |
 | `/aibdd-form-activity` | **Flow formulator** | Writes `.activity` DSL from discovery output and validates the syntax so flow truth is explicit and machine-usable. |
 | `/aibdd-plan` | **Technical planner** | Converts accepted discovery truth into technical boundary truth, implementation planning, and red-usable DSL mappings without creating shadow truth. |
+| `/aibdd-form-api-spec`, `/aibdd-form-entity-spec`, `/aibdd-form-story-spec` | **Contract formulators** | Translate the planner's reasoning package into the boundary's declared contract format — OpenAPI, DBML, or Storybook CSF3 + component. Delegated by plan; they format truth, they do not decide scope. |
 | `/aibdd-tasks` | **Task graph builder** | Generates structured `tasks.md` from the accepted plan package, preserving implementation topology and execution order. |
 | `/aibdd-implement` | **Execution driver** | Turns every checkbox into a live todo item and keeps task state synchronized with actual execution. |
+| `/aibdd-spec-by-example-analyze` | **Example & step mapper** | Turns feature rules into concrete Examples and maps every Scenario step to legal DSL, so the red gate can render runtime-visible steps with no guessing. |
 | `/aibdd-red-execute` + `/aibdd-red-evaluate` | **Red gate** | Ensures your failing acceptance state is legal, visible, and grounded before code changes begin. |
 | `/aibdd-green-execute` + `/aibdd-green-evaluate` | **Green gate** | Drives product code to passing acceptance without letting fake green or hollow fixes slip through. |
 | `/aibdd-refactor-execute` + `/aibdd-refactor-evaluate` | **Refactor gate** | Improves internal structure while preserving strict acceptance and constitution conformance. |
@@ -130,7 +131,7 @@ This is not "press one button and hope." AIBDD is human-in-the-loop, but the loo
 
 The chain from requirement to execution stays visible:
 
-`idea -> discovery -> activity -> test plan -> feature scope -> tasks -> red/green/refactor`
+`idea -> discovery -> activity / feature rules -> plan (DSL + feature scope) -> tasks -> red/green/refactor`
 
 That matters when you need audits, debugging, impact analysis, or simply a clean answer to "why did we build it this way?"
 
