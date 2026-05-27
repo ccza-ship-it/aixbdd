@@ -22,8 +22,8 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
-from dsl_cli.models import Column, DbmlRefPart, DbmlTablePart, Part, PartKind
-from dsl_cli.spec_parsers.base import SpecParser
+from shared.spec_parts import Column, DbmlRefPart, DbmlTablePart, Part, PartKind
+from shared.spec_parsers.base import SpecParser
 
 # Capture `Table <name> { <body> }`. DOTALL so `.` matches newlines inside body.
 _TABLE_RE = re.compile(

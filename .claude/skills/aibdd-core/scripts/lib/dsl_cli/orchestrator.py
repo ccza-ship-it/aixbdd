@@ -24,7 +24,7 @@ from dsl_cli.dsl_reader import index_resolved_parts, load_dsl_files
 from dsl_cli.eval_rules.rules import evaluate
 from dsl_cli.models import AddedEntry, CatalogMatch, EvalReport, GenerationReport
 from dsl_cli.preset_loader import load_preset_plugin
-from dsl_cli.spec_parsers.dispatcher import dispatch_spec_parser
+from shared.spec_parsers.dispatcher import dispatch_spec_parser
 from dsl_cli.writer import append_templates, route_template_to_file
 
 

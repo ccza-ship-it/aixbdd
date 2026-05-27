@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from pathlib import Path
 
-from aibdd_core.arguments_resolver import (
+from shared.arguments_resolver import (
     DEFAULT_ARGS_REL,
     ResolveError,
     format_cyclic_stderr,

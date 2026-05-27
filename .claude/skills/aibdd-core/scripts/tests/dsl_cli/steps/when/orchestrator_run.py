@@ -17,7 +17,7 @@ from behave import when
 from dsl_cli.orchestrator import run_eval, run_generate_dsl_instructions
 
 # .../when/orchestrator_run.py
-# parents: [0] when/ [1] steps/ [2] tests/ [3] dsl_cli/ [4] scripts/ [5] aibdd-core/
+# parents: [0] when/ [1] steps/ [2] dsl_cli/ [3] tests/ [4] scripts/ [5] aibdd-core/
 _BOUNDARIES_ROOT = Path(__file__).resolve().parents[5] / "assets" / "boundaries"
 
 

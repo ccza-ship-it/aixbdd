@@ -3,24 +3,6 @@
 resolve_args.py
 
 Shared placeholder resolver for every aibdd-xxx skill.
-
-Reads arbitrary text from stdin, substitutes every `${dotted.key}` placeholder
-with the corresponding value from `.aibdd/arguments.yml` (path is hard-coded
-relative to CWD), and writes the resolved text to stdout.
-
-Behavior:
-  - Substitution is recursive: if a resolved value itself contains `${...}`,
-    those nested placeholders are expanded too, up to MAX_DEPTH passes.
-  - Missing `.aibdd/arguments.yml` -> exit 1, message on stderr.
-  - Any `${key}` that remains unresolvable after convergence -> exit 2, list
-    of missing keys on stderr; stdout stays empty so callers cannot silently
-    consume a partially-resolved blob.
-  - Cyclic references (e.g. `a: ${b}` and `b: ${a}`) trip the depth cap and
-    fail with exit 3.
-
-Usage:
-  echo 'IMPACT_MATRIX_YML=${IMPACT_MATRIX_YML}' \\
-    | python3 .claude/skills/aibdd-core/scripts/cli/resolve_args.py
 """
 
 from __future__ import annotations
@@ -29,10 +11,13 @@ import sys
 from pathlib import Path
 
 _SCRIPTS_DIR = Path(__file__).resolve().parents[1]
-if str(_SCRIPTS_DIR) not in sys.path:
-    sys.path.insert(0, str(_SCRIPTS_DIR))
+_LIB_DIR = _SCRIPTS_DIR / "lib"
+for path in (_LIB_DIR, _SCRIPTS_DIR):
+    path_str = str(path)
+    if path_str not in sys.path:
+        sys.path.insert(0, path_str)
 
-from aibdd_core.project_args import resolve_text  # noqa: E402
+from shared.project_args import resolve_text  # noqa: E402
 
 
 def main() -> int:

@@ -7,31 +7,27 @@
 #   "openapi-spec-validator>=0.7.1",
 # ]
 # ///
-"""Portable PEP 723 entry for dsl_cli.
-
-Preferred invocation (auto-installs runtime deps via uv):
-
-    uv run .claude/skills/aibdd-core/scripts/run_dsl_cli.py query --help
-
-Fallback when uv is unavailable (caller must install runtime deps first):
-
-    python3 .claude/skills/aibdd-core/scripts/run_dsl_cli.py query --help
-
-Backward-compatible package entry remains available:
-
-    PYTHONPATH=.claude/skills/aibdd-core/scripts python3 -m dsl_cli query --help
-"""
+"""Compat shim — delegates to ``cli/dsl_cli.py``."""
 
 from __future__ import annotations
 
+import importlib.util
 import sys
 from pathlib import Path
 
 _SCRIPTS_DIR = Path(__file__).resolve().parent
-if str(_SCRIPTS_DIR) not in sys.path:
-    sys.path.insert(0, str(_SCRIPTS_DIR))
+_LIB_DIR = _SCRIPTS_DIR / "lib"
+for path in (_LIB_DIR, _SCRIPTS_DIR):
+    path_str = str(path)
+    if path_str not in sys.path:
+        sys.path.insert(0, path_str)
 
-from dsl_cli.cli import main
+_ENTRY = _SCRIPTS_DIR / "cli" / "dsl_cli.py"
+_spec = importlib.util.spec_from_file_location("aibdd_dsl_cli_entry", _ENTRY)
+if _spec is None or _spec.loader is None:
+    raise SystemExit(f"failed to load dsl cli entry: {_ENTRY}")
+_mod = importlib.util.module_from_spec(_spec)
+_spec.loader.exec_module(_mod)
 
 if __name__ == "__main__":
-    sys.exit(main(sys.argv[1:]))
+    raise SystemExit(_mod.main(sys.argv[1:]))

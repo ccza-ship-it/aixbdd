@@ -15,9 +15,9 @@ from behave import when
 from dsl_cli.preset_loader import load_preset_plugin
 
 # This file lives at:
-#   .claude/skills/aibdd-core/scripts/dsl_cli/tests/steps/when/web_service_plugin.py
+#   .claude/skills/aibdd-core/scripts/tests/dsl_cli/steps/when/web_service_plugin.py
 # parents indexing:
-#   [0] when/  [1] steps/  [2] tests/  [3] dsl_cli/  [4] scripts/  [5] aibdd-core/
+#   [0] when/  [1] steps/  [2] dsl_cli/  [3] tests/  [4] scripts/  [5] aibdd-core/
 # The on-disk boundaries root is .claude/skills/aibdd-core/assets/boundaries/
 _BOUNDARIES_ROOT = Path(__file__).resolve().parents[5] / "assets" / "boundaries"
 

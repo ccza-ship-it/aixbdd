@@ -13,9 +13,9 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from dsl_cli.spec_parsers.base import SpecParser
-from dsl_cli.spec_parsers.dbml import DBMLSpecParser
-from dsl_cli.spec_parsers.openapi import OpenAPISpecParser
+from shared.spec_parsers.base import SpecParser
+from shared.spec_parsers.dbml import DBMLSpecParser
+from shared.spec_parsers.openapi import OpenAPISpecParser
 
 
 def dispatch_spec_parser(path: Path) -> SpecParser:

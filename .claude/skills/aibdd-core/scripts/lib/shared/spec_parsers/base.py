@@ -10,7 +10,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from pathlib import Path
 
-from dsl_cli.models import Part
+from shared.spec_parts import Part
 
 
 class SpecParser(ABC):

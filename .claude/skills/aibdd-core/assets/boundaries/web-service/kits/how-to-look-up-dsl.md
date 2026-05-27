@@ -5,7 +5,7 @@
 
 請參考底下指令來善用 dsl_cli query 來找到該 step format 的候選 DSL。
 ```bash
-    uv run .claude/skills/aibdd-core/scripts/run_dsl_cli.py query \
+    uv run .claude/skills/aibdd-core/scripts/cli/dsl_cli.py query \
     --step-text "<Gherkin 步驟文案>" \
     --handler <handler-a> \
     --handler <handler-b> \

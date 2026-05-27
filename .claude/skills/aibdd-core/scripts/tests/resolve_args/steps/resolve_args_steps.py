@@ -7,7 +7,7 @@ from pathlib import Path
 
 from behave import given, then, when
 
-_CLI = Path(__file__).resolve().parents[2] / "cli" / "resolve_args.py"
+_CLI = Path(__file__).resolve().parents[3] / "cli" / "resolve_args.py"
 
 
 def _normalize_text(text: str) -> str:

@@ -24,13 +24,13 @@ from prance.util.resolver import RefResolver
 from prance.util.url import ResolutionError
 from ruamel.yaml import YAML
 
-from dsl_cli.models import (
+from shared.spec_parts import (
     ApiOperationPart,
     PartKind,
     RequestInput,
     ResponseProp,
 )
-from dsl_cli.spec_parsers.base import SpecParser
+from shared.spec_parsers.base import SpecParser
 
 _HTTP_METHODS = {"get", "post", "put", "patch", "delete", "options", "head"}
 _yaml_loader = YAML(typ="safe")

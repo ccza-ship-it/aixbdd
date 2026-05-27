@@ -29,7 +29,7 @@ def repo_root_from_module() -> Path:
 
 
 _REPO_ROOT = repo_root_from_module()
-DSL_CLI_ENTRY = _REPO_ROOT / ".claude/skills/aibdd-core/scripts/run_dsl_cli.py"
+DSL_CLI_ENTRY = _REPO_ROOT / ".claude/skills/aibdd-core/scripts/cli/dsl_cli.py"
 
 
 @dataclass

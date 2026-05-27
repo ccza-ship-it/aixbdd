@@ -21,10 +21,13 @@ from lib.handler_candidates import (
 
 _REPO_ROOT = repo_root_from_module()
 _AIBDD_CORE_SCRIPTS = _REPO_ROOT / ".claude/skills/aibdd-core/scripts"
-if str(_AIBDD_CORE_SCRIPTS) not in sys.path:
-    sys.path.insert(0, str(_AIBDD_CORE_SCRIPTS))
+_AIBDD_CORE_LIB = _AIBDD_CORE_SCRIPTS / "lib"
+for _path in (_AIBDD_CORE_LIB, _AIBDD_CORE_SCRIPTS):
+    _path_str = str(_path)
+    if _path_str not in sys.path:
+        sys.path.insert(0, _path_str)
 
-from aibdd_core.project_args import resolve_key  # noqa: E402
+from shared.project_args import resolve_key  # noqa: E402
 
 
 def main() -> int:

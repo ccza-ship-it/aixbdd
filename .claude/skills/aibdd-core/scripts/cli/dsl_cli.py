@@ -1,25 +1,17 @@
+#!/usr/bin/env python3
+# /// script
+# requires-python = ">=3.12"
+# dependencies = [
+#   "ruamel.yaml>=0.18,<0.19",
+#   "prance>=25.4.8,<26",
+#   "openapi-spec-validator>=0.7.1",
+# ]
+# ///
 """argparse entry for dsl_cli.
-
-Subcommands:
-  generate-dsl-instructions --boundary <name>
-                            --specs <path>... --dsl <path>...
-                            [--boundaries-root <path>]
-  eval                      --dsl <path>... [--shared-dsl <path>]
-  query                     [--handler <id>...] [--step-text <text>]
-                            [--dsl <path>...] [--shared-dsl <path>]
-                            [--source-scope regular|shared|all]
 
 Preferred invocation:
 
-    uv run .claude/skills/aibdd-core/scripts/run_dsl_cli.py <subcommand> ...
-
-Legacy package entry (requires PYTHONPATH and pre-installed runtime deps):
-
-    PYTHONPATH=.claude/skills/aibdd-core/scripts python3 -m dsl_cli <subcommand> ...
-
-`--boundaries-root` defaults to the canonical on-disk location
-(.claude/skills/aibdd-core/assets/boundaries/) so production callers pass only
-`--boundary`. Tests may override the root to point at a tempdir.
+    uv run .claude/skills/aibdd-core/scripts/cli/dsl_cli.py <subcommand> ...
 """
 
 from __future__ import annotations
@@ -28,12 +20,18 @@ import argparse
 import sys
 from pathlib import Path
 
-from dsl_cli.orchestrator import run_eval, run_generate_dsl_instructions, run_query
-from dsl_cli.reporter import render_eval_report, render_generation_report, render_query_json
+_SCRIPTS_DIR = Path(__file__).resolve().parents[1]
+_LIB_DIR = _SCRIPTS_DIR / "lib"
+for path in (_LIB_DIR, _SCRIPTS_DIR):
+    path_str = str(path)
+    if path_str not in sys.path:
+        sys.path.insert(0, path_str)
 
-# cli.py -> dsl_cli/ -> scripts/ -> aibdd-core/ -> assets/boundaries
+from dsl_cli.orchestrator import run_eval, run_generate_dsl_instructions, run_query  # noqa: E402
+from dsl_cli.reporter import render_eval_report, render_generation_report, render_query_json  # noqa: E402
+
 _DEFAULT_BOUNDARIES_ROOT = (
-    Path(__file__).resolve().parent.parent.parent / "assets" / "boundaries"
+    Path(__file__).resolve().parents[2] / "assets" / "boundaries"
 )
 
 
@@ -99,3 +97,7 @@ def main(argv: list[str] | None = None) -> int:
         print(render_query_json(matches), end="")
         return 0
     return 2
+
+
+if __name__ == "__main__":
+    raise SystemExit(main(sys.argv[1:]))

@@ -1,14 +1,4 @@
-"""Behave hooks for dsl_cli BDD suite.
-
-Inserts the parent of the dsl_cli package (scripts/) into sys.path so step
-modules can do `from dsl_cli.spec_parsers.openapi import OpenAPISpecParser`.
-
-before_scenario:
-    create context.tmp_root tempdir, init context.files alias map.
-
-after_scenario:
-    delete context.tmp_root.
-"""
+"""Behave hooks for dsl_cli BDD suite."""
 
 from __future__ import annotations
 
@@ -18,9 +8,12 @@ import tempfile
 from pathlib import Path
 
 _TESTS_DIR = Path(__file__).resolve().parent
-_PACKAGE_PARENT = _TESTS_DIR.parent.parent  # .../aibdd-core/scripts
-if str(_PACKAGE_PARENT) not in sys.path:
-    sys.path.insert(0, str(_PACKAGE_PARENT))
+_SCRIPTS_DIR = _TESTS_DIR.parents[1]
+_LIB_DIR = _SCRIPTS_DIR / "lib"
+for path in (_LIB_DIR, _SCRIPTS_DIR):
+    path_str = str(path)
+    if path_str not in sys.path:
+        sys.path.insert(0, path_str)
 
 
 def before_scenario(context, scenario):

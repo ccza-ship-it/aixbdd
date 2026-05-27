@@ -42,13 +42,16 @@ def project_cwd(args_path: Path) -> Path:
     return workspace_root_from_args_path(args_path)
 
 
-def ensure_aibdd_core_on_path(workspace_root: Path) -> None:
+def ensure_shared_lib_on_path(workspace_root: Path) -> None:
     repo_root = workspace_root
     if not (repo_root / ".claude/skills/aibdd-core/scripts").is_dir():
         raise SystemExit(f"aibdd-core scripts not found under repo root: {repo_root}")
-    scripts_str = str(repo_root / ".claude/skills/aibdd-core/scripts")
-    if scripts_str not in sys.path:
-        sys.path.insert(0, scripts_str)
+    scripts_dir = repo_root / ".claude/skills/aibdd-core/scripts"
+    lib_dir = scripts_dir / "lib"
+    for path in (lib_dir, scripts_dir):
+        path_str = str(path)
+        if path_str not in sys.path:
+            sys.path.insert(0, path_str)
 
 
 def ensure_discovery_impact_matrix_on_path(workspace_root: Path) -> None:
@@ -62,8 +65,8 @@ def ensure_discovery_impact_matrix_on_path(workspace_root: Path) -> None:
 
 
 def resolve_key(key: str, *, cwd: Path, args_path: Path) -> str | None:
-    ensure_aibdd_core_on_path(repo_root_from_args_path(args_path))
-    from aibdd_core.project_args import resolve_key as core_resolve_key
+    ensure_shared_lib_on_path(repo_root_from_args_path(args_path))
+    from shared.project_args import resolve_key as core_resolve_key
 
     return core_resolve_key(key, cwd=cwd)
 
