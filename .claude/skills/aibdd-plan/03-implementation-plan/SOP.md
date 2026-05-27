@@ -22,13 +22,12 @@
 
 3. CREATE `${PLAN_IMPLEMENTATION_DIR}`、`${PLAN_SEQUENCE_DIR}`；僅目錄，不預建空 `.mmd`。
 
-4. WRITE sequence diagrams
-   - FOR EACH path in `$IMPLEMENTATION_MODEL.paths`：寫入 `${PLAN_SEQUENCE_DIR}/<scenario_slug>.<category>.sequence.mmd`（Mermaid sequence）。每張必含：actor、boundary entry operation、internal collaborators、provider contract calls、state changes、response verifier candidates。
-   - 不得把多條主要路徑塞入同一 `.mmd`；不得使用 `*.backend.sequence.mmd` 命名。
+4. WRITE sequence diagrams via DELEGATE
+   - FOR EACH path in `$IMPLEMENTATION_MODEL.paths`：DELEGATE `/aibdd-form-sequence-diagram` with payload `{ target_path: "<scenario_slug>.<category>.sequence.mmd", reasoning: { implementation_path: path } }`。
 
-5. WRITE `${PLAN_INTERNAL_STRUCTURE}`
-   - READ `rules/internal-structure-union.md`（其中定義「結構聯集」並附示意例）；依該定義把 `$IMPLEMENTATION_MODEL.paths` 收成單一 class diagram（collaborators／operations／state surfaces），供下游 GREEN 定位類別／模組／operation。
-   - 不得含 product code patch、step definition 內容、test queue 狀態。
+5. WRITE `${PLAN_INTERNAL_STRUCTURE}` via DELEGATE
+   - READ `rules/internal-structure-union.md`（其中定義「結構聯集」並附示意例）；依該定義把 `$IMPLEMENTATION_MODEL.paths` 收成單一 class diagram 之 `collaborators[]` + `relations[]`（去重 + 保留差異 + 註記）。**本步只在 SOP 端完成聯集 reasoning，不寫檔。**
+   - DELEGATE `/aibdd-form-class-diagram` with payload `{ target_path: "<basename of ${PLAN_INTERNAL_STRUCTURE}>", reasoning: { implementation_model: $IMPLEMENTATION_MODEL } }`。
 
 6. ASSERT 可追溯性
    - 每個 implementation target（actor、operation、collaborator、provider call、state change）至少可追溯至一條 activity path、atomic rule、provider contract 或 boundary-map dispatch。
