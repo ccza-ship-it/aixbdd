@@ -124,4 +124,5 @@ metadata:
 
 13. 若 `$NEED_TO_CLARIFY` 非空：DELEGATE `/clarify-loop` 一次進行提問。
 
-14. 和使用者說道（詞可變、語意不變）：「我已經以 Discovery 真相把本輪須穩定保存的系統狀態推導成 data schema，並委派 specifier 落到 ${DATA_DIR}。你看一下我產的 DBML／資料規格確認設計沒問題；若要規劃本輪對外互動承諾（operation contract），可執行 /aibdd-api-plan。」
+14. 和使用者說道（詞可變、語意不變）：「我已經以 Discovery 真相把本輪須穩定保存的系統狀態推導成 data schema，並委派 specifier 落到 ${DATA_DIR}。你看一下我產的 DBML／資料規格確認設計沒問題。」
+    - **禁止建議下一步**：結尾**不得**建議、推薦、引導或暗示任何下一個要執行的 skill／slash command／後續流程（例如 `/aibdd-api-plan`、`/aibdd-implement`、`/aibdd-tasks` 等一律不得出現）。本 skill 到此為止，只回報本輪產出並請使用者檢視，後續由使用者自行決定。
