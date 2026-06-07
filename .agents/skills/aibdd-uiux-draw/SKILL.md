@@ -89,7 +89,7 @@ references:
 > 交付：`$$runtime_context`、`$$brief`、`$$profile`
 
 1. 把目前 skill 的執行設定讀齊，缺則 STOP 引導使用者跑前置 skill。
-   1.1 LOAD REF [`aibdd-core::spec-package-paths.md`](aibdd-core::spec-package-paths.md) — boundary-aware 路徑規則
+   1.1 LOAD REF [`aibdd-core::ssot/spec-package-paths.md`](aibdd-core::ssot/spec-package-paths.md) — boundary-aware 路徑規則
    1.2 `$args_path` = COMPUTE `${workspace_root}/.aibdd/arguments.yml`
    1.3 `$args_exists` = MATCH path_exists(`$args_path`)
    1.4 IF `$args_exists` == false:

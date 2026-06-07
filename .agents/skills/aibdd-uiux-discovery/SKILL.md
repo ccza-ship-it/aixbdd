@@ -94,7 +94,7 @@ references:
 
 1. 把目前 skill 的執行設定與 discovery 產出讀齊，缺則先 STOP 引導使用者跑前置 skill。
    1.1 `$$skill_dir` = COMPUTE 目前 skill 目錄
-   1.2 LOAD REF [`aibdd-core::spec-package-paths.md`](aibdd-core::spec-package-paths.md) — boundary-aware 路徑規則
+   1.2 LOAD REF [`aibdd-core::ssot/spec-package-paths.md`](aibdd-core::ssot/spec-package-paths.md) — boundary-aware 路徑規則
    1.3 `$args_path` = COMPUTE `${workspace_root}/.aibdd/arguments.yml`
    1.4 `$args_exists` = MATCH path_exists(`$args_path`)
    1.5 IF `$args_exists` == false:

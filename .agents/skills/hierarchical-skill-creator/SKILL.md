@@ -270,8 +270,8 @@ NN-<slug>/
   - ✓ 把共享規則上提到 SKILL.md 同層或 sibling reference hub（e.g. `aibdd-core::FILENAME.md`），各 phase 各自 LOAD
 
 - 跨 skill 直連禁區：禁止 `../../other-skill/...` 直連；跨 skill 必須用 sibling skill 的 reference hub 慣例（e.g. `aibdd-core::FILENAME.md` 載入）。
-  - ✗ `READ ../../aibdd-core/references/spec-package-paths.md`
-  - ✓ 在當 phase 引用 `aibdd-core::spec-package-paths.md`（由 host 解析）
+  - ✗ `READ ../../aibdd-core/references/ssot/spec-package-paths.md`
+  - ✓ 在當 phase 引用 `aibdd-core::ssot/spec-package-paths.md`（由 host 解析）
 
 ## 9. 規則檔的 `# <規則主題>` + `## Good` + `## Bad` 三段式
 

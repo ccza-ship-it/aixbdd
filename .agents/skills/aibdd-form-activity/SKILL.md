@@ -14,7 +14,7 @@ Formulation skill。只負責把 `/aibdd-flows-specify` 的 `02-activity-analyze
 
 | ID | Path | Phase scope | Purpose |
 |---|---|---|---|
-| R1 | `aibdd-core::spec-package-paths.md` | global | kickoff boundary-aware path SSOT |
+| R1 | `aibdd-core::ssot/spec-package-paths.md` | global | kickoff boundary-aware path SSOT |
 | R2 | `references/role-and-contract.md` | Phase 1 | caller payload schema + role boundary |
 | R3 | `references/format-reference.md` | Phase 2 | Activity element → `.activity` syntax mapping |
 | R4 | `scripts/decoder.py` | Phase 4 | `.activity` DSL decoder（同時為 SKILL.md Phase 4 syntax validator 與 BDD subject；spec SSOT = `scripts/tests/activity-decode.feature` + `scripts/tests/activity-benchmark.feature`） |

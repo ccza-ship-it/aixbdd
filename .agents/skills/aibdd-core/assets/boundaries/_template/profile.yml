@@ -14,7 +14,7 @@
 #      operation_contract_specifier / component_contract_specifier 的
 #      {skill, format}，決定用哪個 formulation skill 把 contract / state 寫進
 #      ${CONTRACTS_DIR} / ${DATA_DIR}。
-#   2. aibdd-core references/spec-package-paths.md — 引用同一批 specifier 欄位
+#   2. aibdd-core references/ssot/spec-package-paths.md — 引用同一批 specifier 欄位
 #      作為「目錄固定、格式與 skill 由 profile 決定」的路徑 SSOT。
 #   3. /aibdd-auto-starter prehandling — 讀 *_specifier.skill 決定哪些 section 適用。
 #

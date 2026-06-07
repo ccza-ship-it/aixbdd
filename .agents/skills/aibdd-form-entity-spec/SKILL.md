@@ -22,7 +22,7 @@ Formulation skill。綁定 DSL = DBML (.dbml)。被多個 Planner DELEGATE（如
 | Axis 單位對應 | 推理包中每個單位的具體對應 |
 | CiC 記號清單 | 便條紙（GAP / ASM / BDY / CON）+ 錨點 |
 | 退出狀態 | Reason 步是否完整通過 |
-| `target_path` | Planner 指定之**相對於 `${DATA_DIR}` 的檔案路徑**（例：`logical.dbml`、`<boundary-id>/entities/logical.dbml`、`<boundary-id>/sub-boundaries/<sub-id>/states/<state>.dbml`；切檔策略由 Planner 決定）。**不得**含 `<<NN-functional-module>>` 借位子層 — `${DATA_DIR}` 在 SSOT 已是 flat directory（見 `aibdd-core::spec-package-paths.md`），functional module 借位只允許出現在 `${TRUTH_BOUNDARY_PACKAGES_DIR}` 子樹。 |
+| `target_path` | Planner 指定之**相對於 `${DATA_DIR}` 的檔案路徑**（例：`logical.dbml`、`<boundary-id>/entities/logical.dbml`、`<boundary-id>/sub-boundaries/<sub-id>/states/<state>.dbml`；切檔策略由 Planner 決定）。**不得**含 `<<NN-functional-module>>` 借位子層 — `${DATA_DIR}` 在 SSOT 已是 flat directory（見 `aibdd-core::ssot/spec-package-paths.md`），functional module 借位只允許出現在 `${TRUTH_BOUNDARY_PACKAGES_DIR}` 子樹。 |
 
 **缺項**：推理包不完整或 `target_path` 未指定 → 回退呼叫 Planner 補齊。
 

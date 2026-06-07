@@ -96,7 +96,7 @@ component file、不創造 design system 元件、不挑 Story 數量、不寫�
 
 ```yaml
 references:
-  - path: aibdd-core::spec-package-paths.md
+  - path: aibdd-core::ssot/spec-package-paths.md
     purpose: kickoff boundary-aware path SSOT
   - path: aibdd-core::assets/boundaries/web-frontend/profile.yml
     purpose: component_contract_specifier 註解 — Story export 作為 boundary I4 binding anchor

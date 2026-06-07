@@ -23,7 +23,7 @@ Formulation skill。綁定 DSL = OpenAPI 3.x (.yml)。被 `aibdd-service-contrac
 | Axis 單位對應 | 推理包中每個 endpoint → OpenAPI path/method 的具體對應 |
 | CiC 記號清單 | 便條紙（GAP / ASM / BDY / CON）+ 錨點 |
 | 退出狀態 | Reason 步是否完整通過 |
-| `slice_list` | Planner 指定的切檔清單：每個 slice 的 `target_path` + `scope`（包含哪些 endpoint groups）。`target_path` 為 caller 提供之**相對於 `${CONTRACTS_DIR}` 的檔案路徑**（例：`api.yml`、`api/<resource>.yml`、`<boundary-id>/api.yml`；具體切檔策略由 Planner 決定）。`target_path` 內**不得**含 `<<NN-functional-module>>` 借位子層；`${CONTRACTS_DIR}` 在 SSOT 已是 flat directory（見 `aibdd-core::spec-package-paths.md`），functional module 借位只允許出現在 `${TRUTH_BOUNDARY_PACKAGES_DIR}` 子樹。`type` 亦不出現於 path — 由 `${BOUNDARY_YML}` `type` 欄位 SSOT。 |
+| `slice_list` | Planner 指定的切檔清單：每個 slice 的 `target_path` + `scope`（包含哪些 endpoint groups）。`target_path` 為 caller 提供之**相對於 `${CONTRACTS_DIR}` 的檔案路徑**（例：`api.yml`、`api/<resource>.yml`、`<boundary-id>/api.yml`；具體切檔策略由 Planner 決定）。`target_path` 內**不得**含 `<<NN-functional-module>>` 借位子層；`${CONTRACTS_DIR}` 在 SSOT 已是 flat directory（見 `aibdd-core::ssot/spec-package-paths.md`），functional module 借位只允許出現在 `${TRUTH_BOUNDARY_PACKAGES_DIR}` 子樹。`type` 亦不出現於 path — 由 `${BOUNDARY_YML}` `type` 欄位 SSOT。 |
 
 **缺項**：推理包不完整或 `slice_list` 未指定 → 回退呼叫 Planner 補齊（白話文回報「推理包不完整」）。
 
