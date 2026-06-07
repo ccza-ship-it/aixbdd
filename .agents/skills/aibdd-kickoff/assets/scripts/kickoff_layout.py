@@ -3,8 +3,9 @@
 /aibdd-kickoff layout copier (pure file copy + shared DSL seed).
 
 Copies the invariant template tree (assets/templates/shared/) to the target
-boundary codebase root, then materializes specs/shared/dsl.yml from the active
-boundary preset's shared-dsl-template.yml.
+boundary codebase root, copies the invariant arguments.yml from the aibdd-core
+SSOT (references/ssot/arguments.yml) into the target .aibdd/, then materializes
+specs/shared/dsl.yml from the active boundary preset's shared-dsl-template.yml.
 
 Per-stack tail appending and placeholder substitution for other kickoff
 artifacts are handled by 02-execute-layout/SOP.md as post-copy LLM Edit ops.
@@ -38,6 +39,7 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 SHARED_DIR = SCRIPT_DIR.parent / "templates" / "shared"
 SKILLS_DIR = SCRIPT_DIR.parent.parent.parent
 BOUNDARIES_ROOT = SKILLS_DIR / "aibdd-core" / "assets" / "boundaries"
+ARGUMENTS_SSOT = SKILLS_DIR / "aibdd-core" / "references" / "ssot" / "arguments.yml"
 SPECS_ROOT_DIR = "specs"
 
 STACK_BOUNDARY_ASSET_DIR: dict[str, str] = {
@@ -83,6 +85,12 @@ def main() -> int:
     dst = project_root / subdir if subdir else project_root
 
     shutil.copytree(SHARED_DIR, dst, dirs_exist_ok=True)
+
+    if not ARGUMENTS_SSOT.is_file():
+        raise FileNotFoundError(f"arguments SSOT not found: {ARGUMENTS_SSOT}")
+    arguments_path = dst / ".aibdd" / "arguments.yml"
+    arguments_path.parent.mkdir(parents=True, exist_ok=True)
+    arguments_path.write_text(ARGUMENTS_SSOT.read_text())
 
     seed_gitkeep = project_root / ".gitkeep"
     if seed_gitkeep.exists():
