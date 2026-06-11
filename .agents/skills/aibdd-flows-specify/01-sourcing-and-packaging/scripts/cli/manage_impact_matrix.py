@@ -160,7 +160,7 @@ def build_parser() -> argparse.ArgumentParser:
         "--change-type",
         action="append",
         default=None,
-        choices=["read_only_compare", "update", "add", "conditional_update"],
+        choices=["read_only_compare", "update", "add", "conditional_update", "remove"],
         help="Match one or more change_type values (OR semantics)",
     )
     query.add_argument(
@@ -174,7 +174,7 @@ def build_parser() -> argparse.ArgumentParser:
     upsert.add_argument(
         "--change-type",
         required=True,
-        choices=["read_only_compare", "update", "add", "conditional_update"],
+        choices=["read_only_compare", "update", "add", "conditional_update", "remove"],
     )
     upsert.add_argument("--impact-summary", required=True)
 

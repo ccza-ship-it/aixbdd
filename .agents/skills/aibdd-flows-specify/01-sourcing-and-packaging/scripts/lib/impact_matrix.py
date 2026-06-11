@@ -20,6 +20,7 @@ CHANGE_TYPES: tuple[str, ...] = (
     "update",
     "add",
     "conditional_update",
+    "remove",
 )
 
 CHANGE_TYPE_SET = frozenset(CHANGE_TYPES)
