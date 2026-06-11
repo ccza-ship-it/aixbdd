@@ -71,7 +71,7 @@ metadata:
     - [ ] (2-2) 步驟 1：ANCHOR + SEARCH——CHECK baseline 補缺、AMEND `${PLAN_SPEC}` 追加遞增批次、SEARCH boundary truth。
     - [ ] (2-3) 步驟 2：ASSERT DIR `${PLAN_PACKAGES_DIR}/<NNN-plan-slug>/`。
     - [ ] (2-4) 步驟 3：EXECUTE `aibdd-flows-specify/01-amending-and-repackaging/steps/maintain-impact-matrix.md` amend 模式。
-    - [ ] (2-5) 步驟 4：UPDATE `${PLAN_REPORTS_DIR}/discovery-sourcing.md` 追加 Change request 章節、UPDATE `${PLAN_SPEC}`。
+    - [ ] (2-5) 步驟 4：UPDATE `${PLAN_REPORTS_DIR}/discovery-sourcing.md` 就地更新既有章節反映當前真相、UPDATE `${PLAN_SPEC}`。
     - [ ] (2-6) 步驟 5–6：THINK charter 影響、CREATE DIRS ONLY 僅新開的 function package。
     - [ ] (2-7) 步驟 7：UPDATE `discovery-sourcing.md` 與 `${PLAN_SPEC}` 收尾。
 - [ ] (3) 展開並執行至完成：`aibdd-flows-specify/02-activity-analyze/SOP.md`。

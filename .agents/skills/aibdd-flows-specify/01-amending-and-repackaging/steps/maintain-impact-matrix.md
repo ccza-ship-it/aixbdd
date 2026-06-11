@@ -24,7 +24,7 @@
    1. `read_only_compare`：檔在 plan 前已存在；本輪只 READ／對照既有規格界定邊界，不改寫該檔內容。`impact_summary` 寫「對照什麼、用來界定哪個邊界」。
    2. `update`：檔在 plan 前已存在；本輪變更確定要更新該檔（feature rule、dbml 欄位、dsl 語彙等）。`impact_summary` 寫「確定要補／改什麼規格增量」。
    3. `add`：該 path 的規格內容由**本 plan** 新增（不論初始批次或本次變更批次；檔可能尚不存在）；path 必須是將來要落地的 explicit 路徑，禁止用 glob 代替。`impact_summary` 寫「新增什麼規格責任」。
-   4. `conditional_update`：是否改動取決於尚未鎖定的變更決策（常見：`contracts` 是否因 UI／API 外顯而必改）。`impact_summary` 必須寫清條件與兩側後果；若決策已在 `discovery-sourcing.md` 的 `Change request` 章節拍板，應改判為 `update` 或 `read_only_compare`，不要留模糊 conditional。
+   4. `conditional_update`：是否改動取決於尚未鎖定的變更決策（常見：`contracts` 是否因 UI／API 外顯而必改）。`impact_summary` 必須寫清條件與兩側後果；若決策已在 `discovery-sourcing.md` 的 `Resolved sourcing decisions` 拍板，應改判為 `update` 或 `read_only_compare`，不要留模糊 conditional。
    5. `remove`：檔在 plan 前已存在；本輪變更明文淘汰該既存規格檔。`impact_summary` 寫「淘汰什麼、依據哪段需求原文」。
    6. 常見誤判防呆（皆為步驟 3.1 淨需求推論的自然結果，列出以供核對）：本 plan 自己新增的檔，重推後仍是 `add`，**不得**因「檔已存在於 filesystem」翻成 `update`；plan 內新增又取消的檔不在 `$desired_entries`（entry 被 reconcile 刪除），**不得**改判 `remove`——`remove` 僅用於 plan 前既存檔。
 

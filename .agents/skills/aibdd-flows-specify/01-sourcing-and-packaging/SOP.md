@@ -51,7 +51,7 @@
 
 4. WRITE `${PLAN_REPORTS_DIR}/discovery-sourcing.md`（章節以 `aibdd-flows-specify/assets/templates/discovery-sourcing.template.md` 為準；語感對照 `aibdd-flows-specify/assets/templates/discovery-sourcing.example.md`）；UPDATE `${PLAN_SPEC}`（保留 1.2 需求全文，追加指向該報告的 pointer 與可選執行摘要）。本步僅允許 WRITE `${PLAN_REPORTS_DIR}/discovery-sourcing.md` 與 UPDATE `${PLAN_SPEC}`。
 
-5. THINK：在鎖定 `$package_naming_language` 下拆解 function package 數量（1..*）；bottom-up 規則見 `aibdd-flows-specify/rules/function-package-granularity.md`。每個 `$function_package_slug`（`NN-<slug>`）須在報告 `## Function package charters` 有職責一句、納入、排除、本輪變更型態。本步只產出判斷，不寫檔。
+5. THINK：在鎖定 `$package_naming_language` 下拆解 function package 數量（1..*）；bottom-up 規則見 `aibdd-flows-specify/rules/function-package-granularity.md`。每個 `$function_package_slug`（`NN-<slug>`）須在報告 `## Function package charters` 有職責一句、納入、排除、本 plan 變更型態。本步只產出判斷，不寫檔。
 
 6. CREATE DIRS ONLY：於 `${TRUTH_BOUNDARY_PACKAGES_DIR}` 建立或沿用各 `${TRUTH_FUNCTION_PACKAGE}`，僅建 `${FEATURE_SPECS_DIR}` 骨架。禁止建立 `dsl.yml`、`.feature`、`${CONTRACTS_DIR}`／`${DATA_DIR}` 內容或其它規格檔。目錄示意見 example 內 Spec structure。
 
