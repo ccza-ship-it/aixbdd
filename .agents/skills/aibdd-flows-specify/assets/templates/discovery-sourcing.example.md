@@ -37,7 +37,7 @@
 
 ## Spec structure（示意樹）
 
-> 與 `01-sourcing-and-packaging/SOP.md` 步驟 6 對齊用：boundary truth 與 function package 同在 `specs/` 根下，plan package 落在 `specs/plans/NNN-<slug>/`；邏輯 boundary 見 `architecture/boundary.yml`。
+> 與 `aibdd-flows-specify/01-sourcing-and-packaging/SOP.md` 步驟 6 對齊用：boundary truth 與 function package 同在 `specs/` 根下，plan package 落在 `specs/plans/NNN-<slug>/`；邏輯 boundary 見 `architecture/boundary.yml`。
 
 ```text
 specs/

@@ -1,6 +1,6 @@
 # WRITEBACK：本輪新增之 `.feature` → `${IMPACT_MATRIX_YML}`
 
-1. FOR EACH SOP 步驟 1 **本輪新建**之 `.feature`（缺檔而新建者；既有未改寫之 `.feature` **不**在此步——其已由 `01-sourcing-and-packaging` 依掃描寫入對應 entry）：TRIGGER `upsert`。
+1. FOR EACH SOP 步驟 1 **本輪新建**之 `.feature`（缺檔而新建者；既有未改寫之 `.feature` **不**在此步——其已由 Phase 01（`01-sourcing-and-packaging` 依掃描、或 `01-amending-and-repackaging` 依全批次淨需求重推）寫入對應 entry）：TRIGGER `upsert`。
    - `path`：指向**與其 `binds_feature` 同一檔案**、且**相對 `${TRUTH_BOUNDARY_ROOT}`** 之路徑，即 `packages/<NN-slug>/features/<NN>-<action-slug>.feature`（`${FEATURE_SPECS_DIR}` 去除 `${TRUTH_BOUNDARY_ROOT}` 前綴後之形態）。**禁止 glob**；不含 repo 外路徑。
    - `change_type`：`add`（本輪新增之 rule-less feature 骨架）。
    - `impact_summary`：現在式一句話，描述該 feature 的業務意圖／本輪新增之規格責任（對齊其對應 Action）。
