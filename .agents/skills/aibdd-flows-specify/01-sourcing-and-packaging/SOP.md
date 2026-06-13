@@ -23,7 +23,7 @@
 
   0.1 READ aibdd-flows-specify/rules/specs-root-layout.md 作為本 sub-SOP 內所有 ${PLAN_PACKAGES_DIR} / ${TRUTH_BOUNDARY_ROOT} / ${TRUTH_BOUNDARY_PACKAGES_DIR} / ${CONTRACTS_DIR} / ${DATA_DIR} 目錄結構路徑的 SSOT。
 
-1. Derive plan package 並 CREATE Dir：若 $PLAN_PACKAGE_SLUG 已由 caller-context 提供，ASSERT ${PLAN_PACKAGES_DIR}/$PLAN_PACKAGE_SLUG/ 於 filesystem 存在並沿用；否則依據本輪需求敘事與 Package 命名規則 PRINCIPLE derive $PLAN_PACKAGE_SLUG（NNN-<slug>）、CREATE ${PLAN_PACKAGES_DIR}/$PLAN_PACKAGE_SLUG/ 於 filesystem。
+1. Derive plan package 並 CREATE Dir：若 $PLAN_PACKAGE_SLUG 已由 caller-context 提供，ASSERT ${PLAN_PACKAGES_DIR}/$PLAN_PACKAGE_SLUG/ 於 filesystem 存在並沿用；否則依據本輪需求敘事與 slug 命名規則 PRINCIPLE derive $PLAN_PACKAGE_SLUG（NNN-<slug>）、CREATE ${PLAN_PACKAGES_DIR}/$PLAN_PACKAGE_SLUG/ 於 filesystem。
 
 2. SEARCH 並錨定 Scope（本步僅 READ／SEARCH／WRITE ${PLAN_SPEC}；${TRUTH_BOUNDARY_ROOT} 下 truth 不寫入；arguments.yml 不寫入）
 
@@ -49,7 +49,7 @@
 
 4. WRITE ${PLAN_REPORTS_DIR}/discovery-sourcing.md，格式以 aibdd-flows-specify/assets/templates/discovery-sourcing.template.md 為準，語感參照 aibdd-flows-specify/assets/templates/discovery-sourcing.example.md，但 Function package charters 章節先不紀錄任何 function packages；UPDATE ${PLAN_SPEC}，參照 aibdd-flows-specify/assets/templates/spec.template.md 之 Discovery Sourcing Summary 段落加上指向 discovery-sourcing.md 的 pointer 與可選執行摘要。
 
-5. THINK 拆解 function package 數量（1..*）並決定各 package 職責；bottom-up 規則見 aibdd-flows-specify/rules/function-package-granularity.md，$FUNCTION_PACKAGE_SLUG（`NN-<slug>`）依據 Package 命名規則 PRINCIPLE 命名。本步只產出判斷，不寫檔。
+5. THINK 拆解 function package 數量（1..*）並決定各 package 職責；bottom-up 規則見 aibdd-flows-specify/rules/function-package-granularity.md，$FUNCTION_PACKAGE_SLUG（`NN-<slug>`）依據 slug 命名規則 PRINCIPLE 命名。本步只產出判斷，不寫檔。
 
 6. CREATE Dirs Only：於 ${TRUTH_BOUNDARY_PACKAGES_DIR} 建立或沿用各 ${TRUTH_FUNCTION_PACKAGE}，並僅建 ${FEATURE_SPECS_DIR} 骨架。禁止建立 dsl.yml、.feature、${CONTRACTS_DIR}、${DATA_DIR} 內容或其它規格檔。
 

@@ -22,11 +22,12 @@ metadata:
 - 本 SOP 唯一允許調用工具產生、修改或刪除的 artifact，只能來自於下述 SOP 中透過 CREATE / WRITE / UPDATE / DELETE 明確標注的步驟。
 - 嚴禁除上述 target 外，其他任何 READ / SEARCH / THINK 所觀察到的路徑，都只可作為分析依據，不得被順手建立、寫入、更新、刪除或補骨架。
 
-## PRINCIPLE: Plan 與 Function Package 命名規則
+## PRINCIPLE: slug 命名規則
 
-所有落地 filesystem 的 package slug（plan package 的 NNN-<slug>、function package 的 NN-<slug>）之 <slug> 主體，一律以專案規格語系（PROJECT_SPEC_LANGUAGE in arguments.yml）並遵守以下規則書寫。
+凡落地 filesystem 的 slug（plan package 的 NNN-<slug>、function package 的 NN-<slug>、feature／activity 等規格檔名之 <NN>-<slug> 等）之 <slug> 主體，一律以專案規格語系（PROJECT_SPEC_LANGUAGE in arguments.yml）並遵守以下規則書寫。
 
 - 技術名詞（API field、DSL token、operationId、domain acronym 如 CRM／SOP／API／OAuth）可保留英文原文；其餘 slug body 不得整段翻成英文。
+- 落地 filesystem 的 slug 與檔名須 Windows-safe，不得含 \ / : * ? " < > | 及結尾空白或點號。
 - 嚴禁以 romanization（漢語拼音／注音／粵拼）、kana、romaji 等 transliteration 充當「為避該語系字元」的 fallback。落到 filesystem 的 slug 必須讀得懂、可直接還原為該語系文字。
 - 語系為 zh-hant：
    - Good：001-會員登入記錄登入時間、001-CRM學員旅程階段SOP、packages/01-會員登入
