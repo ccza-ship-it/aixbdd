@@ -63,19 +63,9 @@
 
   5.1 READ aibdd-flows-specify/02-activity-analyze/reasoning/activity-control-flow.md。
   
-  5.2 針對 $UAT_FLOWS 每一條 flow，依 activity-control-flow.md 建模成完整有向圖作為 activity analysis，包含 name／id／initial／finals[]／actors[]／nodes[]（Action｜Decision｜Fork｜Merge｜Join，Action 節點帶 display_id、@actor、description、binds_feature）。建模未盡之處記入該 flow 的 graph gaps。
+  5.2 針對 $UAT_FLOWS 每一條 flow，依 activity-control-flow.md 建模成完整有向圖，包含 name／id／initial／finals[]／actors[]／nodes[]（Action｜Decision｜Fork｜Merge｜Join，Action 節點帶 display_id、@actor、description、binds_feature）。建模未盡之處記入該 flow 的 graph gaps；將該 flow 之 name／id／initial／finals／actors／nodes 與 graph gaps 整體綁為該 flow 之 $ACTIVITY_ANALYSIS。
 
-6. DELEGATE /aibdd-form-activity 以 WRITE .activity：
-
-  6.1 針對每個 $UAT_FLOWS DELEGATE /aibdd-form-activity：
-    - target_path：${ACTIVITIES_DIR}/<activity_relpath>。
-    - format：.activity。
-    - reasoning.activity_analysis.activity：該 flow 之 activity analysis。
-    - reasoning.activity_analysis.graph_gaps：該 flow graph_gaps。
-    - reasoning.activity_analysis.exit_status：graph_gaps 空為 complete，非空則 blocked。
-    - mode：須更新既有檔須帶 overwrite，同一 flow 對應之 .activity 已存在且建模無實質變更時不重寫。
-
-  6.2 依所得語法驗證報告處理：ok 為 false 則修正後重新進行控制流建模；form-activity 回傳不是停點，每次 DELEGATE 返回後立即處理回報並續跑，不得停下等待使用者指示。
+6. 針對 $UAT_FLOWS 每條 flow DELEGATE /aibdd-form-activity，交付該 flow 之 $ACTIVITY_ANALYSIS 並落檔 target_path 定為 ${ACTIVITIES_DIR}/<activity_relpath>，既有檔需更新且建模有實質變更時帶 overwrite；所須輸入與 .activity 格式參照 aibdd-form-activity/references/role-and-contract.md。form activity 建模落檔不是停點，每次返回後依語法驗證報告處理，ok 為 false 則修正後重新建模，不停下等待使用者指示。
 
 7. DELETE $OBSOLETE_ACTIVITIES：若 $OBSOLETE_ACTIVITIES 非空，DELETE ${ACTIVITIES_DIR} 下該些 .activity；刪除清單於結尾報告列出。
 
