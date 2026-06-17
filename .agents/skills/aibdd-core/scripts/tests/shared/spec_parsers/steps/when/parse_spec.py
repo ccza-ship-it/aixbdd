@@ -13,7 +13,7 @@ from pathlib import Path
 
 from behave import when
 
-from dsl_cli.spec_parsers.openapi import OpenAPISpecParser
+from shared.spec_parsers.openapi import OpenAPISpecParser
 
 
 @contextmanager
@@ -24,13 +24,6 @@ def _chdir(target: Path):
         yield
     finally:
         os.chdir(prev)
-
-
-@when("OpenAPISpecParser parses the last file")
-def step_parse_openapi(context):
-    rel = context.last_file_path.relative_to(context.tmp_root)
-    with _chdir(context.tmp_root):
-        context.parts = OpenAPISpecParser().parse(rel)
 
 
 @when("OpenAPISpecParser parses the last file and captures the exception")
