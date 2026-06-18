@@ -10,8 +10,8 @@ from typing import Literal
 
 class PartKind(str, Enum):
     api_operation = "api_operation"
-    dbml_table = "dbml_table"
-    dbml_ref = "dbml_ref"
+    table = "table"
+    ref = "ref"
 
 
 @dataclass(frozen=True)
@@ -44,8 +44,10 @@ class ApiOperationPart(Part):
     path_escaped: str
     method: Literal["get", "post", "put", "patch", "delete", "options", "head"]
     operation_id: str
+    summary: str = ""
     request_inputs: tuple[RequestInput, ...] = ()
     response_properties: tuple[ResponseProp, ...] = ()
+    auth_required: bool = False
 
 
 @dataclass(frozen=True)
@@ -61,14 +63,14 @@ class Column:
 
 
 @dataclass(frozen=True)
-class DbmlTablePart(Part):
+class TablePart(Part):
     table_name: str
     columns: tuple[Column, ...] = ()
     not_null_columns: tuple[Column, ...] = ()
 
 
 @dataclass(frozen=True)
-class DbmlRefPart(Part):
+class RefPart(Part):
     from_table: str
     from_column: str
     to_table: str
