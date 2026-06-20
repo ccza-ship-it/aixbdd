@@ -16,7 +16,7 @@
 
 2. 載入校準基準
 
-   2.1 EXECUTE command 以 `read`（無 filter）讀出 `${IMPACT_MATRIX_YML}` 全部 impact 作為 `$CURRENT_MATRIX` 並對使用者輸出，CLI 用法詳見 `aibdd-core/references/impact-matrix/cli-usage.md`。
+   2.1 EXECUTE command 以 `read`（無 filter）讀出 `${IMPACT_MATRIX_YML}` 全部 impact 作為 `$CURRENT_MATRIX` 並對使用者輸出，CLI 用法詳見 `aibdd-core::references/impact-matrix/cli-usage.md`。
 
    2.2 READ `${PLAN_SPEC}` 內最新批次的需求敘事作為 `$RAW_IDEA`。
 
