@@ -36,8 +36,14 @@ metadata:
 
 ## PRINCIPLE: 提問／澄清只委派 clarify-loop
 
-- 凡須向使用者提問或做結構化澄清（選 FP／feature、測試意圖或資料流不明、型別歸屬或欄位角色難判、是否重構 `.feature`、example 展開確認等），本 SOP 一律以**一個 `DELEGATE /clarify-loop`** 批次提問，由其決定提問工具與白話文轉譯。
+- 凡須向使用者提問或做結構化澄清（選 FP／feature、測試意圖或資料流不明、型別歸屬或欄位角色難判、是否變更／重構 `.feature`、example 確認等），本 SOP 一律以**一個 `DELEGATE /clarify-loop`** 批次提問，由其決定提問工具與白話文轉譯。
+- 凡屬 step 7 的「逐 example」提問，一律以 `assets/example-question.template.md` 組裝 payload，**Context 區必帶該 example 的完整 GWT 全文**，讓使用者在完整脈絡下回答。
 - 【嚴禁】在 SOP 內 inline 逐題提問、自行 classify／branch 使用者回覆，或在聊天中自組問句代替 clarify-loop。
+
+## PRINCIPLE: feature 非 SSOT，先驗 step 再推 isa
+
+- `.feature`（SBE 產出）為**待驗證候選、非 SSOT**。每個未定義 step 先驗測試意圖與合理性（見 `rules/dsl-step-reasoning.md`），確認正確才推 isa_step。
+- 【嚴禁】在不正確的 step 上推理 isa_step；合理性未過即先經 `/clarify-loop`（帶完整 Example）確認後變更 `.feature`，再續。
 
 # SOP
 
@@ -86,8 +92,10 @@ metadata:
    **【強制：小步快出＋逐例互動】** 一輪只取「單一個」example：聚焦快速跑 7.1→7.4 產出它的 dsl_step，接著 7.5 必停下互動。【嚴禁】一個回合內連做多個 example、預讀或推理後續 example、或一次把多個 example／整份 isa.yml／dsl.yml 大量寫滿。產出要快、呈現要精簡，[THINK] 與上下文牢牢限縮在當前這一個 example。
 
    7.1 ASSERT 跳過——該 example 的每個業務 Step 若在對應 dsl.yml 都已有 dsl_step 且狀態註解為 `[done]` → 跳過，不重做。
-   7.2 THINK 測試意圖——[THINK] 對照 step 6 已載入的真相，**聚焦且快速**地讀該 example 的 GWT 全文 ＋ 所屬 `Rule:`，推出本例在驗什麼、資料怎麼流（誰建立識別碼、誰引用）、預期與 negative；只看這一個 example，不預讀後續、不做與本例無關的鋪陳。
-   7.3 DERIVE＋CREATE dsl_step——對該 example 每個尚未 `[done]` 的業務 Step，快速定義：
+   7.2 THINK＋驗證 step——[THINK] 依 `rules/dsl-step-reasoning.md`、對照 step 6 已載入的真相，**聚焦且快速**地對該 example 的每個未定義 step：先讀測試意圖（驗什麼／資料流／預期與 negative），再判合理性（自足、與 `Rule:` 一致、單一意圖、斷言有意義、資料流可接、可對應 isa）。只看這一個 example，不預讀後續。
+       - 合理性未過 → 該 step 需變更：以 `assets/example-question.template.md`（情境 A）帶完整 Example，DELEGATE `/clarify-loop` 取得同意後才改 `.feature`（依 `rules/feature-restructure.md`）。
+       - 【閘門】step 全部合理（或變更後已正確）才進 7.3；**絕不在不正確的 step 上推 isa**。
+   7.3 DERIVE＋CREATE dsl_step——（7.2 閘門已過、step 確認正確後）對該 example 每個尚未 `[done]` 的業務 Step，快速定義：
        - 尚無對應 dsl_step → 在該 `{feature}.dsl.yml` 新建一條（format 對得上該句，`{name}` 佔位）；dsl_step 一律 per-feature，不跨 FP／feature 共用；
        - 依 `rules/builtin-instruction-decision-tree.md` 選內建型別（一句可展開多條有序 isa_step）；
        - 依 `rules/symbol-system-usage.md` 決定每個 table 欄位的符號，NOT NULL 但與情境無關的欄位填預設值（集中放 `params`）；
@@ -95,9 +103,9 @@ metadata:
        - 步驟結構不利對應 isa（如一個 api_call 被拆成兩句）→ 依 `rules/feature-restructure.md` 經 `/clarify-loop` 同意後重構 `.feature`，再依新句建立 dsl_step。
        WRITE 進該 dsl_step 的 `isa_steps`（狀態註解先維持 `# [kw]`、尚未標 done）。
    7.4 DERIVE 抽變數（format 參數化）——判斷本輪 dsl_step 業務句中、會在「同 feature 其他 example」變動的字面值（人名、數字、日期等），抽成 format 變數 `{Name}`（搭配 isa_steps 的 `{{Name}}` 內插或 `params` 預設），使同 feature 後續 example 能重用同一條 dsl_step；列舉型固定描述維持字面、不抽。**抽變數與重用僅限該 feature 內，不跨 FP 及 feature**。
-   7.5 STOP ＋ 互動——把本 example 剛寫入的 dsl_step **精簡呈現該 dsl.yml 片段即可（不渲染整段 .isa.feature、不貼大量內容）**，DELEGATE `/clarify-loop` 收「確認／要調整／繼續下一個」。**STOP：未得到使用者回應前，絕不進入下一個 example。** 使用者確認 → 把該 dsl_step 狀態註解改標 `# [kw] [done]`，再取下一個 example；要調整 → 回 7.3 修訂後重 7.5。
+   7.5 STOP ＋ 互動——以 `assets/example-question.template.md`（情境 B）組裝：Context 帶完整 Example，附剛寫入的 dsl_step **精簡片段（不渲染整段 .isa.feature、不貼大量內容）**，DELEGATE `/clarify-loop` 收「確認／調整／下一個」。**STOP：未得到使用者回應前，絕不進入下一個 example。** 確認 → 把該 dsl_step 狀態註解改標 `# [kw] [done]`，取下一個 example；調整 → 回 7.3 修訂後重 7.5。
 
-   貫穿 step 7 的規則 [DISCUSS]——卡住即委派澄清：7.2 的意圖／資料流、7.3 的型別歸屬（內建哪型／是否 custom）或欄位角色（斷言重點 vs NOT NULL 陪襯）、或步驟結構是否該重構，一旦無法有把握判定（資訊不足、規格含糊、兩解皆通），停止臆測，把卡住的點批次成疑問 DELEGATE `/clarify-loop` 澄清，取得答覆再續，不得帶猜測就寫入 dsl_step。
+   貫穿 step 7 的規則 [DISCUSS]——卡住即委派澄清：7.2 的意圖／合理性／資料流、7.3 的型別歸屬（內建哪型／是否 custom）或欄位角色（斷言重點 vs NOT NULL 陪襯），一旦無法有把握判定（資訊不足、規格含糊、兩解皆通），停止臆測，以 `assets/example-question.template.md`（情境 C，仍帶完整 Example）DELEGATE `/clarify-loop` 澄清，取得答覆再續，不得帶猜測就寫入 dsl_step。
 
    本 step 允許寫入：`{feature}.dsl.yml` 的 dsl_step 與狀態註解、FP 層 isa.yml 的 custom 契約、以及經 `/clarify-loop` 同意後重構的 `.feature`（僅步驟結構、不改驗收意圖）。【嚴禁】未經 `/clarify-loop` 同意逕改 `.feature`；【嚴禁】改 spec／contracts／data／既有 isa 內建定義；【嚴禁】在 custom 寫 Step Definition 實作。 
     
