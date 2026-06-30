@@ -101,10 +101,16 @@ metadata:
    每個 example 的 sub-SOP 返回後，**重跑 step 5 的 `build_worklist.py` 刷新 worklist**（反映剛標的 `# done`），再取下一個 `pending` example；直到 `$TARGET_FEATURES` 內無 `pending`。
    **【強制：逐 example 互動】** 嚴禁一個回合內連做多個 example；sub-SOP 內的逐 dsl_step 確認沒過前，不得跳下一個。
 
-10. FP 級去重（收尾）——loop 結束後，RUN 下列偵測器找出「同一條 dsl_step 跨 ≥2 feature 重複、未上移」的定義：
+10. FP 級去重 + name 唯一性 gate（收尾，**強制硬閘門**）——**所有選定 feature 的 example 全部 `# done` 後**才執行；這是宣告完成前的決定性 gate，不可略過、不可只憑自我回報「已收斂」（曾發生 agent 謊報無重複、實際 16 條未上移、展開階段被阻斷）。
+
+    a. RUN 偵測器（其 exit code 為 gate）：
 
     ```bash
     python3 .claude/skills/aibdd-dsl-refine/scripts/cli/detect_shared_dsl.py --packages-dir ${TRUTH_BOUNDARY_PACKAGES_DIR} --fp $FP_SLUG
     ```
 
-    有回報 → 依 `01-refine-example/rules/example-refactor.md` §2 把該條 hoist 到 `$FP_PACKAGE_DSL`、刪各 `{feature}.dsl.yml` 重複（保留 `# done`），經 `/clarify-loop` 同意後才動；hoist 後重跑 step 5 確認 worklist 仍空。本步只偵測＋重構，不改驗收意圖。無回報 → 完成。
+    b. **exit 3（有跨 feature 重複）**：對回報的每一條都要處理，依 `01-refine-example/rules/example-refactor.md` §2 hoist 到 `$FP_PACKAGE_DSL`、刪各 `{feature}.dsl.yml` 的重複（**保留 `# done`**）。
+       - **name 重複**為阻斷級（dsl.yml 規則：dsl_step name 在其 FP 解析範圍／祖先鏈內必須唯一；重複會在展開時造成名稱衝突 `DSL_DEFINITION_DUPLICATE_NAME`、阻斷整個 FP、連 dry-run 都掃不到）→ **務必全部上移**；標「同名不同 format」者先對齊 format 再上移。
+       - format 重複（收斂級）一併上移。
+    c. **重跑 a，直到 exit 0**。**唯有 detect exit 0 才得宣告完成**；仍 exit 3 代表還有重複，未清不得結束。
+    d. 清乾淨後重跑 step 5 `build_worklist.py` 確認 worklist 仍空。本步只重構結構、不改驗收意圖。

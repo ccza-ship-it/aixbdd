@@ -1,6 +1,6 @@
 # 符號系統使用判斷
 
-填 isa_steps 的 table 時，用框架符號表達資料流與斷言。每條 isa_step 的 instruction
+填 isa_steps 的 table 時，用 ISA 符號表達資料流與斷言。每條 isa_step 的 instruction
 須對上專案 `specs/isa.yml`（及各 package 的 `*.isa.yml`）某條 instruction 的 format；
 指令型別與 format 一律以該專案 isa.yml 為準，本檔不重抄指令型別。
 
@@ -15,7 +15,7 @@ dsl.yml 的 table 值同時夾雜兩種記號，展開時機不同：
 
 所以 `'>{{alias}}.id': '<userId'`：`{{alias}}` 先被換成 Alice，留下 ISA 的 `>Alice.id / <userId` 捕獲對。
 
-## 三套 ISA 符號（框架 SSOT）
+## 三套 ISA 符號（符號系統 SSOT）
 
 | 系統 | 用途 | 代表語法 |
 |------|------|----------|

@@ -66,8 +66,15 @@ fps:
 - read-only 對 specs（只寫 worklist 本身）。
 - 合規性檢查、DSL→ISA、變更建議等語意工作不在腳本範圍（屬 AI/其他 rule）。
 
-## FP 級去重偵測（loop 收尾，read-only）
+## FP 級去重 / name 唯一性偵測（loop 收尾，read-only 決定性 gate）
 
-`scripts/cli/detect_shared_dsl.py` 掃一個 FP 內各 `{feature}.dsl.yml`，回報「同 format 跨 ≥2 feature
-重複、且未上移到 `{FP}/dsl.yml`」的 dsl_step，供主 SOP step 10 補抽到 FP 層。只偵測回報、不改檔；
-實際 hoist／刪重複由 AI 編輯（保留 `# done`）並經 `/clarify-loop` 同意。
+`scripts/cli/detect_shared_dsl.py` 掃一個 FP 內各 `{feature}.dsl.yml`，回報未上移到 `{FP}/dsl.yml` 的
+跨 feature 重複：
+
+- **name 跨 ≥2 feature 重複（阻斷級）**：dsl.yml 規則 —— `name` 在同一 FP 解析範圍（祖先鏈）內必須唯一；
+  重複會在展開時 `DSL_DEFINITION_DUPLICATE_NAME` 阻斷。**必須**上移。
+- **format 跨 ≥2 feature 重複（收斂級）**：應上移收斂、避免 ambiguous match。
+
+只偵測回報、不改檔；hoist／刪重複由 AI（保留 `# done`）執行。**exit code 即 gate**：有重複 → exit 3、
+已收斂 → exit 0。主 SOP step 10 須重跑到 exit 0 才得宣告完成（不可只憑自我回報；曾發生 agent 謊報無重複
+而實際 16 條未上移）。

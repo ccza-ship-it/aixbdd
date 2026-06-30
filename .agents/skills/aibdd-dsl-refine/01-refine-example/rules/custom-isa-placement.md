@@ -26,14 +26,14 @@ custom 的真相同樣是 isa.yml，但分層。判斷該 custom 是否已定義
 phase 2 只寫 isa.yml 的**契約**，供 Linter 驗證 feature 用法；
 Cucumber Step Definition（Java 實作）由 **RED 階段**完成，本階段不得寫實作。
 
-契約欄位（對應框架 custom config，外加一個 AIBDD 註記欄 `intent`）：
+契約欄位（custom isa 契約，外加一個 AIBDD 註記欄 `intent`）：
 
 | 欄位 | 必填 | 說明 |
 |------|------|------|
 | `name` | 是 | 指令唯一名，同檔不得重複 |
 | `format` | 是 | regex，以 `(?P<name>...)` 具名群組擷取參數，`^…$` 包住整句 |
 | `instruction_type` | 是 | 固定 `custom` |
-| `intent` | 是 | **測試意圖／行為**（給下游 red-execute 實作 step def 用）。一句話描述「這條 custom 觀察到的行為」，含步驟角色（Given 前置／When 動作／Then 斷言）。**只寫 WHAT（可觀察行為），不寫 HOW（不提 context 欄位、status code 範圍、程式呼叫）**。非框架欄位，框架忽略未知鍵 |
+| `intent` | 是 | **測試意圖／行為**（給下游 red-execute 實作 step def 用）。一句話描述「這條 custom 觀察到的行為」，含步驟角色（Given 前置／When 動作／Then 斷言）。**只寫 WHAT（可觀察行為），不寫 HOW（不提 context 欄位、status code 範圍、程式呼叫）**。為 AIBDD 註記欄，不影響 isa 指令執行（展開／執行階段忽略未知鍵） |
 | `data_format` | 視情況 | `data_table` / `json`（有 payload 時） |
 | `export_vars` | 選填 | 輸出契約：執行後導出哪些 `$var`。key 可用 `{{param}}` 插值 format 群組；值含 `type`(String/Number/Boolean)＋`description`＋選填 `example`／`nullable` |
 | `datatable_parameters` | 選填 | 輸入契約：DataTable 欄位 schema。每欄 `type`(String/Number/Boolean/Time)＋`description`＋選填 `required`／`enums` |
