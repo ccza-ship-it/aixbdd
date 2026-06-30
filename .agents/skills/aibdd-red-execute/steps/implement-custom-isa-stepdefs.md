@@ -17,9 +17,10 @@
 - root：`${BOUNDARY_ISA}`
 - 本輪 scope feature 所屬 package 的 `${TRUTH_BOUNDARY_PACKAGES_DIR}/<package>/*.isa.yml`
 
-對每條 custom，BIND 其契約欄位：`name`、`format`（regex，含具名群組）、`data_format`
-（`data_table` / `json`，若有）、`datatable_parameters`（若有）、`export_vars`（若有）。
-`instruction_type` 非 custom（builtin）一律 SKIP。
+對每條 custom，BIND 其契約欄位：`name`、`format`（regex，含具名群組）、**`intent`（測試意圖／行為，含
+Given/When/Then 角色——實作 body 的唯一依據）**、`data_format`（`data_table` / `json`，若有）、
+`datatable_parameters`（若有）、`export_vars`（若有）。`instruction_type` 非 custom（builtin）一律 SKIP。
+若某 custom 缺 `intent` → 停下來回報 `stop_reason: custom_missing_intent`（dsl-refine 應補）。
 
 ## 2. 比對測試程式碼，篩出「缺 StepDefinition」的 custom —— 來源：測試碼
 
@@ -31,20 +32,38 @@ READ `${STEP_DEFINITIONS_RUNTIME_REF}` 取得 step def 存放 glob。對每條 c
 
 ## 3. 逐條實作待實作的 custom StepDefinition
 
-先 READ `${STEP_DEFINITIONS_RUNTIME_REF}`、`${FIXTURES_RUNTIME_REF}`，理解本專案 step def 的共通寫法
-（依賴注入、HTTP 互動方式、共用 helper、禁止事項）。對每條待實作 custom：
+先 READ `${STEP_DEFINITIONS_RUNTIME_REF}`、`${FIXTURES_RUNTIME_REF}` 理解共通寫法（注入、HTTP 互動、
+共用 helper、禁止事項）。**參照範本的優先序**：
 
-1. **matcher**：把 isa.yml `format` 的具名群組 `(?P<x>...)` 轉成執行框架的擷取群組
-   （Cucumber Java：改為無名 `(...)`、方法參數依序對應）。matcher 字串須與 `format` 主幹一致。
-2. **參數**：`format` 擷取的群組 ＋（`data_format: data_table` 時）`datatable_parameters` 宣告的欄位，
-   都要從 Gherkin 接進來。欄位 `required: false` 但有 `default_value` 者，DataTable 未提供時在程式碼內寫死預設。
-3. **實作**：依該 custom 的測試意圖寫**真實**邏輯——前置／狀態類 custom 真的建狀態（走專案的 DB／fixture
-   共用 helper），VAR alias 經 `ScenarioContext` 存取（例如 `alias + ".id"`）；產出須冪等。
-4. **export**：若契約有 `export_vars`，執行後把對應 `$var` 寫回 ScenarioContext 供後續 step 引用。
+1. **既有 custom step def**（grep step glob 找形狀最近者）—— 首選範本。
+2. 該 custom 若屬「外部資源」類 → 參照 boundary `handlers/external-stub.md`。
+3. 其餘 builtin handler（state-builder / operation-invoke / response-verify …）**一律不參照**——那是框架已提供的
+   builtin 形狀，custom 套它只會把 custom 又寫成 builtin 樣。
+
+對每條待實作 custom：
+
+1. **matcher**：`format` 具名群組 `(?P<x>...)` → 執行框架擷取群組（Cucumber Java：無名 `(...)`、參數依序）。
+   matcher 字串須與 `format` 主幹一致。
+2. **參數**：`format` 群組 ＋（`data_format: data_table` 時）`datatable_parameters` 欄位都從 Gherkin 接；
+   `required: false` 但有 `default_value` 者，DataTable 未提供時在程式碼內寫死預設。
+3. **行為（由 `intent` 驅動）**：以契約的 `intent` 為**唯一行為依據**——它已寫明步驟角色（Given/When/Then）
+   與「觀察到什麼行為」。據此**推論**該 step def 要讀什麼（如 `last_response` / DB）、斷言什麼或做什麼，
+   寫成**真實**邏輯（前置類真的建狀態、斷言類真的斷言）；VAR alias 經 `ScenarioContext` 存取。
+   `intent` 只給 **WHAT**；**HOW**（讀哪個 context 物件、用什麼斷言、查哪張表）由你依專案範本推論。
+   - **推論不出、或兩解皆通 → 停下來，帶該 custom 的 `format`＋`intent` DELEGATE `/clarify-loop` 與使用者確認，
+     不得臆測寫入。**
+4. **export**：有 `export_vars` → 執行後把對應 `$var` 寫回 ScenarioContext 供後續 step 引用。
+
+## 互動 / STOP
+
+- 本步驟為**人在環中**：當 `intent` 不足以決定實作，走 `/clarify-loop` 與使用者澄清。
+- **headless／批次模式無法互動 → 遇到需澄清的 custom 即 STOP**，回報 `stop_reason: custom_intent_needs_clarification`
+  並列出待澄清項，不要臆測硬寫。
 
 ## 禁止 / 合法紅燈
 
 - 【嚴禁】為 builtin instruction 手寫 StepDefinition（框架已提供，重複註冊會衝突）。
+- 【嚴禁】拿 builtin handler 當 custom 的實作範本（見上「參照優先序」第 3 點）。
 - 【嚴禁】step def body 用 `pass`／空 body／placeholder throw／`RED-PENDING`——屬 false red，
   見 `references/legal-red-classification.md`。
 - 【嚴禁】從 `.isa.feature` 反推要實作什麼；一律以 isa.yml 契約為準。
