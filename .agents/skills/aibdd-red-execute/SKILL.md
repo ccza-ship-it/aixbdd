@@ -51,7 +51,14 @@ metadata:
 
 3. BIND active boundary：以已 RESOLVE 的 `${PRESET_KIND}` 作為本專案 active boundary；值為空就停下來，回報 `stop_reason: missing_active_boundary`。BIND 並確認此路徑存在：`.claude/skills/aibdd-core/assets/boundaries/${PRESET_KIND}/`
 
-4. 針對 EXECUTE `${FEATURE_ARCHIVE_RUNTIME_REF}`：我們要遵守此專案的「Feature Files」歸檔 SOP，來將 Feature Files 用特定方式歸檔，會有這步驟的原因是：Feature File 必須配合專案所用的 BDD 測試框架，有些測試框架會嚴格要求 Feature file 所在位置約束（好比 Java cucumber 下 Feature file 必須放在 resources 底下，而 python behave 下 feature file 必須和測試程式碼放一塊）。此 SOP 檔案被放置在 `${FEATURE_ARCHIVE_RUNTIME_REF}` 所指定的路徑中。
+4. Feature 歸檔：把 spec 產物放到測試框架要求的位置（Java cucumber 須在 resources 下；python behave 要與測試碼放一塊）。依 `${INSTALL_SPECTRUM}` 分流：
+
+   - **`${INSTALL_SPECTRUM}` 為 true（框架 / preprocess）** → RUN 歸檔腳本（**mirror；嚴禁手動複製、禁手改 target**）。它把 specs 的 feature+dsl+isa+api+data mirror 到 test resources（4 target，clean-then-copy；來源刪檔下游一併移除；還沒完成 dsl-refine〔無同名 `.dsl.yml`〕的 feature 不搬）：
+     ```bash
+     python3 .claude/skills/aibdd-red-execute/scripts/cli/archive_specs.py --specs-dir ${SPECS_ROOT_DIR} --resources-dir src/test/resources
+     ```
+     產物為 specs 的衍生物；下次歸檔重跑本腳本即可。
+   - **否則（未安裝框架）** → EXECUTE `${FEATURE_ARCHIVE_RUNTIME_REF}`（把可跑 `.feature` 依 per-project 歸檔 SOP 放進 runner 樹）。
 
 5. EXECUTE `${RED_PREHANDLING_HOOK_REF}`：在我們實際要撰寫測試程式碼 (紅燈階段) 之前，必須先遵守此專案配置的「紅燈前置處理 SOP (RED_PREHANDLING_HOOK)」來進行測試前置處理。為何需要設置 prehandling hook？好比說一個例子：若是後端專案可能會先需要定義 Database 環境，才能跑 testcontainer 測試；但上述只是例子，你在此步驟唯一該做的事情只有嚴格遵照 `${RED_PREHANDLING_HOOK_REF}` 所指路徑檔案中的每一步。
 
