@@ -28,6 +28,6 @@
 4. WAIT 所有 feature workers 完成。
     1. COLLECT 全部 worker 回傳的 `$questions`。
     2. 若 `$questions` 為空：本 phase 完成。
-    3. 若 `$questions` 非空：按 feature 維度 merge / dedupe 成批次 clarify payload，DELEGATE `/clarify-loop`。
+    3. 若 `$questions` 非空：按 feature 維度 merge / dedupe 成批次 clarify payload，DELEGATE `/clarify`。
     4. WAIT clarify 結果，然後只重跑受影響的 feature worker。
     5. 回到步驟 4.1，直到 `$questions` 為空才可離開本 phase。

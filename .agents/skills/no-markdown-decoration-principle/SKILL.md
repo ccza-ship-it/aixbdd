@@ -78,14 +78,14 @@ Before（不建議）:
 ```markdown
 | 能力 | 說明 |
 | --- | --- |
-| clarify-loop | 當 planner 產出一批待澄清問題時，這個 skill 會先把技術語言翻成白話，再一次性向使用者提問，最後把答案同步回工作流，讓後續 planner 能繼續推進。 |
+| clarify | 當 planner 產出一批待澄清問題時，這個 skill 會先把技術語言翻成白話，再一次性向使用者提問，最後把答案同步回工作流，讓後續 planner 能繼續推進。 |
 | specify | 當使用者剛提出功能想法時，這個 skill 會先把需求整理成結構化 spec package，作為後續 clarify、tasks、implement 的上游輸入。 |
 ```
 
 After（應產出）:
 
 ```markdown
-### clarify-loop
+### clarify
 
 - 角色: 工作流中段的澄清 skill
 - 說明: 當 planner 產出一批待澄清問題時，先把技術語言翻成白話，再一次性向使用者提問，最後把答案同步回工作流，讓後續 planner 能繼續推進。

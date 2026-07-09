@@ -15,4 +15,4 @@ TRIGGER handler-candidate apply script：
       2. OUTCOME
          1. 指定 `.feature` 原地改寫；每個 `# @dsl` block 的 `# candidates:` 區塊由 script enrich。
          2. stdout 回傳 JSON report，內含 `changed_count`、`feature_count`、`changed_features`、`updated_block_count`、`questions`、`report.summary`。
-   2. 若 $questions 非空：針對 $questions DELEGATE `/clarify-loop` 提問來修正錯誤，若錯誤判斷都修正完畢之後，則重複執行 2.1。
+   2. 若 $questions 非空：針對 $questions DELEGATE `/clarify` 提問來修正錯誤，若錯誤判斷都修正完畢之後，則重複執行 2.1。

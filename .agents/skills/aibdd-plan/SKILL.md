@@ -24,7 +24,7 @@ metadata:
 
 - Discovery 已 accepted 的 `${ACTIVITIES_DIR}/**`、rule-only `${FEATURE_SPECS_DIR}/**`、actor 目錄、`${IMPACT_MATRIX_YML}`、`${PLAN_REPORTS_DIR}/function-packaging.md`、`${PLAN_SPEC}` 之需求全文 **為唯讀輸入**；本 skill **不得**改寫任何 activity／feature 內容、不得改 atomic rule 文字、不得新增 Scenario／Background／Examples。
 - `${IMPACT_MATRIX_YML}` 僅能經 `impact_matrix_cli.py` 的 `write`／`add-spec`／`transit-status`／`remove` 維護本 phase 派生出的 contracts／data impact；不得手改 YAML 本體。
-- 若發現上游真相不足以推導技術計畫，必須**回頭委派** `/clarify-loop`（profile=`aibdd-plan`），由 Discovery owner 修正後再續跑；**禁止**就地補洞、**禁止**寫弱 placeholder DSL 讓下游 bypass。
+- 若發現上游真相不足以推導技術計畫，必須**回頭委派** `/clarify`（profile=`aibdd-plan`），由 Discovery owner 修正後再續跑；**禁止**就地補洞、**禁止**寫弱 placeholder DSL 讓下游 bypass。
 
 ## PRINCIPLE: 真相格式委派 specifier skills
 
@@ -32,9 +32,9 @@ metadata:
 - 本 skill **不得**手寫任何 OpenAPI／DBML／`.stories.tsx`／`.tsx` 檔；只負責 DERIVE caller payload 並以 **`DELEGATE`** 把 payload 交給對應 specifier skill。一個 slice／一個 entity／一個 component 為一次 DELEGATE。
 - 違者視為 ownership 違規，**立即 STOP**。
 
-## PRINCIPLE: 澄清只委派 clarify-loop
+## PRINCIPLE: 澄清只委派 clarify
 
-- 凡須向使用者做**結構化澄清**（locale 選擇、scope 模糊、上游真相缺洞、specifier 不支援等），各 sub-SOP 僅用 **一行 `DELEGATE /clarify-loop`**。
+- 凡須向使用者做**結構化澄清**（locale 選擇、scope 模糊、上游真相缺洞、specifier 不支援等），各 sub-SOP 僅用 **一行 `DELEGATE /clarify`**。
 - **禁止**在 sub-SOP 內 inline classify／branch user reply；**禁止**聊天逐題代替。
 
 ## PRINCIPLE: STRICT SOP

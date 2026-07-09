@@ -20,6 +20,6 @@
 3. WAIT 所有 feature workers 完成。
    1. COLLECT 全部 worker 回傳的 `$NEED_TO_CLARIFY`。
    2. 若 `$NEED_TO_CLARIFY` 為空：本 phase 完成。
-   3. 若 `$NEED_TO_CLARIFY` 非空：依 feature 維度 merge / dedupe，整理成批次 clarify payload，DELEGATE `/clarify-loop`。
+   3. 若 `$NEED_TO_CLARIFY` 非空：依 feature 維度 merge / dedupe，整理成批次 clarify payload，DELEGATE `/clarify`。
    4. WAIT clarify 結果，然後只重新跑受影響的 feature worker。
    5. 回到步驟 3.1，直到 `$NEED_TO_CLARIFY` 為空才可離開本 phase。

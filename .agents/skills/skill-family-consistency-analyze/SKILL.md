@@ -69,7 +69,7 @@ Analyze a skill family and report consistency problems before they become hidden
 > | CRITIQUE | S | 批評 / 建議 |
 > | SUMMARIZE | S | 抽取重點 |
 > | EXPLAIN | S | 對 user 解釋 why |
-> | ASK | I | 問 user 等回應（仍配 `[USER INTERACTION]` tag）；**唯一允許 yield turn 給 user 的 verb**。**Planner-level skill** 對 user 的提問**必須 `DELEGATE /clarify-loop`**，不得直接 `ASK`（其他角色的 skill 自決）。 |
+> | ASK | I | 問 user 等回應（仍配 `[USER INTERACTION]` tag）；**唯一允許 yield turn 給 user 的 verb**。**Planner-level skill** 對 user 的提問**必須 `DELEGATE /clarify`**，不得直接 `ASK`（其他角色的 skill 自決）。 |
 <!-- VERB-GLOSSARY:END -->
 
 ## §1 REFERENCES

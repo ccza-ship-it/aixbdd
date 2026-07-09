@@ -2,13 +2,13 @@
 
 > 純 declarative schema reference。Phase 1 ASSERT 題目數時 LOAD 此檔取上限值。
 >
-> 來源：原 `clarify-loop/SKILL.md` `## Config` section。
+> 來源：原 `clarify/SKILL.md` `## Config` section。
 
 ## §1 必填欄位
 
 | 參數 | 說明 |
 |---|---|
-| `SPECS_ROOT_DIR` | 便條紙掃描根目錄 |
+| `SPECS_ROOT_DIR` | 規格根目錄，作為澄清紀錄目錄的基準路徑 |
 
 ## §2 選填欄位
 

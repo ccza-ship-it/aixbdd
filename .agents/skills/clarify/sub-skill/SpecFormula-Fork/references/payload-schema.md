@@ -41,7 +41,6 @@ missing:
 ```yaml
 questions:
   - id: Q1
-    kind: BDY
     context: 訪客觸發登入是新引入的子流程；現有 top-level boundary = features/checkout/
     question: 本流程歸屬 features/auth/ 還是 features/checkout/?
     options:

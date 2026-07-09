@@ -4,7 +4,7 @@
    1. 本檔只列出在 `04-parameter-instantiation` 中，對當前 `.feature` 內所有已落地 `Example` / `Scenario Outline` 成品做整體 residual audit 時，可能需要進一步澄清的分析切角。
    2. 本檔只產出 `$NEED_TO_CLARIFY`；不在此步驟內做寫檔修正。
    3. `$NEED_TO_CLARIFY` 必須是 cross-example、feature-level 的題目，不得退化成逐 placeholder 的零碎提問。
-   4. `$NEED_TO_CLARIFY` 依 downstream impact 排序後，最多保留 5 題交給外層 `/clarify-loop`。
+   4. `$NEED_TO_CLARIFY` 依 downstream impact 排序後，最多保留 5 題交給外層 `/clarify`。
 
 ## $NEED_TO_CLARIFY
 1. static exemplar 與 runtime handle 邊界不清

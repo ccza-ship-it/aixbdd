@@ -10,7 +10,7 @@
 
 每題在 core 必填欄位之外**另外**必填：
 
-- `location`：便條紙或可回溯定位鍵，慣例為 `file:line` 或可穩定對應 sweep 的字串
+- `location`：可回溯定位鍵，慣例為 `file:line` 或可穩定定位的字串
 
 ---
 
@@ -39,7 +39,6 @@ missing:
 ```yaml
 questions:
   - id: Q2
-    kind: BDY
     context: 訂單建立時機會影響 state machine
     question: 訂單何時建立？
     options:

@@ -11,7 +11,7 @@
         2. `Then` 部位——主 assertion 與其後續延伸驗證區塊。
     3. READ 本 `Rule` 內各 `# @dsl` block 的 `# rule:`、`# handler-candidate-kinds:` 與 `# candidates:` 三欄位。以該 `Rule` 所指示之 `# rule:` 路徑檔案作為指導最高標準，依據指導來適當編排此 Rule 底下 Example 的 Given and Then DSL Block。
     5. HYDRATE `candidate_specs`——只在 `${CONTRACTS_DIR}`、`${DATA_DIR}`、`${BOUNDARY_SHARED_DSL}` 內解析 `# candidates:` 已列出的名稱，補成 `name`、`handler`、`format`、`target_part_path`、`param_bindings`、`datatable_bindings`；這一步只做 hydration，不做新的 candidate 搜尋。
-    6. DERIVE 本 `Rule` 共用的 arrangement input——在 `When` 已固定的前提下，推出本 `Rule` 所需的 `tested_target`、`required_test_values` 與其他最小必要 reasoning context；若資訊不足以唯一決定，組成 `$questions`，交回外層 phase 走 `/clarify-loop`，本 worker 直接 STOP。
+    6. DERIVE 本 `Rule` 共用的 arrangement input——在 `When` 已固定的前提下，推出本 `Rule` 所需的 `tested_target`、`required_test_values` 與其他最小必要 reasoning context；若資訊不足以唯一決定，組成 `$questions`，交回外層 phase 走 `/clarify`，本 worker 直接 STOP。
     7. ARRANGE `Given` 部位——先消費 shared Given law 的 `Given Block`（Decision Tree、Forces、Optimization、Legality Gate），再疊加 shared Given law 內對應 rule type 不同的 Given 區塊指示進行綜合的 FAITHFUL REASONING；完成前置建構 strategy、legality gate 與 optimization。
     8. ARRANGE `Then` 部位——先消費 shared Then law 的 `Then Block` legislation，再疊加 shared Then law 內對應 rule type 不同的 Then 區塊指示進行綜合的 FAITHFUL REASONING；完成 verifier selection、必要的過濾與取捨、arrangement rules 與 optimization。
     9. WRITE arrangement result：
