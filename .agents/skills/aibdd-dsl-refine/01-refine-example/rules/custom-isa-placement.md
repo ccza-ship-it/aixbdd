@@ -52,7 +52,7 @@ Cucumber Step Definition（Java 實作）由 **RED 階段**完成，本階段不
   - `呼叫某 API 操作` → builtin `api_call`
 - ❌ HOW（實作細節，不論如何都不寫進 intent）：`status 介於 400–499`、`objectMapper.readTree(body).path("message")`
 
-判定 custom 前，先過 `builtin-instruction-decision-tree.md` 的決策流程；**只有走到第 5 點（外部資源 mock／非 HTTP／多步前置封裝）才是 custom**。能用 builtin 拆成數條有序 isa_step 表達的，一律不做 custom。
+判定 custom 前，先過 `builtin-instruction-decision-tree.md` 的決策流程；**只有走到第 5 點（外部資源 mock／非 HTTP／多步前置封裝）才是 custom**。能用 builtin 拆成數條有序 isa_step 表達的（拆法見 `builtin-composition-patterns.md`），一律不做 custom；內建做不到的語意界限見 `builtin-instruction-usage.md` 界限總表。
 
 ## 引用 custom 時：把 datatable_parameters 鏡射回 dsl_step
 

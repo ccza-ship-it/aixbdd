@@ -76,5 +76,5 @@ fps:
 - **format 跨 ≥2 feature 重複（收斂級）**：應上移收斂、避免 ambiguous match。
 
 只偵測回報、不改檔；hoist／刪重複由 AI（保留 `# done`）執行。**exit code 即 gate**：有重複 → exit 3、
-已收斂 → exit 0。主 SOP step 10 須重跑到 exit 0 才得宣告完成（不可只憑自我回報；曾發生 agent 謊報無重複
+已收斂 → exit 0。主 SOP step 11 須重跑到 exit 0 才得宣告完成（不可只憑自我回報；曾發生 agent 謊報無重複
 而實際 16 條未上移）。

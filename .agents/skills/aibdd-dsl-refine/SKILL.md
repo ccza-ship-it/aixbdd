@@ -19,6 +19,7 @@ metadata:
 
 - 本 SOP 唯一允許產生或修改的 artifact，只能來自於下述 SOP 中透過 CREATE / WRITE / UPDATE 明確標注的產出物。
 - 【嚴禁】除上述 target 外，其他任何 READ / SEARCH / THINK / DERIVE 所觀察到的路徑，都只可作為分析依據，不得被順手建立、寫入、更新或補骨架。
+- **互動授權亦屬本契約**：在 step 6/7 未取得使用者回覆前 BIND `$FP_SLUG`／`$TARGET_FEATURES`、在 step 10 未取得使用者逐項同意前標 `# done` 或寫 FP 層 isa.yml，一律屬**未授權產出**（等同越權寫檔）。即使開場指令看似已指定範圍（如「完成所有推導」），該指令只授權「開始跑本 SOP」，不取代任何停點的使用者回覆。
 
 ## PRINCIPLE: STRICT SOP
 
@@ -33,9 +34,10 @@ metadata:
 ## PRINCIPLE: 提問／澄清只委派 clarify-loop
 
 - 凡須向使用者提問或做結構化澄清，本 SOP 一律以**一個 `DELEGATE /clarify-loop`** 批次提問，由其決定提問工具與白話文轉譯。
-- 各提問點用對應模版組裝 payload：選 FP → `assets/fp-question.template.md`；選 features → `assets/features-question.template.md`；example 變更 → `01-refine-example/assets/change-question.template.md`；逐 dsl_step 的 ISA 確認 → `01-refine-example/assets/isa-question.template.md`。
+- 各提問點用對應模版組裝 payload：選 FP → `assets/fp-question.template.md`；選 features → `assets/features-question.template.md`；example 變更 → `01-refine-example/assets/change-question.template.md`；收尾 batch review 的 ISA 確認 → `01-refine-example/assets/isa-question.template.md`。
 - **rich 內容（完整 Example、ISA 展開、DataTable）先 EMIT 到對話**（markdown 正常渲染表格與 code block），讓使用者在完整脈絡下檢視；clarify-loop 的 `context`/`question` 保持**精簡單句**並引用上方預覽。**切勿把展開／表格塞進 clarify-loop 的 question 欄位**（會被攤平成一坨、無法閱讀）。
 - 【嚴禁】在 SOP 內 inline 逐題提問、自行 classify／branch 使用者回覆，或在聊天中自組問句代替 clarify-loop。
+- **互動斷點必須把問題交還使用者**：凡 SOP 標示須經使用者選擇／同意的停點，一律等到真實使用者回覆才續行。【嚴禁】代使用者作答、自行視為同意，或以「整批授權」「本 session 無互動工具」「使用者要求完成全部」為由跳過停點；若當前環境無互動式提問工具，就以**結束本回合**的方式把問題完整輸出，等待下一輪使用者輸入再續。
 
 ## PRINCIPLE: feature 非 SSOT，先驗 step 再推 isa
 
@@ -88,20 +90,36 @@ metadata:
 
    產出為空（全部完成）→ STOP 並回報完成；腳本回報找不到 package → STOP 並提示先完成 `/aibdd-flows-specify`。
 
-6. SELECT FP（單選；使用者未指定前不得自選或開始分析）——READ `DSL_REFINE_PLAN.yml` 的 `fps[]`，以 `assets/fp-question.template.md` 組裝、DELEGATE `/clarify-loop` 讓使用者選一個 FP。BIND `$FP_SLUG`、`$FP_DIR=${TRUTH_BOUNDARY_PACKAGES_DIR}/$FP_SLUG`、`$FP_FEATURES=$FP_DIR/features`、`$FP_PACKAGE_DSL=$FP_DIR/dsl.yml`。
+6. SELECT FP（單選硬閘門）——READ `DSL_REFINE_PLAN.yml` 的 `fps[]`，以 `assets/fp-question.template.md` 組裝、DELEGATE `/clarify-loop` 讓使用者選一個 FP。
+   - 取得真實使用者回覆 → BIND `$FP_SLUG`、`$FP_DIR=${TRUTH_BOUNDARY_PACKAGES_DIR}/$FP_SLUG`、`$FP_FEATURES=$FP_DIR/features`、`$FP_PACKAGE_DSL=$FP_DIR/dsl.yml`，進入 step 7。
+   - 互動工具不可用或 clarify-loop 未能取得真實使用者回覆 → EMIT FP 選項清單並結束本回合：**此時本回合的正式交付物就是這份問題清單**，交出它即視為本回合任務圓滿完成（不是失敗、不是中止），最後一則訊息就是待答問題，等待下一輪使用者輸入再續。
+   - 【嚴禁】代選：「候選唯一」「背景／subagent 執行」「開場指令已指定範圍或整批授權（如：完成所有推導）」皆**不構成**代答理由——開場指令只授權開始跑本 SOP，不取代本停點的回覆。
 
-7. SELECT Features（多選）——READ worklist 選定 FP 的 `features[]`，以 `assets/features-question.template.md` 組裝、DELEGATE `/clarify-loop` 讓使用者複選。BIND `$TARGET_FEATURES[]`；空集合 → STOP。
+7. SELECT Features（多選硬閘門）——READ worklist 選定 FP 的 `features[]`，以 `assets/features-question.template.md` 組裝、DELEGATE `/clarify-loop` 讓使用者複選。
+   - 取得真實使用者回覆 → BIND `$TARGET_FEATURES[]`；空集合 → STOP。
+   - 互動工具不可用或 clarify-loop 未能取得真實使用者回覆 → EMIT features 選項清單並結束本回合（同 step 6：問題清單即本回合正式交付物，交出即圓滿完成）。
+   - 【嚴禁】代選；不構成理由同 step 6。
 
 8. ENSURE `{feature}.dsl.yml` 就緒——對每個 `$TARGET_FEATURES`，`$FP_FEATURES/{feature}.dsl.yml` 不存在 → 以 `assets/dsl.template.yml` 為模版 CREATE 空骨架。（跨 feature 共用的 `$FP_PACKAGE_DSL` 待 sub-SOP 重構步按需才建。）本步只 CREATE 空骨架，不填內容。
 
-9. LOOP examples——對 worklist 中「屬 `$TARGET_FEATURES`、`status: pending`」的每個 example，逐一 EXECUTE the sub-sop：
+9. LOOP examples（推導期，**不中途確認**）——對 worklist 中「屬 `$TARGET_FEATURES`、`status: pending`」的每個 example，逐一 EXECUTE the sub-sop：
 
    `01-refine-example/SOP.md`（輸入：該 example 的 feature 路徑 `${FEATURE}`、example 標題、worklist 列的未完成 step）
 
-   每個 example 的 sub-SOP 返回後，**重跑 step 5 的 `build_worklist.py` 刷新 worklist**（反映剛標的 `# done`），再取下一個 `pending` example；直到 `$TARGET_FEATURES` 內無 `pending`。
-   **【強制：逐 example 互動】** 嚴禁一個回合內連做多個 example；sub-SOP 內的逐 dsl_step 確認沒過前，不得跳下一個。
+   每個 example 的 sub-SOP 返回後（帶回該 example 的待 review 展開），接續下一個 `pending` example；直到 `$TARGET_FEATURES` 內無 `pending`。
+   **【嚴禁】推導期間逐 example 或逐 dsl_step 向使用者確認 ISA**；所有 ISA 確認集中在 step 10 的收尾 batch review 一次進行（sub-SOP 內 a/b 的 example 合理性變更授權不在此限）。
 
-10. FP 級去重 + name 唯一性 gate（收尾，**強制硬閘門**）——**所有選定 feature 的 example 全部 `# done` 後**才執行；這是宣告完成前的決定性 gate，不可略過、不可只憑自我回報「已收斂」（曾發生 agent 謊報無重複、實際 16 條未上移、展開階段被阻斷）。
+10. BATCH REVIEW（收尾一次 review，**強制硬閘門**）——所有選定 examples 推導完成後才執行；使用者同意前不得定案：
+
+    a. 對每個受影響 example RUN `01-refine-example` 的 `expand_isa.py` 取得展開，**一次 EMIT 全部受影響 features/examples 的完整展開預覽到對話**（每個 example：完整 Example ＋ 逐 dsl_step 展開）。
+    b. 依 `01-refine-example/assets/isa-question.template.md` 組裝、DELEGATE `/clarify-loop` 讓使用者對預覽逐項同意／不同意（引用上方預覽，question 保持精簡單句）。
+       - 互動工具不可用或 clarify-loop 未能取得真實使用者回覆 → 確保 a 的完整預覽已 EMIT，補上逐項待答問題後結束本回合：**此時本回合的正式交付物就是這份待 review 展開與問題清單**，交出它即視為本回合任務圓滿完成，等待下一輪使用者輸入再續。
+       - 【嚴禁】代答同意：「候選唯一」「背景／subagent 執行」「開場指令已指定範圍或整批授權」皆**不構成**代行 review 的理由；「採同意為工作假設」即未授權標 `# done`（見 Artifact output contract）。
+    c. **任一項不同意** → 依回饋回 sub-SOP c 調整該 dsl_step（含把誤開的 custom 改為 builtin 組合），重跑該 example 展開，回 a **只重審被拒項**，直到全數同意。
+    d. **全數同意** → 才在各 dsl_step name 上方標 `# done`；custom 有新增 → 此時才寫 FP 層 isa.yml 契約；再重跑 step 5 的 `build_worklist.py` 刷新 worklist，確認 `$TARGET_FEATURES` 內無 `pending`。
+    【嚴禁】在使用者同意前標 `# done`、寫 FP 層 isa.yml，或以任何理由（含環境無互動工具）跳過本 review 自行定案。
+
+11. FP 級去重 + name 唯一性 gate（收尾，**強制硬閘門**）——**所有選定 feature 的 example 全部 `# done` 後**才執行；這是宣告完成前的決定性 gate，不可略過、不可只憑自我回報「已收斂」（曾發生 agent 謊報無重複、實際 16 條未上移、展開階段被阻斷）。
 
     a. RUN 偵測器（其 exit code 為 gate）：
 

@@ -23,7 +23,7 @@
 共用偵測有兩個觸發點，避免「逐 feature loop 看不到其它 feature → 漏抽 → 重複」：
 - **先找後建（c 步）**：worklist 對某未完成 step 帶 `reuse` 提示（FP 內已有同 format 定義）時，
   c 步不重建——既有定義在別 feature → 當下就 hoist 到 `{FP}/dsl.yml` 共用。
-- **收尾去重（主 SOP step 10）**：loop 結束跑 `scripts/cli/detect_shared_dsl.py`，把仍跨 ≥2 feature
+- **收尾去重（主 SOP step 11）**：loop 結束跑 `scripts/cli/detect_shared_dsl.py`，把仍跨 ≥2 feature
   重複的條目補抽到 `{FP}/dsl.yml`。兩者都遵守本節放置規則與「禁過複雜」。
 hoist 時**保留 `# done`**（標記是持久真相），刪 `{feature}.dsl.yml` 重複條，兩 feature 共用一條。
 
