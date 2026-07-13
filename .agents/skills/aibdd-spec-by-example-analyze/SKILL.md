@@ -28,7 +28,7 @@ metadata:
 
 ## PRINCIPLE: Clarify gate is blocking
 
-1. 任何 sub-SOP 只要回傳 `$questions` 或 `$NEED_TO_CLARIFY`，外層 orchestrator **必須**先 DELEGATE `/clarify-loop` 完成澄清，再只重跑受影響的 worker。
+1. 任何 sub-SOP 只要回傳 `$questions` 或 `$NEED_TO_CLARIFY`，外層 orchestrator **必須**先 DELEGATE `/clarify` 完成澄清，再只重跑受影響的 worker。
 2. 在對應的 clarify gate 尚未清空前，該 phase 不算完成；頂層 SOP 也不得往後推進，更不得對用戶宣告 `/aibdd-spec-by-example-analyze` 完成。
 3. worker 只負責分析與寫檔；使用者互動一律由外層 phase 負責。
 

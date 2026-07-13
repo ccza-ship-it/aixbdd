@@ -140,7 +140,7 @@ N. <告知使用者語句>                   ← optional，single-line
 
 - READ/SEARCH/THINK/DERIVE 純觀察：搭配頂層 PRINCIPLE「READ/SEARCH/THINK/DERIVE 觀察到的路徑只可作為分析依據，不得被順手建立、寫入、更新或補骨架」，杜絕「LLM 看到就建」。
   - ✗ `READ contracts/foo.openapi.yml；如不存在則自動建立空骨架。`
-  - ✓ `READ contracts/foo.openapi.yml。若不存在則 DELEGATE /clarify-loop 詢問是否新建。`
+  - ✓ `READ contracts/foo.openapi.yml。若不存在則 DELEGATE /clarify 詢問是否新建。`
 
 - 多 artifact 必逐項授權：一步若輸出 ≥ 2 個 artifact，必須列舉每個都允許；禁止只給概述。
   - ✗ `WRITE 報告與相關檔案。`

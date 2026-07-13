@@ -18,7 +18,7 @@ Initialize an AIBDD project：依 stack 收集配置、產生單一 top-level bo
 - **嚴格依序**：按 Phase 順序逐一執行，每步在訊息中講清楚自己在做哪個 Phase 哪一步；只在當步真的需要權衡時才深想，否則直接動手，省掉與當步無關的鋪陳。執行到哪讀到哪，不提早翻後續 Phase 的細節與 reference。
 - **長流程待辦**：流程跨多輪、會被 conversation compact，得靠待辦還原進度：用宿主的待辦工具建清單、隨步推進，別只在對話裡口頭記；外層每個 Phase 一項，進到某 Phase 才把它的步驟展開成子項。
 - **只動該動的**：只有各步明講要產出／修改的檔才准碰；過程中讀到、查到的其他路徑只作判斷依據，不得順手建立或補骨架。
-- **File First（僅互動路徑）**：所有對 user 的提問走 **寫 → 問 → 回寫** 三段式：題目與答案的唯一真相是 `KICKOFF_PLAN.md`，先把題目寫進檔再問、答完回寫進同一份檔；提問一律委派 `/clarify-loop`，executor 不自己在對話裡列題。非互動模式整個跳過 File First，配置直接採 default。
+- **File First（僅互動路徑）**：所有對 user 的提問走 **寫 → 問 → 回寫** 三段式：題目與答案的唯一真相是 `KICKOFF_PLAN.md`，先把題目寫進檔再問、答完回寫進同一份檔；提問一律委派 `/clarify`，executor 不自己在對話裡列題。非互動模式整個跳過 File First，配置直接採 default。
 
 # SOP
 
@@ -31,27 +31,27 @@ Initialize an AIBDD project：依 stack 收集配置、產生單一 top-level bo
 ### Phase 2 — 收集配置（File First：寫 → 問 → 回寫）
 
 1. **(think)** 非互動模式：直接採 default 決策（stack=python_e2e、規格語言 zh-hant、service 名 backend、放 repo root；headless 要別的 stack 由 caller payload 帶 `stack:` 覆寫），跳過 File First，直接進 Phase 3。
-2. **(delegate)** 互動模式且 `KICKOFF_PLAN.md` 已存在：問 user 要接續、重做、還是取消，經 /clarify-loop 出題；取消就停。
-   - delegate to SKILL /clarify-loop
+2. **(delegate)** 互動模式且 `KICKOFF_PLAN.md` 已存在：問 user 要接續、重做、還是取消，經 /clarify 出題；取消就停。
+   - delegate to SKILL /clarify
 3. **(write)** 要新建問卷時：依 `assets/questions/` 第一輪四題與外殼 `assets/kickoff-plan.template.md`，渲染出 `KICKOFF_PLAN.md`（四題、答案欄留空；Q5／Q6 為條件式第二輪，於下方對應步驟才渲染）。
    - 請嚴格遵守 `assets/kickoff-plan.template.md` 來執行此步驟。
    - 請嚴格遵守 `assets/questions/q1-tech-stack.template.md` 來執行此步驟。
    - 請嚴格遵守 `assets/questions/q2-project-spec-language.template.md` 來執行此步驟。
    - 請嚴格遵守 `assets/questions/q3-backend-service-name.template.md` 來執行此步驟。
    - 請嚴格遵守 `assets/questions/q4-codebase-layout.template.md` 來執行此步驟。
-4. **(delegate)** 一次問完第一輪四題（stack／規格語言／service 名／codebase layout），經 /clarify-loop；回答格式見各 question template 的 reply token 與外殼的 Batch Reply Format。
+4. **(delegate)** 一次問完第一輪四題（stack／規格語言／service 名／codebase layout），經 /clarify；回答格式見各 question template 的 reply token 與外殼的 Batch Reply Format。
    - 請嚴格遵守 `assets/kickoff-plan.template.md` 來執行此步驟。
-   - delegate to SKILL /clarify-loop
+   - delegate to SKILL /clarify
 5. **(write)** 把答案回寫 `KICKOFF_PLAN.md`、每題標 answered。任何一題模糊、重複或缺漏，就標 unresolved、告知 user 並停止——不要猜值硬填。
    - 請嚴格遵守 `rules/answer-resolution-gate.md` 來執行此步驟。
-6. **(delegate)** 第二輪條件式提問——依答案**逐一檢查兩個檢查點**，把適用的題以一次 `/clarify-loop` 問完回寫：
+6. **(delegate)** 第二輪條件式提問——依答案**逐一檢查兩個檢查點**，把適用的題以一次 `/clarify` 問完回寫：
    - 檢查點 1（先檢查 `type`）：`type: web-service` → 納入 Q5 data schema 格式，渲染 `{{Q5_RECORD}}`；否則跳過 Q5。
      - 請嚴格遵守 `assets/questions/q5-data-schema-format.template.md` 來執行此步驟。
    - 檢查點 2（再檢查 `stack`）：`stack: java_e2e` → 納入 Q6 是否安裝 aibdd-spectrum，渲染 `{{Q6_RECORD}}`；否則跳過 Q6。
      - 請嚴格遵守 `assets/questions/q6-install-spectrum.template.md` 來執行此步驟。
    - 兩檢查點皆不符 → 整步跳過。
    - 請嚴格遵守 `rules/answer-resolution-gate.md` 來執行此步驟。
-   - delegate to SKILL /clarify-loop
+   - delegate to SKILL /clarify
 
 ### Phase 3 — 產生 boundary skeleton
 

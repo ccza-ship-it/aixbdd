@@ -97,12 +97,12 @@
 6. 若有任一 placeholder 在不改變 spec meaning 的前提下仍無法唯一決定：
    1. 組成 `$NEED_TO_CLARIFY`。
    2. STOP 本 worker。
-   3. 交回外層 phase 走 `/clarify-loop`，不得自行發明值。
+   3. 交回外層 phase 走 `/clarify`，不得自行發明值。
    4. 若你無法判定某欄位應該是 static known value 還是 runtime-produced value，也視為無法唯一決定；此時必須提問，不得直接把它 concretize 成看似合理的假 id。
 
 7. `$NEED_TO_CLARIFY` += DO FAITHFUL REASONING 針對當前 `.feature` 範疇內所有已落地的 `Example` / `Scenario Outline`，依照 `derive-findings.md` 中的分析切角去進行深度分析，並找到所有需要澄清的地方。
 
-8. 若 `$NEED_TO_CLARIFY` 非空：EMIT 給外層 phase；外層 phase 負責 DELEGATE `/clarify-loop` skill 以單次最多五題的方式來進行提問。
+8. 若 `$NEED_TO_CLARIFY` 非空：EMIT 給外層 phase；外層 phase 負責 DELEGATE `/clarify` skill 以單次最多五題的方式來進行提問。
 
 # Worker hard limits
 1. 不得變更 `When` step 的行為意圖；若 `When` 內含 placeholder，只能把它落成 concrete exemplar 或符合 slot 型別格式的 `$alias`，不得改寫該操作想表達的業務語意。

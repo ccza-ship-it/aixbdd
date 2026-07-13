@@ -33,4 +33,4 @@
 
 8. 若 `$NEED_TO_FIX` 非空：依 `$NEED_TO_FIX` 修正本 phase 之 operation contract slices、state target paths、specifier delegation input 與 impact matrix writeback，必要時重跑步驟 `2` 到 `6`。
 
-9. 若 `$NEED_TO_CLARIFY` 非空：DELEGATE `/clarify-loop` 一次進行提問。
+9. 若 `$NEED_TO_CLARIFY` 非空：DELEGATE `/clarify` 一次進行提問。

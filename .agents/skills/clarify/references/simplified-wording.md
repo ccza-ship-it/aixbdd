@@ -43,7 +43,6 @@
 | top-level boundary | 資料夾 |
 | STEP | 步驟 |
 | Rule / AtomicRule | 規則 / 單一規則 |
-| CiC (BDY/GAP/ASM/CON) | 不提；直接寫問題本身 |
 | post-condition / 後置 | 做完後的狀態 |
 | pre-condition / 前置 | 做之前的條件 |
 | actor / actor key | 角色 |
@@ -76,7 +75,7 @@
 
 ## 「好處 / 壞處」推導
 
-clarify-loop 自己從 `option.impact` 推導出成對的好處 / 壞處。推導流程：
+clarify 自己從 `option.impact` 推導出成對的好處 / 壞處。推導流程：
 
 1. **拆 impact 句子**：提取動詞動作（新建 / 整合 / 分散 / 簡化 / 增加 / 移除）
 2. **判斷方向**：對當前架構或使用者旅程是收斂（好處）、發散（壞處）、還是中性
