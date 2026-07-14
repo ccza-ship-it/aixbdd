@@ -1,0 +1,64 @@
+# =============================================================================
+# kind constants — store（kind 級常數；每個 store 依賴皆同，不抄進 registry）
+# 槽位值取自 registry entry（specs/dependencies/dependencies.yml 的該依賴條目）與其 truth 檔。
+# =============================================================================
+kind: store
+
+testability_defaults:
+  double: real-product                # 真品即替身；不可覆寫為 stub
+  programmable: n/a
+  container_by_engine:                # 依 entry.engine 查表
+    redis:         { image: redis:7-alpine,        ports: [6379],  wait_strategy: port-listening, service_connection: true }
+    s3:            { image: minio/minio,           ports: [9000],  wait_strategy: http:/minio/health/ready, service_connection: false }
+    mongodb:       { image: mongo:7,               ports: [27017], wait_strategy: port-listening, service_connection: true }
+    elasticsearch: { image: elasticsearch:8.15.0,  ports: [9200],  wait_strategy: http:/, service_connection: true }
+
+handlers: [external-store-builder, external-store-verifier]
+
+isa_step_templates:
+  # A — 後門寫入：Given 儲存體已存在某資料（外部儲存版 entity_setup）
+  - handler: external-store-builder
+    keyword: Given
+    format_template: ^儲存 "(?P<store>[^"]+)" 已存在 (?P<target>[^ ]+), with JSON:$
+    data_format: json
+    slots:
+      store: entry.name
+      target: truth 檔（convention.md 等）keyspaces/buckets/collections pattern 的實例
+      payload: 依 value_schema／doc_schema_ref 填空
+      ttl: truth 檔有宣告才可出現
+    behavior:
+      reads: [registry entry（specs/dependencies/dependencies.yml）與其 truth 檔, context.memo]
+      effect: 後門寫入 store（key＋TTL／put object／index doc）
+      asserts: null
+      export_vars: { "{{alias}}.key": { type: String, description: 供 D 面引用 } }
+    intent_projection: "前置：{{name}} 已存在 {{target}}（後門寫入，WHAT）"
+  # D — 後門讀取斷言（＋eventually；外部儲存版 entity_validate）
+  - handler: external-store-verifier
+    keyword: Then
+    format_template: ^儲存 "(?P<store>[^"]+)" 的 (?P<target>[^ ]+) 最終應存在, with JSON:$
+    data_format: json
+    slots:
+      store: entry.name
+      target: key／object key／doc 查詢鍵（可 $var 插值）
+      matcher: 存在性／TTL 範圍／欄位值（CAS 收斂，不發明每 engine 專用斷言語彙）
+      timeout: 必填（truth 檔標 refresh_lag: true 者預設拉長）
+    behavior:
+      reads: [registry entry（specs/dependencies/dependencies.yml）與其 truth 檔, context.memo]
+      effect: null
+      asserts: bounded-wait 輪詢後門讀 → CAS 比對（timeout＋attempts 內建）
+      export_vars: null
+    intent_projection: "驗證：{{name}} 的 {{target}} 最終呈現指定內容（eventually）"
+
+red_execute:
+  scope: 外部儲存版 entity 指令——Given 資料預存（A）＋Then 資料驗證（D）；testcontainer 必配（真品即替身）
+  prehandling_template: |
+    // 真品 testcontainer；service_connection: true 者一行接線
+    @Container @ServiceConnection
+    static {{ContainerClass}} {{name}} = new {{ContainerClass}}("{{container.image}}");
+    // service_connection: false（如 MinIO）→ DynamicPropertyRegistry 覆寫 entry.wiring.sut_property_overrides
+  stepdef_constants:
+    client: 測試側直連 client（RedisTemplate／S3Client／MongoTemplate——後門，不經 SUT API）
+    forbidden:
+      - 不得經 SUT 的 HTTP API 建/驗狀態（那是 api_call／response_validate 的事）
+      - 不得斷言約定檔未宣告的 key／欄位
+      - D 面不得無界等待

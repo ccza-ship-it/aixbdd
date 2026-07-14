@@ -101,6 +101,9 @@ TRUTH_BOUNDARY_PACKAGES_DIR: ${TRUTH_BOUNDARY_ROOT}/packages
 CONTRACTS_DIR: ${TRUTH_BOUNDARY_ROOT}/contracts
 # DATA_DIR — state 真相目錄，boundary-level（值為目錄路徑）
 DATA_DIR: ${TRUTH_BOUNDARY_ROOT}/data
+# DEPENDENCIES_DIR — 外部依賴契約真相目錄，boundary-level；每依賴一子目錄
+# <name>/profile.yml＋truth 檔（值為目錄路徑）
+DEPENDENCIES_DIR: ${TRUTH_BOUNDARY_ROOT}/dependencies
 # BOUNDARY_ISA — 共用 instructions 定義（specs/isa.yml；值為檔案路徑）
 BOUNDARY_ISA: ${TRUTH_BOUNDARY_ROOT}/isa.yml
 # TEST_STRATEGY_FILE — boundary 測試分層與覆蓋策略（值為檔案路徑）

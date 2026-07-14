@@ -42,6 +42,7 @@ OWNERS = (
     "aibdd-plan",
     "aibdd-api-plan",
     "aibdd-data-plan",
+    "aibdd-dependency-plan",
 )
 
 

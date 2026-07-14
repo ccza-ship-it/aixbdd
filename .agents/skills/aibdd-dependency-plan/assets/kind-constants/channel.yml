@@ -1,0 +1,65 @@
+# =============================================================================
+# kind constants — channel（kind 級常數；每個 channel 依賴皆同，不抄進 registry）
+# 槽位值取自 registry entry（specs/dependencies/dependencies.yml 的該依賴條目）與其 truth 檔。
+# 範圍外恆定條款：訊息順序／exactly-once／重投遞語意不入 Gherkin。
+# =============================================================================
+kind: channel
+
+testability_defaults:
+  double: real-product                # broker 真品；不 stub broker
+  programmable: n/a                   # inbound 的「模擬協作者發訊」收斂為 message-publish 操作
+  container_by_broker:                # 依 entry.broker 查表
+    kafka:    { image: apache/kafka-native:3.8.0, ports: [9092], service_connection: true }
+    rabbitmq: { image: rabbitmq:3-management,     ports: [5672], service_connection: true }
+
+handlers: [message-publish, interaction-verifier]
+
+isa_step_templates:
+  # C（兼 B）— inbound：往 channel 發測試訊息驅動 SUT 消費
+  - handler: message-publish
+    keyword: When                     # 作為前置事件注入時可用 Given
+    format_template: ^channel "(?P<channel>[^"]+)" 收到一則 (?P<eventType>[^ ]+) 訊息, with JSON:$
+    data_format: json
+    slots:
+      channel: truth 檔 channels[direction=inbound].name
+      eventType: 該 channel 的 messages[].event_type
+      payload: 依 payload_ref schema 填空
+      key: messages[].key 有宣告才出現
+    behavior:
+      reads: [registry entry（specs/dependencies/dependencies.yml）與其 truth 檔, context.memo]
+      effect: 向 channel 發射訊息（key／headers／payload）
+      asserts: null                    # 消費結果斷言屬 D/E＋eventually，禁在本句做
+      export_vars: { "lastPublished.{{channel}}": { type: String, description: 供 E 面對照 } }
+    intent_projection: "觸發：向 {{channel}} 發布 {{eventType}} 事件，驅動後端消費（WHAT，不含 broker 細節）"
+  # E — outbound：test consumer 收 SUT 發布的訊息並斷言
+  - handler: interaction-verifier
+    keyword: Then
+    format_template: ^channel "(?P<channel>[^"]+)" 最終應收到 (?P<times>\d+) 則 (?P<eventType>[^ ]+) 訊息, with table:$
+    data_format: data_table
+    slots:
+      channel: truth 檔 channels[direction=outbound].name
+      eventType: messages[].event_type
+      times: 整數
+      matcher: 只可斷言 payload_ref 宣告過的欄位
+      timeout: 必填（非同步通道，eventually 硬需求）
+    behavior:
+      reads: [test-consumer 接收緩衝, context.memo]
+      effect: null
+      asserts: bounded-wait 內收到符合 matcher 的訊息恰 times 則
+      export_vars: null
+    intent_projection: "驗證：SUT 曾對 {{channel}} 發布 {{eventType}}（含欄位比對，eventually）"
+
+red_execute:
+  scope: When 事件發生（C，inbound）＋Then 驗證有發送事件到 topic（E，outbound）；testcontainer 必配（broker 真品）
+  prehandling_template: |
+    @Container @ServiceConnection
+    static {{ContainerClass}} broker = new {{ContainerClass}}("{{container.image}}");
+    // truth 檔宣告的 topic/queue 應預建（避免 auto-create 差異造成 flaky）
+    // outbound channel 需註冊 test consumer（E 面觀測點是 test consumer 緩衝，非 broker 管理 API）
+  stepdef_constants:
+    publish_client: 測試側 producer（KafkaTemplate／RabbitTemplate）
+    verify_source: test consumer 的接收緩衝
+    forbidden:
+      - 不得以 SUT 的 HTTP API 替代發訊（api_call 的事）
+      - 不得斷言順序／exactly-once／重投遞（範圍外判別式）
+      - E 面不得無界等待
