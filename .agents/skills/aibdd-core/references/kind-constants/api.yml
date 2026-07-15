@@ -3,8 +3,6 @@
 # 下游（dsl-refine／red-execute）依 entry.kind 查本檔取素材；
 # 槽位值取自 registry entry（specs/dependencies/dependencies.yml 的該依賴條目）與其 truth 檔。
 # =============================================================================
-kind: api
-
 testability_defaults:
   double: generic-stub                # 該服務有官方模擬器時 entry 可覆寫 double 與 image
   programmable: true
@@ -16,71 +14,35 @@ testability_defaults:
 
 handlers: [external-stub, interaction-verifier]
 
+# custom 句式模版（框架 custom 契約 schema）。slots／filling 指引見 rules/kind-api.md；
+# 執行語意見下方 red_execute。dsl-refine 取 format＋intent＋data_format 模版填空宣告契約。
 isa_step_templates:
-  # B — 樁：Given 外部服務對某 operation 回應 X
-  - handler: external-stub
-    keyword: Given
-    format_template: ^外部服務 "(?P<boundary>[^"]+)" 對 (?P<operation>[^ ]+) 回應, with JSON:$
+  # B — Given 設定外部服務對某 operation 的預期回應（stub）
+  - name: 外部服務 stub 回應
+    format: ^外部服務 "(?P<boundary>[^"]+)" 對 (?P<operation>[^ ]+) 回應, with JSON:$
+    instruction_type: custom
+    handler: external-stub
     data_format: json
-    slots:
-      boundary: entry.name
-      operation: truth 檔（openapi）的 operationId
-      payload: 依該 operation 的 response_ref schema 填空（不得發明 truth 外欄位）
-    behavior:
-      reads: [registry entry（specs/dependencies/dependencies.yml）與其 truth 檔, context.memo]
-      effect: 於替身佈建 match(operation)→respond(payload) 規則
-      asserts: null
-      export_vars: { stubId: { type: String, description: 供 E 面對照 } }
-    intent_projection: "前置：以 stub 讓 {{name}} 的 {{operation}} 回傳指定回應（WHAT，不含替身工具細節）"
-  # E 正面 — Then 應被呼叫 n 次
-  - handler: interaction-verifier
-    keyword: Then
-    format_template: ^外部服務 "(?P<boundary>[^"]+)" 的 (?P<operation>[^ ]+) 應被呼叫 (?P<times>\d+) 次$
-    data_format: null
-    slots:
-      boundary: entry.name
-      operation: truth 檔（openapi）的 operationId
-      times: 整數
-      timeout: 預設住 config
-    behavior:
-      reads: [替身接收紀錄, context.memo]
-      effect: null
-      asserts: 收到符合 request_ref matcher 的請求恰 times 次（bounded-wait）
-      export_vars: null
-    intent_projection: "驗證：{{name}} 的 {{operation}} 曾被以指定 payload 呼叫 {{times}} 次"
-  # E payload-bearing — Then 應被呼叫且送出 payload 符合（驗 outbound 送出內容的欄位值）
-  # 用於 feature 明文要驗「SUT 送給外部服務的 payload 內容」（如「送簽資料包含下列欄位」）時；
-  # 與 count-only 版互補——count-only 只驗次數，本式額外把送出 payload 欄位值以 DataTable 斷言。
-  - handler: interaction-verifier
-    keyword: Then
-    format_template: ^外部服務 "(?P<boundary>[^"]+)" 的 (?P<operation>[^ ]+) 應被呼叫並送出, with table:$
+    intent: 前置（Given）：以 stub 讓 {{boundary}} 的 {{operation}} 回傳指定回應
+  # E — Then 驗證 operation 被呼叫的次數
+  - name: 外部服務應被呼叫次數
+    format: ^外部服務 "(?P<boundary>[^"]+)" 的 (?P<operation>[^ ]+) 應被呼叫 (?P<times>\d+) 次$
+    instruction_type: custom
+    handler: interaction-verifier
+    intent: 驗證（Then）：{{boundary}} 的 {{operation}} 曾被呼叫 {{times}} 次
+  # E — Then 驗證 operation 被呼叫且送出的 payload 欄位值符合（含 outbound 內容）
+  - name: 外部服務應被呼叫並送出 payload
+    format: ^外部服務 "(?P<boundary>[^"]+)" 的 (?P<operation>[^ ]+) 應被呼叫並送出, with table:$
+    instruction_type: custom
+    handler: interaction-verifier
     data_format: data_table
-    slots:
-      boundary: entry.name
-      operation: truth 檔（openapi）的 operationId
-      payload: 依該 operation 的 request_ref schema 欄位填空（DataTable 每欄一個 request 欄位；不得發明 truth 外欄位）
-      timeout: 預設住 config
-    behavior:
-      reads: [替身接收紀錄, context.memo]
-      effect: null
-      asserts: 收到符合 request matcher 的請求，且送出 payload 各欄位值符合 DataTable（bounded-wait；至少一次呼叫）
-      export_vars: null
-    intent_projection: "驗證：{{name}} 的 {{operation}} 曾被呼叫，且送出的 payload 欄位值符合預期"
-  # E 反面 — Then 不應被呼叫
-  - handler: interaction-verifier
-    keyword: Then
-    format_template: ^外部服務 "(?P<boundary>[^"]+)" 的 (?P<operation>[^ ]+) 不應被呼叫$
-    data_format: null
-    slots:
-      boundary: entry.name
-      operation: truth 檔（openapi）的 operationId
-      window: 觀察窗（住 config 預設；反面等滿窗判定，與正面 timeout 語意相反）
-    behavior:
-      reads: [替身接收紀錄, context.memo]
-      effect: null
-      asserts: 觀察窗內對該 operation 的請求數 == 0
-      export_vars: null
-    intent_projection: "驗證：此情境下 {{name}} 的 {{operation}} 不應被呼叫"
+    intent: 驗證（Then）：{{boundary}} 的 {{operation}} 曾被呼叫，且送出的 payload 欄位值符合預期
+  # E — Then 驗證 operation 不應被呼叫
+  - name: 外部服務不應被呼叫
+    format: ^外部服務 "(?P<boundary>[^"]+)" 的 (?P<operation>[^ ]+) 不應被呼叫$
+    instruction_type: custom
+    handler: interaction-verifier
+    intent: 驗證（Then）：此情境下 {{boundary}} 的 {{operation}} 不應被呼叫
 
 red_execute:
   scope: 只實作兩類 mock——B 設定預期回應、E 驗證請求送達/未送達（契約測試規格）；

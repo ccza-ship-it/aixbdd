@@ -4,8 +4,6 @@
 # 保真度天花板（必讀）：bypass 替身測「SUT 的授權邏輯」，永不測「SSO 整合本身」；
 # SSO redirect 流程面範圍外（E2E 層）。
 # =============================================================================
-kind: identity
-
 testability_defaults:
   double: generic-stub                # bypass 替身（快、受天花板限制）；per-dependency 可
                                       # override 為 real-product（Keycloak container＋realm import）
@@ -18,26 +16,22 @@ testability_defaults:
 
 handlers: [identity-builder, external-stub]
 
+# custom 句式模版（框架 custom 契約 schema）。slots／filling 指引見 rules/kind-identity.md；
+# 執行語意見下方 red_execute。
 isa_step_templates:
-  # A — seed 身分：Given 已存在身分（建 user／簽 token／備 claims）
-  - handler: identity-builder
-    keyword: Given
-    format_template: ^已存在身分 "(?P<alias>[^"]+)", with table:$
+  # A — Given 已存在身分（建 user／簽 token／備 claims）
+  - name: 已存在身分
+    format: ^已存在身分 "(?P<alias>[^"]+)", with table:$
+    instruction_type: custom
+    handler: identity-builder
     data_format: data_table
+    intent: 前置（Given）：身分 {{alias}}（含角色/claims）就緒，供後續以其名義操作
     datatable_parameters:
       roles:  { type: String, description: 逗號分隔角色, required: false }
       claims: { type: String, description: 額外 claims JSON, required: false }
-    slots:
-      alias: truth 檔身分約定的 alias
-      roles/claims: 只可用 truth（realm export／約定）宣告過的角色與 claim
-    behavior:
-      reads: [registry entry（specs/dependencies/dependencies.yml）與其 truth 檔, context.memo]
-      effect: 就緒身分（real-product＝IdP 建 user＋取 token；bypass＝簽測試 token）
-      asserts: null
-      export_vars:
-        "{{alias}}.uid":   { type: String, description: 後續 api_call 的 UID 引用 }
-        "{{alias}}.token": { type: String, description: Authorization header 素材 }
-    intent_projection: "前置：身分 {{alias}}（含角色/claims）就緒，供後續以其名義操作（WHAT）"
+    export_vars:
+      "{{alias}}.uid":   { type: String, description: 後續 api_call 的 UID 引用 }
+      "{{alias}}.token": { type: String, description: Authorization header 素材 }
   # B 特例 — SUT 自驗 JWT：stub JWKS/introspection endpoint → 複用 api kind 的
   # external-stub 契約句式（boundary＝entry.name），不另立句型
 

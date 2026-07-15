@@ -16,10 +16,14 @@ feature 句觸及外部依賴（快取／外部 API／MQ／外部儲存／websoc
    使用者選緩做 → 該 example 擱置（不落半成品 dsl_step、不標 `# done`）。
 2. 有 entry → READ entry.truth.ref 指向的 truth 檔（openapi／proto／convention.md 等）
    與 `.claude/skills/aibdd-core/references/kind-constants/<entry.kind>.yml` 的
-   `isa_step_templates`，**契約逐欄取自模版**：
-   - `format`＝該面向 `format_template` 原文（regex 具名參數如 store／target 保留為參數）；
-   - `handler`／`data_format`／`datatable_parameters` 原樣取模版；
-   - `intent`＝該面向 `intent_projection` 投影（代入 entry.name 等槽位；維持 WHAT-only）；
+   `isa_step_templates`，**契約逐欄取自模版**（模版本身即框架 custom 契約 schema
+   ——name／format／instruction_type: custom／handler／intent／data_format／
+   datatable_parameters／export_vars）：
+   - `name`／`format`／`handler`／`data_format`／`datatable_parameters`／`export_vars`
+     原樣取模版（format 的 regex 具名參數如 store／target 保留為參數，承載依賴名跨依賴共用）；
+   - `instruction_type` 固定 `custom`（模版已標）；
+   - `intent`＝模版 `intent` 代入 entry 槽位（`{{boundary}}`／`{{store}}` 等 → entry.name；
+     維持 WHAT-only）；
    - dsl_step 引用時的槽位值受 entry 與 truth 檔約束（如 store 的 target 依 truth 檔
      keyspace pattern、payload 依 value schema；不得斷言約定檔未宣告的欄位）。
 3. 同一 kind 的模版契約可跨依賴共用（format 的具名參數承載依賴名）；先找既有宣告再建，
