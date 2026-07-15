@@ -4,10 +4,13 @@
 
 ## 測試範圍（先於一切）
 
-1. api kind 的測試面只有契約測試兩句式：Given 設定 api 預期回應（stub）、
-   Then 驗證請求正確送達或特定條件下不該發送（互動驗證正反面）。
+1. api kind 的測試面為契約測試句式：Given 設定 api 預期回應（stub）、
+   Then 驗證請求正確送達或特定條件下不該發送（互動驗證正反面）；當 feature 明文要驗
+   「SUT 送給外部服務的 payload 內容」（如「送簽資料包含下列欄位」）時，Then 用
+   payload-bearing 互動驗證變體（應被呼叫並送出, with table:）把送出欄位值以 DataTable 斷言，
+   而非退回只驗次數的 count-only。
 2. SUT 自身行為的觸發與斷言不在此——那是 builtin api_call／response_validate 的事。
-3. 兩句式的 custom step 模版與行為契約屬 kind 級常數，內建於
+3. 上述 custom step 模版與行為契約屬 kind 級常數，內建於
    .claude/skills/aibdd-core/references/kind-constants/api.yml——registry 不收句式素材，下游依 kind 查表；
    不得為 api 依賴發明 kind-constants 以外的句型。
 

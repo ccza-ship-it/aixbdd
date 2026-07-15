@@ -48,6 +48,24 @@ isa_step_templates:
       asserts: 收到符合 request_ref matcher 的請求恰 times 次（bounded-wait）
       export_vars: null
     intent_projection: "驗證：{{name}} 的 {{operation}} 曾被以指定 payload 呼叫 {{times}} 次"
+  # E payload-bearing — Then 應被呼叫且送出 payload 符合（驗 outbound 送出內容的欄位值）
+  # 用於 feature 明文要驗「SUT 送給外部服務的 payload 內容」（如「送簽資料包含下列欄位」）時；
+  # 與 count-only 版互補——count-only 只驗次數，本式額外把送出 payload 欄位值以 DataTable 斷言。
+  - handler: interaction-verifier
+    keyword: Then
+    format_template: ^外部服務 "(?P<boundary>[^"]+)" 的 (?P<operation>[^ ]+) 應被呼叫並送出, with table:$
+    data_format: data_table
+    slots:
+      boundary: entry.name
+      operation: truth 檔（openapi）的 operationId
+      payload: 依該 operation 的 request_ref schema 欄位填空（DataTable 每欄一個 request 欄位；不得發明 truth 外欄位）
+      timeout: 預設住 config
+    behavior:
+      reads: [替身接收紀錄, context.memo]
+      effect: null
+      asserts: 收到符合 request matcher 的請求，且送出 payload 各欄位值符合 DataTable（bounded-wait；至少一次呼叫）
+      export_vars: null
+    intent_projection: "驗證：{{name}} 的 {{operation}} 曾被呼叫，且送出的 payload 欄位值符合預期"
   # E 反面 — Then 不應被呼叫
   - handler: interaction-verifier
     keyword: Then
