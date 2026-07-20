@@ -19,7 +19,7 @@ impacts:
         status: inconsistent | consistent
 ```
 
-`OWNERS`：`aibdd-flows-specify`、`aibdd-rules-specify`、`aibdd-spec-by-example`、`aibdd-plan`、`aibdd-api-plan`、`aibdd-data-plan`。
+`OWNERS`：`aibdd-flows-specify`、`aibdd-rules-specify`、`aibdd-spec-by-example`、`aibdd-plan`、`aibdd-api-plan`、`aibdd-data-plan`、`aibdd-dependency-plan`。
 
 `specs` 可為空：owner 已認領該組 quote、但對應 spec 尚待建立（path 由該 owner 屆時決定）時，impact 為 `pending` 且 `specs: []`，spec 之後由 owner 以 `add-spec` 補上。
 

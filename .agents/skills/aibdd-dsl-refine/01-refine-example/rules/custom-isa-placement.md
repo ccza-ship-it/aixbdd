@@ -3,6 +3,33 @@
 某條 isa_step 對不上任何內建型別（見 [builtin-instruction-decision-tree.md](builtin-instruction-decision-tree.md)
 決策流程第 5 點：外部資源 mock、非 HTTP 操作、把多步前置語意封裝成一句）時，走 custom。
 本檔規範「先找、找不到才宣告、宣告寫哪層、宣告寫到什麼程度」。
+**外部資源／外部依賴語意的 custom 另受「外部依賴 custom」節約束：句式出自 registry＋kind-constants 模版填空，不自創。**
+
+## 外部依賴 custom：模版填空，不自創
+
+feature 句觸及外部依賴（快取／外部 API／MQ／外部儲存／websocket／gRPC／身分服務等，
+非 SUT 主 DB 與第一方 HTTP API）時：
+
+1. 查主 SOP step 4 載入的 dependency registry（`dependencies.yml`）找對應 entry。
+   **無 entry（或無 registry）→ 缺上游真相，不得憑空發明契約**：依 [DISCUSS] 帶完整
+   Example 澄清，選項須含「先執行 `/aibdd-dependency-plan` 盤點登記後再回來 refine」；
+   使用者選緩做 → 該 example 擱置（不落半成品 dsl_step、不標 `# done`）。
+2. 有 entry → READ entry.truth.ref 指向的 truth 檔（openapi／proto／convention.md 等）
+   與 `.claude/skills/aibdd-core/references/kind-constants/<entry.kind>.yml` 的
+   `isa_step_templates`，**契約逐欄取自模版**（模版本身即框架 custom 契約 schema
+   ——name／format／instruction_type: custom／handler／intent／data_format／
+   datatable_parameters／export_vars）：
+   - `name`／`format`／`handler`／`data_format`／`datatable_parameters`／`export_vars`
+     原樣取模版（format 的 regex 具名參數如 store／target 保留為參數，承載依賴名跨依賴共用）；
+   - `instruction_type` 固定 `custom`（模版已標）；
+   - `intent`＝模版 `intent` 代入 entry 槽位（`{{boundary}}`／`{{store}}` 等 → entry.name；
+     維持 WHAT-only）；
+   - dsl_step 引用時的槽位值受 entry 與 truth 檔約束（如 store 的 target 依 truth 檔
+     keyspace pattern、payload 依 value schema；不得斷言約定檔未宣告的欄位）。
+3. 同一 kind 的模版契約可跨依賴共用（format 的具名參數承載依賴名）；先找既有宣告再建，
+   放置層級依下方「找不到才宣告：放哪層」。
+4. 本檔下方「外部徵信」等範例僅示範 format 語法與 intent 寫法；實際遇到外部依賴時
+   一律先過本節 registry 分流，不得以範例存在為由略過。
 
 ## 先找：由內往外到 specs
 
@@ -12,6 +39,12 @@ custom 的真相同樣是 isa.yml，但分層。判斷該 custom 是否已定義
 2. `specs/isa.yml`（最外）
 
 任一層已有 format 對得上的 custom 指令 → 直接引用，不重複宣告。
+
+【關鍵】「先找」的「找」包含「能不能用**多條既有 custom 組合**表達」，不是只找**單一** custom 對上整句。一個 dsl_step 的 `isa_steps` 本就是有序多條——多步／多表語意常可由既有 custom 有序組合而成，能組合表達就**不新開** custom：
+- 例：「業務具備授信申請權限」＝`是一個操作員 (無權限)`（既有 custom，其 `export_vars` 導出 `{{alias}}.id`）＋`擁有「授信申請」權限`（既有 custom）兩條組合——先建身分取 id、再授權，完全對上，**不需**新開一條「具備授信申請權限」custom。
+- 【易踩】某既有 custom 名稱看似「相反／子集」（如「**無權限**」操作員 setup）仍可能是組合的第一步（先建身分並導出 id，之後再另一條授權）；不得因單一 custom 的 format 對不上整句、或名稱字面相反，就跳過「組合既有 custom」直接新開。
+- P14 硬界限「跨 4 表以上必走 custom」由**重用既有 custom 封裝**即滿足（既有 custom 本就是 custom）；「必走 custom」不等於「必**新開** custom」。
+- 唯有既有 custom 組合仍無法表達（真沒有對得上的既有 custom 可組合）才新開，見下方「找不到才宣告」。
 
 ## 找不到才宣告：放哪層
 

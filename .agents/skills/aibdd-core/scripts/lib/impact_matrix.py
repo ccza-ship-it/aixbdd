@@ -43,6 +43,7 @@ OWNERS: tuple[str, ...] = (
     "aibdd-plan",
     "aibdd-api-plan",
     "aibdd-data-plan",
+    "aibdd-dependency-plan",
 )
 OWNER_SET = frozenset(OWNERS)
 
